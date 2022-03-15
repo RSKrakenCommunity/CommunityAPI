@@ -1,6 +1,6 @@
 package com.rshub.definitions
 
-import com.rshub.buffer.exts.isJustNulls
+import com.rshub.utilities.isJustNulls
 import kotlinx.serialization.json.*
 
 class ItemDefinition(override val id: Int) : Definition {

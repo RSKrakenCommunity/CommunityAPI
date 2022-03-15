@@ -16,8 +16,8 @@
 //
 package com.rshub.definitions
 
-import com.rshub.buffer.exts.getMedium
-import com.rshub.buffer.exts.string
+import com.rshub.utilities.getMedium
+import com.rshub.utilities.string
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put

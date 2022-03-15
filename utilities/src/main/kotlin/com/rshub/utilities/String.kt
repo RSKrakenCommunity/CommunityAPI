@@ -1,4 +1,4 @@
-package com.rshub.buffer.exts
+package com.rshub.utilities
 
 import com.rshub.utilities.TextUtils.charToCp1252
 

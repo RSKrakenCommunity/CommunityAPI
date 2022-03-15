@@ -1,6 +1,5 @@
-package com.rshub.buffer.exts
+package com.rshub.utilities
 
-import com.rshub.utilities.Whirlpool
 import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.util.zip.CRC32

@@ -1,6 +1,6 @@
 package com.rshub.definitions.objects
 
-import com.rshub.buffer.exts.isJustNulls
+import com.rshub.utilities.isJustNulls
 import com.rshub.definitions.Definition
 import com.rshub.definitions.Params
 import kotlinx.serialization.json.*
