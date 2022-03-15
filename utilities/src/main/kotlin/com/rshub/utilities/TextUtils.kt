@@ -1,4 +1,4 @@
-package com.rshub.filesystem
+package com.rshub.utilities
 
 object TextUtils {
 

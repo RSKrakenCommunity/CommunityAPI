@@ -1,6 +1,6 @@
 package com.rshub.filesystem.ext
 
-import com.rshub.filesystem.TextUtils
+import com.rshub.utilities.TextUtils
 
 fun String.toFilesystemHash(): Int {
     val size = length
