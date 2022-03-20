@@ -5,6 +5,7 @@ import com.rshub.imgui.nodes.pane.skins.VerticalPaneSkin
 import com.rshub.imgui.skins.Skin
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
+import kraken.plugin.api.ImGui
 
 class VerticalPane : Node {
     internal val nodes = SimpleListProperty<Node>(this, "nodes", FXCollections.observableArrayList())
