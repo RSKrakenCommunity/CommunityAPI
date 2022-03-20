@@ -1,7 +1,9 @@
 package com.rshub.api.definitions;
 
 import com.rshub.definitions.InventoryDefinition;
+import com.rshub.definitions.VarbitDefinition;
 import com.rshub.definitions.managers.InventoryManager;
+import com.rshub.definitions.managers.VarbitManager;
 import com.rshub.filesystem.Filesystem;
 import com.rshub.filesystem.sqlite.SqliteFilesystem;
 
@@ -13,9 +15,14 @@ public class CacheHelper {
     private static final String CACHE_PATH = "C:\\ProgramData\\Jagex\\RuneScape";
     private static final Filesystem FS = new SqliteFilesystem(Paths.get(CACHE_PATH));
     private static final InventoryManager invManager = new InventoryManager(FS);
+    private static final VarbitManager varbitManager = new VarbitManager(FS);
 
     public static InventoryDefinition getInventory(int id) {
         return invManager.get(id);
+    }
+
+    public static VarbitDefinition getVarbit(int id) {
+        return varbitManager.get(id);
     }
 
     public static void decode(Consumer<Filesystem> consumer) {
