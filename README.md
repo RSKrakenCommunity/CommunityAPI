@@ -12,7 +12,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
- <h3 align="center">Open sorce api created by the<a href="https://discord.gg/AcQvydarPx"><strong> RS3 Botting Hub Community</strong></a> for the<a href="https://rskraken.dev/"><strong> Kraken client. </strong></a></h3>
+ <h3 align="center">Open source api created by the<a href="https://discord.gg/AcQvydarPx"><strong> RS3 Botting Hub Community</strong></a> for the<a href="https://rskraken.dev/"><strong> Kraken client. </strong></a></h3>
 
 
 <!-- LICENSE -->
