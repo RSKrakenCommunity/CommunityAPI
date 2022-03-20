@@ -15,7 +15,7 @@ class Archive(
 
     internal var loaded = false
     internal var requiresUpdate = false
-    internal var files = sortedMapOf<Int, ArchiveFile>()
+    var files = sortedMapOf<Int, ArchiveFile>()
 
     fun decode(buffer: ByteBuffer) {
         loaded = true
