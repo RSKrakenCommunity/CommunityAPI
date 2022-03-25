@@ -1,6 +1,7 @@
 package com.rshub.definitions.maps;
 
 import com.rshub.definitions.Definition;
+import kotlin.collections.MapsKt;
 import kotlinx.serialization.json.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +31,6 @@ public class MapTilesDefinition implements Definition {
     @NotNull
     @Override
     public JsonObject toJsonObject() {
-        return Definition.super.toJsonObject();
+        return new JsonObject(MapsKt.emptyMap());
     }
 }

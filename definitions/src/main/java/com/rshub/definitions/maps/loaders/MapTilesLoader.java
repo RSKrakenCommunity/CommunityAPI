@@ -1,5 +1,6 @@
-package com.rshub.definitions.maps;
+package com.rshub.definitions.maps.loaders;
 
+import com.rshub.definitions.maps.MapTilesDefinition;
 import com.rshub.utilities.ByteBufferKt;
 
 import java.nio.ByteBuffer;

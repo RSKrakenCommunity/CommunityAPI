@@ -28,6 +28,17 @@ fun ByteBuffer.getWhirlpool(): ByteArray {
     return Whirlpool.getHash(data, 0, data.size)
 }
 
+fun ByteBuffer.getSmartSizeVar() : Int {
+    var value = 0
+    var curr: Int = unsignedSmart
+    while (curr == 32767) {
+        curr = unsignedSmart
+        value += 32767
+    }
+    value += curr
+    return value
+}
+
 fun ByteBuffer.rsaEncrypt(modulus: BigInteger, exponent: BigInteger): ByteBuffer {
     val raw = ByteArray(limit())
     get(raw)
