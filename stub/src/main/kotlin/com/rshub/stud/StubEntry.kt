@@ -13,5 +13,6 @@ class StubEntry : Plugin() {
 
     override fun onPaint() {
         ImGui.label("Authors: Javatar")
+        ImGui.label("Credits: Trent (FreeDev)")
     }
 }
