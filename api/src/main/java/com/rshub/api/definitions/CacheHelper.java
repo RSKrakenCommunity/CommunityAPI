@@ -2,9 +2,12 @@ package com.rshub.api.definitions;
 
 import com.rshub.definitions.InventoryDefinition;
 import com.rshub.definitions.VarbitDefinition;
+import com.rshub.definitions.maps.MapTilesDefinition;
+import com.rshub.definitions.maps.ObjectTilesDefinition;
 import com.rshub.definitions.objects.ObjectDefinition;
 import com.rshub.filesystem.Filesystem;
 import com.rshub.filesystem.sqlite.SqliteFilesystem;
+import kotlin.Pair;
 
 import java.nio.file.Paths;
 import java.util.function.Consumer;
@@ -16,6 +19,7 @@ public class CacheHelper {
     private static final InventoryManager invManager = new InventoryManager(FS);
     private static final VarbitManager varbitManager = new VarbitManager(FS);
     private static final ObjectManager objectManager = new ObjectManager(FS);
+    private static final RegionManager REGION_MANAGER = new RegionManager(FS);
 
     public static InventoryDefinition getInventory(int id) {
         return invManager.get(id);
@@ -27,6 +31,10 @@ public class CacheHelper {
 
     public static ObjectDefinition getObject(int id) {
         return objectManager.get(id);
+    }
+
+    public static Pair<MapTilesDefinition, ObjectTilesDefinition> getMap(int regionId) {
+        return REGION_MANAGER.load(regionId);
     }
 
     public static void decode(Consumer<Filesystem> consumer) {

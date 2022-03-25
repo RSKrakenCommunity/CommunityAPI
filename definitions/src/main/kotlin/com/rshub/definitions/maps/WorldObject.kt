@@ -6,7 +6,8 @@ data class WorldObject(
     var objectY: Int,
     var objectPlane: Int,
     val objectRotation: Int,
-    val objectType: ObjectType
+    val objectType: ObjectType,
+    val localTile: WorldTile
 ) {
 
     val slot: Int get() = objectType.slot

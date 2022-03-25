@@ -17,17 +17,15 @@
 package com.rshub.api.map;
 
 import com.rshub.api.definitions.CacheHelper;
-import com.rshub.definitions.maps.WorldObject;
-import com.rshub.definitions.maps.WorldTile;
-import com.rshub.definitions.maps.ObjectType;
+import com.rshub.api.definitions.RegionManager;
+import com.rshub.definitions.maps.*;
 import com.rshub.definitions.objects.ObjectDefinition;
+import kotlin.Pair;
 
 import java.util.*;
 
 public class Region {
-
-    public static final int OBJECTS = 0, UNDERWATER = 1, NPCS = 2, TILES = 3, WATER_TILES = 4;
-    private static Map<Integer, Region> REGIONS = new HashMap<>();
+    private static final Map<Integer, Region> REGIONS = new HashMap<>();
 
     private final int regionId;
     private ClipMap clipMap;
@@ -35,11 +33,6 @@ public class Region {
 
     public WorldObject[][][][] objects;
     public List<WorldObject> objectList;
-    public int[][][] overlayIds;
-    public int[][][] underlayIds;
-    public byte[][][] overlayPathShapes;
-    public byte[][][] overlayRotations;
-    public byte[][][] tileFlags;
     private boolean loaded = false;
 
     public Region(int regionId, boolean load) {
@@ -53,12 +46,16 @@ public class Region {
     }
 
     public void load() {
-        int regionX = regionId >> 8;
-        int regionY = regionId & 0xff;
+        Pair<MapTilesDefinition, ObjectTilesDefinition> map = CacheHelper.getMap(regionId);
+        ObjectTilesDefinition otd = map.getSecond();
+        otd.getObjects().forEach(this::spawnObject);
         loaded = true;
     }
 
-    public void spawnObject(WorldObject obj, int plane, int localX, int localY) {
+    public void spawnObject(WorldObject obj) {
+        int localX = obj.getLocalTile().getX();
+        int localY = obj.getLocalTile().getY();
+        int plane = obj.getLocalTile().getZ();
         if (objects == null)
             objects = new WorldObject[4][64][64][4];
         if (objectList == null)

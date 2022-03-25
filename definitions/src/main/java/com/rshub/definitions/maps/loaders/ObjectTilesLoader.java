@@ -1,9 +1,6 @@
 package com.rshub.definitions.maps.loaders;
 
-import com.rshub.definitions.maps.MapTilesDefinition;
-import com.rshub.definitions.maps.ObjectTilesDefinition;
-import com.rshub.definitions.maps.ObjectType;
-import com.rshub.definitions.maps.WorldObject;
+import com.rshub.definitions.maps.*;
 import com.rshub.utilities.ByteBufferKt;
 
 import java.nio.ByteBuffer;
@@ -102,7 +99,13 @@ public class ObjectTilesLoader {
                     System.err.println("Invalid object type: " + type + ", Object ID " + objectId);
                     continue;
                 }
-                WorldObject obj = new WorldObject(objectId, localX + regionX * 64, localY + regionY * 64, objectPlane, rotation, ObjectType.forId(type));
+                WorldObject obj = new WorldObject(objectId,
+                        localX + regionX * 64,
+                        localY + regionY * 64,
+                        objectPlane,
+                        rotation,
+                        ObjectType.forId(type),
+                        new WorldTile(localX, localY, plane));
                 def.getObjects().add(obj);
             }
         }
