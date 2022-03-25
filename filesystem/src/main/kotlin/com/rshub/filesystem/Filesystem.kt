@@ -17,8 +17,6 @@ abstract class Filesystem(val path: Path) {
 
     abstract fun readReferenceTable(index: Int): ByteBuffer?
 
-    abstract fun createIndex(id: Int)
-
     fun getReferenceTable(index: Int, ignoreChecked: Boolean = false): ReferenceTable? {
         val cached = cachedReferenceTables[index]
         if (cached != null) return cached

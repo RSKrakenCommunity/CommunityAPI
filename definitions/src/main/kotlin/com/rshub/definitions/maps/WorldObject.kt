@@ -12,5 +12,4 @@ data class WorldObject(
 
     val slot: Int get() = objectType.slot
     val tile: WorldTile get() = WorldTile(objectX, objectY, objectPlane)
-
 }

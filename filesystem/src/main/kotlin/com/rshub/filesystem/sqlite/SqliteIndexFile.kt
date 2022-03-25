@@ -1,10 +1,9 @@
 package com.rshub.filesystem.sqlite
 
 import com.rshub.filesystem.ReferenceTable
+import org.tmatesoft.sqljet.core.table.SqlJetDb
 import java.io.Closeable
 import java.nio.file.Path
-import java.sql.Connection
-import java.sql.DriverManager
 
 /**
  * Read-write accessor to SQLite files
@@ -12,93 +11,64 @@ import java.sql.DriverManager
 class SqliteIndexFile(path: Path) : Closeable, AutoCloseable {
     val table: ReferenceTable? = null
 
-    private val connection: Connection
+    private val connection: SqlJetDb
 
     init {
-        connection = DriverManager.getConnection("jdbc:sqlite:$path")
-        connection.prepareStatement(
-            """
-            CREATE TABLE IF NOT EXISTS `cache`(
-              `KEY` INTEGER PRIMARY KEY,
-              `DATA` BLOB,
-              `VERSION` INTEGER,
-              `CRC` INTEGER
-            );
-        """.trimIndent()
-        ).use { stmt -> stmt.executeUpdate() }
-
-        connection.prepareStatement(
-            """
-            CREATE TABLE IF NOT EXISTS `cache_index`(
-              `KEY` INTEGER PRIMARY KEY,
-              `DATA` BLOB,
-              `VERSION` INTEGER,
-              `CRC` INTEGER
-            );
-        """.trimIndent()
-        ).use { stmt -> stmt.executeUpdate() }
+        connection = SqlJetDb.open(path.toFile(), false)
     }
 
 
     fun hasReferenceTable(): Boolean {
-        connection.prepareStatement("SELECT `DATA` FROM `cache_index` WHERE `KEY` = 1;").executeQuery()
-            .use { return it.next() }
+        return connection.runReadTransaction {
+            val table = it.getTable("CACHE_INDEX")
+            val curr = table.lookup(table.primaryKeyIndexName, 1)
+            return@runReadTransaction curr.next()
+        } as Boolean
+        /*connection.prepareStatement("SELECT `DATA` FROM `cache_index` WHERE `KEY` = 1;").executeQuery()
+            .use { return it.next() }*/
     }
 
     override fun close() {
-        connection.prepareStatement("SELECT MAX(`KEY`) FROM `cache`;").close()
-        connection.prepareStatement("SELECT `DATA` FROM `cache` WHERE `KEY` = ?;").close()
-        connection.prepareStatement("SELECT `DATA` FROM `cache_index` WHERE `KEY` = 1;").close()
-        connection.prepareStatement(
-            """
-                INSERT INTO `cache`(`KEY`, `DATA`, `VERSION`, `CRC`)
-                  VALUES(?, ?, ?, ?)
-                  ON CONFLICT(`KEY`) DO UPDATE SET
-                    `DATA` = ?, `VERSION` = ?, `CRC` = ?
-                  WHERE `KEY` = ?;
-        """.trimIndent()
-        ).close()
-        connection.prepareStatement(
-            """
-                INSERT INTO `cache_index`(`KEY`, `DATA`, `VERSION`, `CRC`)
-                  VALUES(1, ?, ?, ?)
-                  ON CONFLICT(`KEY`) DO UPDATE SET
-                    `DATA` = ?, `VERSION` = ?, `CRC` = ?
-                  WHERE `KEY` = 1;
-        """.trimIndent()
-        ).close()
+        connection.close()
     }
 
     fun getMaxArchive(): Int {
-        connection.prepareStatement("SELECT MAX(`KEY`) FROM `cache`;").executeQuery().use {
-            if (!it.next()) return 0
-            return it.getInt(1)
-        }
+        return connection.runReadTransaction {
+            val table = it.getTable("cache")
+            val curr = table.open()
+            var max = 0L
+            do {
+                val n = curr.getInteger("KEY")
+                if (n > max) {
+                    max = n
+                }
+            } while (curr.next())
+            return@runReadTransaction max.toInt()
+        } as Int
     }
 
     fun exists(id: Int): Boolean {
-        val stmt = connection.prepareStatement("SELECT 1 FROM `cache` WHERE `KEY` = ?;")
-        stmt.clearParameters()
-        stmt.setInt(1, id)
-        stmt.executeQuery().use { return it.next() }
+        return connection.runReadTransaction {
+            val table = it.getTable("CACHE")
+            val curr = table.lookup("KEY", id)
+            return@runReadTransaction curr.next()
+        } as Boolean
     }
 
     fun getRaw(id: Int): ByteArray? {
-        connection.prepareStatement("SELECT `DATA` FROM `cache` WHERE `KEY` = ?;").use { stmt ->
-            stmt.clearParameters()
-            stmt.setInt(1, id)
-            stmt.executeQuery().use {
-                if (!it.next()) return null
-                return it.getBytes("DATA")
-            }
-        }
+        return connection.runReadTransaction {
+            val table = it.getTable("CACHE")
+            val curr = table.lookup(table.primaryKeyIndexName, id)
+            return@runReadTransaction curr.getBlobAsArray("DATA")
+        } as ByteArray?
     }
 
     fun getRawTable(): ByteArray? {
-        connection.prepareStatement("SELECT `DATA` FROM `cache_index` WHERE `KEY` = 1;").executeQuery().use {
-            if (!it.next()) return null
-            return it.getBytes("DATA")
-        }
+        return connection.runReadTransaction {
+            val table = it.getTable("CACHE_INDEX")
+            val curr = table.lookup(table.primaryKeyIndexName, 1)
+            return@runReadTransaction curr.getBlobAsArray("DATA")
+        } as ByteArray?
     }
 
     private inline fun <T : AutoCloseable?, R> T.use(block: (T) -> R): R {

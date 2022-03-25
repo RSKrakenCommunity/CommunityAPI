@@ -17,7 +17,6 @@
 package com.rshub.api.map;
 
 import com.rshub.api.definitions.CacheHelper;
-import com.rshub.api.definitions.RegionManager;
 import com.rshub.definitions.maps.*;
 import com.rshub.definitions.objects.ObjectDefinition;
 import kotlin.Pair;
@@ -37,8 +36,7 @@ public class Region {
 
     public Region(int regionId, boolean load) {
         this.regionId = regionId;
-        if (load)
-            load();
+        if (load) load();
     }
 
     public Region(int regionId) {
@@ -56,31 +54,24 @@ public class Region {
         int localX = obj.getLocalTile().getX();
         int localY = obj.getLocalTile().getY();
         int plane = obj.getLocalTile().getZ();
-        if (objects == null)
-            objects = new WorldObject[4][64][64][4];
-        if (objectList == null)
-            objectList = new ArrayList<>();
+        if (objects == null) objects = new WorldObject[4][64][64][4];
+        if (objectList == null) objectList = new ArrayList<>();
         objectList.add(obj);
         objects[plane][localX][localY][obj.getSlot()] = obj;
         clip(obj, localX, localY);
     }
 
     public void clip(WorldObject object, int x, int y) {
-        if (object.getObjectId() == -1)
-            return;
-        if (clipMap == null)
-            clipMap = new ClipMap(regionId, false);
-        if (clipMapProj == null)
-            clipMapProj = new ClipMap(regionId, true);
+        if (object.getObjectId() == -1) return;
+        if (clipMap == null) clipMap = new ClipMap(regionId, false);
+        if (clipMapProj == null) clipMapProj = new ClipMap(regionId, true);
         int plane = object.getObjectPlane();
         ObjectType type = object.getObjectType();
         int rotation = object.getObjectRotation();
-        if (x < 0 || y < 0 || x >= clipMap.getMasks()[plane].length || y >= clipMap.getMasks()[plane][x].length)
-            return;
+        if (x < 0 || y < 0 || x >= clipMap.getMasks()[plane].length || y >= clipMap.getMasks()[plane][x].length) return;
         ObjectDefinition defs = CacheHelper.getObject(object.getObjectId());
 
-        if (defs.getClipType() == 0)
-            return;
+        if (defs.getClipType() == 0) return;
 
         switch (type) {
             case WALL_STRAIGHT:
@@ -118,8 +109,7 @@ public class Region {
                     clipMapProj.addObject(plane, x, y, sizeX, sizeY, defs.getBlocks(), !defs.getIgnoreAltClip());
                 break;
             case GROUND_DECORATION:
-                if (defs.getClipType() == 1)
-                    clipMap.addBlockWalkAndProj(plane, x, y);
+                if (defs.getClipType() == 1) clipMap.addBlockWalkAndProj(plane, x, y);
                 break;
             default:
                 break;
@@ -136,20 +126,17 @@ public class Region {
             region = new Region(regionId, load);
             REGIONS.put(regionId, region);
         }
-        if (load && !region.loaded)
-            region.load();
+        if (load && !region.loaded) region.load();
         return region;
     }
 
     public ClipMap getClipMap() {
-        if (clipMap == null)
-            clipMap = new ClipMap(regionId, false);
+        if (clipMap == null) clipMap = new ClipMap(regionId, false);
         return clipMap;
     }
 
     public ClipMap getClipMapProj() {
-        if (clipMapProj == null)
-            clipMapProj = new ClipMap(regionId, true);
+        if (clipMapProj == null) clipMapProj = new ClipMap(regionId, true);
         return clipMapProj;
     }
 
@@ -160,18 +147,15 @@ public class Region {
     public static boolean validateObjCoords(WorldObject object) {
         Region region = Region.get(object.getTile().getRegionId());
         List<WorldObject> realObjects = region.getObjectList();
-        if (realObjects == null || realObjects.size() <= 0)
-            return false;
+        if (realObjects == null || realObjects.size() <= 0) return false;
         Map<Integer, WorldObject> distanceMap = new TreeMap<>();
         for (WorldObject real : realObjects) {
             if (object.getObjectPlane() != real.getObjectPlane() || real.getObjectId() != object.getObjectId())
                 continue;
             int distance = object.getTile().distance(real.getTile());
-            if (distance != -1)
-                distanceMap.put(distance, real);
+            if (distance != -1) distanceMap.put(distance, real);
         }
-        if (distanceMap.isEmpty())
-            return false;
+        if (distanceMap.isEmpty()) return false;
         List<Integer> sortedKeys = new ArrayList<>(distanceMap.keySet());
         Collections.sort(sortedKeys);
         WorldObject closest = distanceMap.get(sortedKeys.get(0));
