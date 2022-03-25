@@ -1,4 +1,4 @@
-package com.rshub.definitions.managers
+package com.rshub.api.definitions
 
 import com.rshub.definitions.Definition
 

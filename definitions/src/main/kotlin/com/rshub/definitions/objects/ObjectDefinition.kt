@@ -3,6 +3,7 @@ package com.rshub.definitions.objects
 import com.rshub.utilities.isJustNulls
 import com.rshub.definitions.Definition
 import com.rshub.definitions.Params
+import com.rshub.definitions.maps.ObjectType
 import kotlinx.serialization.json.*
 
 class ObjectDefinition(override val id: Int) : Definition {

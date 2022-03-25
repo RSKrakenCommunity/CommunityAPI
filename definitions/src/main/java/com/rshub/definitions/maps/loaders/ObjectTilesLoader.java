@@ -1,9 +1,9 @@
 package com.rshub.definitions.maps.loaders;
 
-import com.rshub.definitions.maps.MapObject;
 import com.rshub.definitions.maps.MapTilesDefinition;
 import com.rshub.definitions.maps.ObjectTilesDefinition;
 import com.rshub.definitions.maps.ObjectType;
+import com.rshub.definitions.maps.WorldObject;
 import com.rshub.utilities.ByteBufferKt;
 
 import java.nio.ByteBuffer;
@@ -18,6 +18,7 @@ public class ObjectTilesLoader {
 
     public ObjectTilesDefinition load(int regionId, ByteBuffer stream) {
         ObjectTilesDefinition def = new ObjectTilesDefinition(regionId);
+        if(stream.capacity() == 0) return def;
         int regionX = regionId >> 8;
         int regionY = regionId & 0xff;
 
@@ -101,7 +102,7 @@ public class ObjectTilesLoader {
                     System.err.println("Invalid object type: " + type + ", Object ID " + objectId);
                     continue;
                 }
-                MapObject obj = new MapObject(objectId, localX + regionX * 64, localY + regionY * 64, objectPlane, rotation, ObjectType.forId(type));
+                WorldObject obj = new WorldObject(objectId, localX + regionX * 64, localY + regionY * 64, objectPlane, rotation, ObjectType.forId(type));
                 def.getObjects().add(obj);
             }
         }
