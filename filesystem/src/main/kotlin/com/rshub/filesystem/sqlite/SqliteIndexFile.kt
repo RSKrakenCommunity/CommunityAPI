@@ -22,7 +22,7 @@ class SqliteIndexFile(path: Path) : Closeable, AutoCloseable {
         return connection.runReadTransaction {
             val table = it.getTable("CACHE_INDEX")
             val curr = table.lookup(table.primaryKeyIndexName, 1)
-            return@runReadTransaction curr.next()
+            return@runReadTransaction curr != null
         } as Boolean
         /*connection.prepareStatement("SELECT `DATA` FROM `cache_index` WHERE `KEY` = 1;").executeQuery()
             .use { return it.next() }*/
