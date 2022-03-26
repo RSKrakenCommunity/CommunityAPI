@@ -2,7 +2,7 @@ package com.rshub.api.widgets;
 
 import com.rshub.api.banking.Bank;
 
-public class BankHelper {
+public final class BankHelper {
     private BankHelper() {
     }
 

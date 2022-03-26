@@ -4,7 +4,7 @@ import com.rshub.api.containers.Container;
 import com.rshub.api.widgets.Widget;
 import kotlin.Unit;
 
-public class BindingHelper {
+public final class BindingHelper {
     private BindingHelper() {
     }
 

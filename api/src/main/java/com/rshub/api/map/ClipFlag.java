@@ -61,9 +61,9 @@ public enum ClipFlag {
 	PF_W(0x20000000), // 536870912
 	PF_FULL(0x40000000); // 1073741824
 
-	public int flag;
+	public final int flag;
 
-	private ClipFlag(int flag) {
+	ClipFlag(int flag) {
 		this.flag = flag;
 	}
 
@@ -88,9 +88,5 @@ public enum ClipFlag {
 		for (ClipFlag f : flags)
 			flag |= f.flag;
 		return flag;
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(getFlags(2097152));
 	}
 }

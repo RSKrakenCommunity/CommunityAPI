@@ -7,7 +7,7 @@ import com.rshub.api.widgets.Widget;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GameStateHelper {
+public final class GameStateHelper {
     private GameStateHelper() {
     }
 

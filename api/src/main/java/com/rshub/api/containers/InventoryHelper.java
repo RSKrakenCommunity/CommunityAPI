@@ -2,9 +2,9 @@ package com.rshub.api.containers;
 
 import com.rshub.api.services.GameStateHelper;
 
-public class InventoryFactory {
+public final class InventoryHelper {
 
-    private InventoryFactory() {
+    private InventoryHelper() {
     }
 
     public static Inventory getInventory(int invId) {

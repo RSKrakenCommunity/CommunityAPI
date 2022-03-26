@@ -1,6 +1,6 @@
 package com.rshub.api.widgets;
 
-public class WidgetHelper {
+public final class WidgetHelper {
     private WidgetHelper() {}
 
     public static int hash(int parentId, int childId) {

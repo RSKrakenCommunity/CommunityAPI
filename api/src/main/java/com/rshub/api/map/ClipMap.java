@@ -21,15 +21,15 @@ import com.rshub.definitions.maps.ObjectType;
 
 public class ClipMap {
 
-	private int regionX;
-	private int regionY;
-	private int flags[][][];
-	private boolean projectile;
+	private final int regionX;
+	private final int regionY;
+	private final int[][][] flags;
+	private final boolean projectile;
 
 	public ClipMap(int regionId, boolean projectile) {
-		regionX = (regionId >> 8) * 64;
-		regionY = (regionId & 0xff) * 64;
-		flags = new int[4][64][64];
+		this.regionX = (regionId >> 8) * 64;
+		this.regionY = (regionId & 0xff) * 64;
+		this.flags = new int[4][64][64];
 		this.projectile = projectile;
 	}
 
@@ -48,20 +48,12 @@ public class ClipMap {
 	public void addBlockedTile(int plane, int x, int y) {
 		addFlag(plane, x, y, ClipFlag.PFBW_FLOOR.flag);
 	}
-	
-	public void removeBlockedTile(int plane, int x, int y) {
-		removeFlag(plane, x, y, ClipFlag.PFBW_FLOOR.flag);
-	}
 
-	public void addBlockWalkAndProj(int plane, int x, int y) {
+    public void addBlockWalkAndProj(int plane, int x, int y) {
 		addFlag(plane, x, y, ClipFlag.PFBW_GROUND_DECO.flag);
 	}
 
-	public void removeBlockWalkAndProj(int plane, int x, int y) {
-		removeFlag(plane, x, y, ClipFlag.PFBW_GROUND_DECO.flag);
-	}
-
-	public void addObject(int plane, int x, int y, int sizeX, int sizeY, boolean solid, boolean notAlternative) {
+    public void addObject(int plane, int x, int y, int sizeX, int sizeY, boolean solid, boolean notAlternative) {
 		int flag = ClipFlag.BW_FULL.flag;
 		if (solid)
 			flag |= ClipFlag.BP_FULL.flag;
@@ -74,20 +66,7 @@ public class ClipMap {
 		}
 	}
 
-	public void removeObject(int plane, int x, int y, int sizeX, int sizeY, boolean solid, boolean notAlternative) {
-		int flag = ClipFlag.BW_FULL.flag;
-		if (solid)
-			flag |= ClipFlag.BP_FULL.flag;
-		if (notAlternative)
-			flag |= ClipFlag.PF_FULL.flag;
-		for (int tileX = x; tileX < sizeX + x; tileX++) {
-			for (int tileY = y; tileY < y + sizeY; tileY++) {
-				this.removeFlag(plane, tileX, tileY, flag);
-			}
-		}
-	}
-
-	public void addWall(int plane, int x, int y, ObjectType type, int rotation, boolean solid, boolean notAlternative) {
+    public void addWall(int plane, int x, int y, ObjectType type, int rotation, boolean solid, boolean notAlternative) {
 		switch(type) {
 		case WALL_STRAIGHT:
             if (rotation == 0) {
