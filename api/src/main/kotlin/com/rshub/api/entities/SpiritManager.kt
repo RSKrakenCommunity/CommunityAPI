@@ -1,6 +1,9 @@
 package com.rshub.api.entities
 
 import com.rshub.api.definitions.CacheHelper
+import com.rshub.api.entities.spirits.WorldSpirit
+import com.rshub.api.entities.spirits.npc.WorldNpc
+import com.rshub.api.entities.spirits.player.WorldPlayer
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.strategy.EntityStrategy
 import com.rshub.definitions.maps.WorldTile
@@ -9,20 +12,28 @@ import java.util.*
 
 class SpiritManager {
 
-    fun all(filter: Spirit.() -> Boolean) = listOfNotNull(*Npcs.all(), *Players.all())
+    fun all(filter: WorldSpirit.() -> Boolean) =
+        listOfNotNull(
+            *Npcs.all().map { WorldNpc(it) }.toTypedArray(),
+            *Players.all().map { WorldPlayer(it) }.toTypedArray()
+        ).filter(filter)
+
+    fun players(filter: WorldPlayer.() -> Boolean) = Players.all()
+        .filterNotNull()
+        .map { WorldPlayer(it) }
+        .filter(filter)
+    fun npcs(filter: WorldNpc.() -> Boolean) = Npcs.all()
+        .filterNotNull()
+        .map { WorldNpc(it) }
         .filter(filter)
 
-    fun players(filter: Player.() -> Boolean) = Players.all().filterNotNull().filter(filter)
-    fun npcs(filter: Npc.() -> Boolean) = Npcs.all().filterNotNull().filter(filter)
-
-    fun closest(filter: Spirit.() -> Boolean): Spirit? {
-        val distanceMap: MutableMap<Int, Spirit> = TreeMap()
-        val spirits: List<Spirit> = all(filter)
+    fun closest(filter: WorldSpirit.() -> Boolean): WorldSpirit? {
+        val distanceMap: MutableMap<Int, WorldSpirit> = TreeMap()
+        val spirits: List<WorldSpirit> = all(filter)
         for (wo in spirits) {
             val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)
-            val srcSize = if (wo is Npc) {
-                val def = CacheHelper.getNpc(wo.id)
-                def.size
+            val srcSize = if (wo is WorldNpc) {
+                wo.def.size
             } else 1
             val distance = LocalPathing.getLocalStepsTo(tile, srcSize, EntityStrategy(wo, srcSize, 0), false)
             if (distance != -1) distanceMap[distance] = wo
@@ -33,8 +44,8 @@ class SpiritManager {
         return distanceMap[sortedKeys[0]]
     }
 
-    fun closestNpc(filter: Npc.() -> Boolean): Npc? {
-        val distanceMap: MutableMap<Int, Npc> = TreeMap()
+    fun closestNpc(filter: WorldNpc.() -> Boolean): WorldNpc? {
+        val distanceMap: MutableMap<Int, WorldNpc> = TreeMap()
         val spirits = npcs(filter)
         for (wo in spirits) {
             val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)
@@ -48,8 +59,8 @@ class SpiritManager {
         return distanceMap[sortedKeys[0]]
     }
 
-    fun closestPlayer(filter: Player.() -> Boolean): Player? {
-        val distanceMap: MutableMap<Int, Player> = TreeMap()
+    fun closestPlayer(filter: WorldPlayer.() -> Boolean): WorldPlayer? {
+        val distanceMap: MutableMap<Int, WorldPlayer> = TreeMap()
         val spirits = players(filter)
         for (wo in spirits) {
             val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)

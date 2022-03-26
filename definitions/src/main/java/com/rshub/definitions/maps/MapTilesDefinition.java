@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MapTilesDefinition implements Definition {
 
-    private int id;
+    private final int id;
     public int[][][] overlayIds;
     public int[][][] underlayIds;
     public byte[][][] overlayPathShapes;

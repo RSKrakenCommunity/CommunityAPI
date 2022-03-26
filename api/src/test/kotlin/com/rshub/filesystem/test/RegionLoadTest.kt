@@ -12,6 +12,9 @@ class RegionLoadTest {
         println(edge.first.tileFlags.size)
         println(edge.second.objects.size)
 
+        val count = edge.second.objects.count { it.objectId == 42217 }
+        println("Object Count $count")
+
     }
 
 }

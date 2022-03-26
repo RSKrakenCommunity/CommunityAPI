@@ -1,6 +1,6 @@
 package com.rshub.definitions.maps
 
-data class WorldObject(
+data class MapObject(
     val objectId: Int,
     var objectX: Int,
     var objectY: Int,

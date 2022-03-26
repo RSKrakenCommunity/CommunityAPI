@@ -14,7 +14,10 @@ class LocalPathingTest {
         3214 3376
          */
         val start = WorldTile(3094, 3491, 0)
-        val target = WorldTile(3079, 3495, 0)
+        val target = WorldTile(3087, 3493, 0)
+
+        println("${start.regionId} - ${target.regionId}")
+
         val strat = FixedTileStrategy(target)
         val route = LocalPathing.findLocalRoute(start, 1, strat, false)
 

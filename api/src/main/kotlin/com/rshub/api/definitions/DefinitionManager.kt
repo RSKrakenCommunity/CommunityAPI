@@ -2,7 +2,7 @@ package com.rshub.api.definitions
 
 import com.rshub.definitions.Definition
 import com.rshub.definitions.loaders.Loader
-import com.rshub.definitions.maps.WorldObject
+import com.rshub.definitions.maps.MapObject
 import com.rshub.definitions.objects.ObjectDefinition
 import com.rshub.filesystem.Filesystem
 import kotlinx.serialization.encodeToString
@@ -117,7 +117,7 @@ class DefinitionManager<T : Definition>(
 
     companion object {
 
-        val WorldObject.def: ObjectDefinition get() = CacheHelper.getObject(objectId)
+        val MapObject.def: ObjectDefinition get() = CacheHelper.getObject(objectId)
 
     }
 }

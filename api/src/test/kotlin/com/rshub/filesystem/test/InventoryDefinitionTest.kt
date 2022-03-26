@@ -13,7 +13,7 @@ class InventoryDefinitionTest {
         val fs = SqliteFilesystem(Paths.get("C:\\ProgramData\\Jagex\\RuneScape"))
         val configs = fs.getReferenceTable(2) ?: return
         val invDefs = configs.loadArchive(5) ?: return
-        val invId = 95
+        val invId = 93
         val data = invDefs.files[invId]?.data ?: return
 
         val loader = InventoryLoader()

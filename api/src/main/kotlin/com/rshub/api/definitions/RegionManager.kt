@@ -19,7 +19,6 @@ class RegionManager(val fs: Filesystem) {
         if (maps != null) {
             val mapArchive = maps.loadArchive(CacheHelper.getMapArchiveId(regionX, regionY))
             if(mapArchive != null) {
-                println(mapArchive.files.size)
                 val objs = mapArchive.files[0]
                 val tiles = mapArchive.files[2]
                 val tilesDef = if(tiles != null) {
@@ -27,7 +26,7 @@ class RegionManager(val fs: Filesystem) {
                 } else null
                 val objsDef = if(objs != null) {
                     val loader = ObjectTilesLoader(tilesDef)
-                    loader.load(regionId, ByteBuffer.wrap(objs?.data ?: byteArrayOf()))
+                    loader.load(regionId, ByteBuffer.wrap(objs.data))
                 } else null
                 return tilesDef to objsDef
             }

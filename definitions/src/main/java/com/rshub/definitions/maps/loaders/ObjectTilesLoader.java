@@ -89,10 +89,6 @@ public class ObjectTilesLoader {
 //						if (print)
 //							System.err.println("3 float flag 2: " + f1 + ", " + f2 + ", " + f3);
                 }
-                if (localX < 0 || localX >= 64 || localY < 0 || localY >= 64) {
-                    System.err.println("Error tile out of range: " + localX + ", " + localY);
-                    continue;
-                }
                 int objectPlane = plane;
                 if (tileDef != null && tileDef.tileFlags != null && (tileDef.tileFlags[1][localX][localY] & 0x2) != 0)
                     objectPlane--;
@@ -102,7 +98,10 @@ public class ObjectTilesLoader {
                     System.err.println("Invalid object type: " + type + ", Object ID " + objectId);
                     continue;
                 }
-                WorldObject obj = new WorldObject(objectId,
+                if(objectId == 42378) {
+                    System.out.println("Decoded bank booth.");
+                }
+                MapObject obj = new MapObject(objectId,
                         localX + regionX * 64,
                         localY + regionY * 64,
                         objectPlane,

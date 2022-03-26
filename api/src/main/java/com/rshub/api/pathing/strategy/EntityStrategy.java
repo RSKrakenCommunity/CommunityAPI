@@ -17,11 +17,12 @@
 package com.rshub.api.pathing.strategy;
 
 import com.rshub.api.definitions.CacheHelper;
+import com.rshub.api.entities.items.WorldItem;
+import com.rshub.api.entities.spirits.WorldSpirit;
+import com.rshub.api.entities.spirits.npc.WorldNpc;
+import com.rshub.api.entities.spirits.player.WorldPlayer;
 import com.rshub.api.pathing.RouteStrategy;
 import kraken.plugin.api.GroundItem;
-import kraken.plugin.api.Npc;
-import kraken.plugin.api.Player;
-import kraken.plugin.api.Spirit;
 
 public class EntityStrategy extends RouteStrategy {
 
@@ -30,22 +31,22 @@ public class EntityStrategy extends RouteStrategy {
     private final int size;
     private final int accessBlockFlag;
 
-    public EntityStrategy(Player entity) {
+    public EntityStrategy(WorldPlayer entity) {
         this(entity, 1, 0);
     }
 
-	public EntityStrategy(Npc npc) {
-		this(npc, CacheHelper.getNpc(npc.getId()).getSize(), 0);
-	}
+    public EntityStrategy(WorldNpc npc) {
+        this(npc, CacheHelper.getNpc(npc.getId()).getSize(), 0);
+    }
 
-	public EntityStrategy(GroundItem item) {
-		this.x = item.getGlobalPosition().getX();
-		this.y = item.getGlobalPosition().getY();
-		this.size = 1;
-		this.accessBlockFlag = 0;
-	}
+    public EntityStrategy(WorldItem item) {
+        this.x = item.getGlobalPosition().getX();
+        this.y = item.getGlobalPosition().getY();
+        this.size = 1;
+        this.accessBlockFlag = 0;
+    }
 
-    public EntityStrategy(Spirit entity, int size, int accessBlockFlag) {
+    public EntityStrategy(WorldSpirit entity, int size, int accessBlockFlag) {
         this(entity.getGlobalPosition().getX(), entity.getGlobalPosition().getY(), size, accessBlockFlag);
     }
 

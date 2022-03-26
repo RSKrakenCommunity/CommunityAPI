@@ -1,20 +1,21 @@
 package com.rshub.api.entities
 
+import com.rshub.api.entities.items.WorldItem
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.strategy.EntityStrategy
 import com.rshub.definitions.maps.WorldTile
-import kraken.plugin.api.GroundItem
 import kraken.plugin.api.GroundItems
 import java.util.*
 
 class GroundItemManager {
 
-    fun all(filter: GroundItem.() -> Boolean) = GroundItems.all()
+    fun all(filter: WorldItem.() -> Boolean) = GroundItems.all()
         .filterNotNull()
+        .map { WorldItem(it) }
         .filter(filter)
 
-    fun closest(filter: GroundItem.() -> Boolean) : GroundItem? {
-        val distanceMap: MutableMap<Int, GroundItem> = TreeMap()
+    fun closest(filter: WorldItem.() -> Boolean): WorldItem? {
+        val distanceMap: MutableMap<Int, WorldItem> = TreeMap()
         val groundItems = all(filter)
         for (wo in groundItems) {
             val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)

@@ -16,10 +16,10 @@
 //
 package com.rshub.api.pathing.strategy;
 
-import com.rshub.api.definitions.DefinitionManager;
+import com.rshub.api.entities.objects.WorldObject;
 import com.rshub.api.pathing.RouteStrategy;
 import com.rshub.definitions.maps.ObjectType;
-import com.rshub.definitions.maps.WorldObject;
+import com.rshub.definitions.maps.WorldTile;
 import com.rshub.definitions.objects.ObjectDefinition;
 
 public class ObjectStrategy extends RouteStrategy {
@@ -34,17 +34,16 @@ public class ObjectStrategy extends RouteStrategy {
     private int accessBlockFlag;
 
     public ObjectStrategy(WorldObject object) {
-        this.x = object.getObjectX();
-        this.y = object.getObjectY();
-        this.routeType = getType(object);
-        this.type = object.getObjectType();
-        this.rotation = object.getObjectRotation();
-        ObjectDefinition def = DefinitionManager.Companion.getDef(object);
-        this.sizeX = rotation == 0 || rotation == 2 ? def.getSizeX() : def.getSizeY();
-        this.sizeY = rotation == 0 || rotation == 2 ? def.getSizeY() : def.getSizeX();
+        WorldTile tile = object.getTile();
+        this.x = tile.getX();
+        this.y = tile.getY();
+        this.type = ObjectType.SCENERY_INTERACT;
+        this.routeType = getType(type);
+        this.rotation = 0;
+        ObjectDefinition def = object.getDef();
+        this.sizeX = def.getSizeX();
+        this.sizeY = def.getSizeY();
         this.accessBlockFlag = def.getAccessBlockFlag();
-        if (rotation != 0)
-            accessBlockFlag = ((accessBlockFlag << rotation) & 0xF) + (accessBlockFlag >> (4 - rotation));
     }
 
     @Override
@@ -82,8 +81,8 @@ public class ObjectStrategy extends RouteStrategy {
         return sizeY;
     }
 
-    private int getType(WorldObject object) {
-        switch (object.getObjectType()) {
+    private int getType(ObjectType type) {
+        switch (type) {
             case WALL_STRAIGHT:
             case WALL_DIAGONAL_CORNER:
             case WALL_WHOLE_CORNER:

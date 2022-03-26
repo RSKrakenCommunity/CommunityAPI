@@ -17,4 +17,8 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
         tile.add(x, y, 0)
         return tile
     }
+
+    override fun toString(): String {
+        return "Tile($x, $y, $z) - Region $regionId"
+    }
 }

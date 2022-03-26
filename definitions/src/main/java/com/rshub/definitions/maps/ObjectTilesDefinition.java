@@ -11,14 +11,14 @@ import java.util.List;
 public class ObjectTilesDefinition implements Definition {
 
     private final int regionId;
-    private final List<WorldObject> objects;
+    private final List<MapObject> objects;
 
     public ObjectTilesDefinition(int regionId) {
         this.regionId = regionId;
         this.objects = new ArrayList<>();
     }
 
-    public List<WorldObject> getObjects() {
+    public List<MapObject> getObjects() {
         return objects;
     }
 

@@ -30,13 +30,15 @@ public class Region {
     private ClipMap clipMap;
     private ClipMap clipMapProj;
 
-    public WorldObject[][][][] objects;
-    public List<WorldObject> objectList;
+    public MapObject[][][][] objects;
+    public List<MapObject> objectList;
     private boolean loaded = false;
 
     public Region(int regionId, boolean load) {
         this.regionId = regionId;
-        if (load) load();
+        if (load) {
+            load();
+        }
     }
 
     public Region(int regionId) {
@@ -44,14 +46,19 @@ public class Region {
     }
 
     public void load() {
+        System.out.println("Loading region " + regionId);
         Pair<MapTilesDefinition, ObjectTilesDefinition> map = CacheHelper.getMap(regionId);
         MapTilesDefinition mtd = map.getFirst();
         ObjectTilesDefinition otd = map.getSecond();
         if(mtd != null) {
             clipTiles(mtd);
+        } else {
+            System.out.println("Tiles are null!");
         }
         if (otd != null) {
             otd.getObjects().forEach(this::spawnObject);
+        } else {
+            System.out.println("No object spawns!");
         }
         if(mtd != null || otd != null) {
             loaded = true;
@@ -75,18 +82,18 @@ public class Region {
         }
     }
 
-    public void spawnObject(WorldObject obj) {
+    public void spawnObject(MapObject obj) {
         int localX = obj.getLocalTile().getX();
         int localY = obj.getLocalTile().getY();
         int plane = obj.getLocalTile().getZ();
-        if (objects == null) objects = new WorldObject[4][64][64][4];
+        if (objects == null) objects = new MapObject[4][64][64][4];
         if (objectList == null) objectList = new ArrayList<>();
         objectList.add(obj);
         objects[plane][localX][localY][obj.getSlot()] = obj;
         clip(obj, localX, localY);
     }
 
-    public void clip(WorldObject object, int x, int y) {
+    public void clip(MapObject object, int x, int y) {
         if (object.getObjectId() == -1) return;
         if (clipMap == null) clipMap = new ClipMap(regionId, false);
         if (clipMapProj == null) clipMapProj = new ClipMap(regionId, true);
@@ -95,6 +102,10 @@ public class Region {
         int rotation = object.getObjectRotation();
         if (x < 0 || y < 0 || x >= clipMap.getMasks()[plane].length || y >= clipMap.getMasks()[plane][x].length) return;
         ObjectDefinition defs = CacheHelper.getObject(object.getObjectId());
+
+        if(object.getObjectId() == 42378) {
+            System.out.println("Add clip for bank booth.");
+        }
 
         if (defs.getClipType() == 0) return;
 
@@ -146,7 +157,6 @@ public class Region {
     }
 
     public static Region get(int regionId, boolean load) {
-        System.out.println(regionId);
         Region region = REGIONS.get(regionId);
         if (region == null) {
             region = new Region(regionId, load);
@@ -166,16 +176,16 @@ public class Region {
         return clipMapProj;
     }
 
-    public List<WorldObject> getObjectList() {
+    public List<MapObject> getObjectList() {
         return objectList;
     }
 
-    public static boolean validateObjCoords(WorldObject object) {
+    public static boolean validateObjCoords(MapObject object) {
         Region region = Region.get(object.getTile().getRegionId());
-        List<WorldObject> realObjects = region.getObjectList();
+        List<MapObject> realObjects = region.getObjectList();
         if (realObjects == null || realObjects.size() <= 0) return false;
-        Map<Integer, WorldObject> distanceMap = new TreeMap<>();
-        for (WorldObject real : realObjects) {
+        Map<Integer, MapObject> distanceMap = new TreeMap<>();
+        for (MapObject real : realObjects) {
             if (object.getObjectPlane() != real.getObjectPlane() || real.getObjectId() != object.getObjectId())
                 continue;
             int distance = object.getTile().distance(real.getTile());
@@ -184,7 +194,7 @@ public class Region {
         if (distanceMap.isEmpty()) return false;
         List<Integer> sortedKeys = new ArrayList<>(distanceMap.keySet());
         Collections.sort(sortedKeys);
-        WorldObject closest = distanceMap.get(sortedKeys.get(0));
+        MapObject closest = distanceMap.get(sortedKeys.get(0));
         ObjectDefinition def = CacheHelper.getObject(object.getObjectId());
         if (object.getTile().distance(closest.getTile()) <= Math.max(def.getSizeX(), def.getSizeY())) {
             object.setObjectX(closest.getObjectX());
@@ -193,9 +203,5 @@ public class Region {
             return true;
         }
         return false;
-    }
-
-    public static int getClip(WorldTile tile) {
-        return Region.get(tile.getRegionId()).getClipMap().getMasks()[tile.getZ()][tile.getXInRegion()][tile.getYInRegion()];
     }
 }

@@ -127,9 +127,9 @@ class ObjectLoader : Loader<ObjectDefinition> {
                 this.supportsItems =
                     stream.unsignedByte
             } else if (77 == opcode || 92 == opcode) {
-                this.varpBit = stream.short.toInt()
+                this.varpBit = stream.unsignedShort
                 if (65535 == this.varpBit) this.varpBit = -1
-                this.varp = stream.short.toInt()
+                this.varp = stream.unsignedShort
                 if (this.varp == 65535) this.varp = -1
                 var objectId = -1
                 if (opcode == 92) objectId = stream.getSmartInt()
