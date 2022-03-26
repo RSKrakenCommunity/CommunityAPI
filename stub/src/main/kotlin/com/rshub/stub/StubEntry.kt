@@ -1,4 +1,4 @@
-package com.rshub.stud
+package com.rshub.stub
 
 import kraken.plugin.api.ImGui
 import kraken.plugin.api.Plugin
@@ -6,7 +6,7 @@ import kraken.plugin.api.PluginContext
 
 class StubEntry : Plugin() {
     override fun onLoaded(pluginContext: PluginContext): Boolean {
-        pluginContext.name = "Local Plugins"
+        pluginContext.name = "Developer Plugin"
         pluginContext.isEnabled = true
         return super.onLoaded(pluginContext)
     }

@@ -1,5 +1,5 @@
 dependencies {
-    implementation("com.github.RSKraken:KrakenAPI:master-SNAPSHOT")
-    implementation(project(":filesystem"))
-    implementation(project(":definitions"))
+    api("com.github.RSKraken:KrakenAPI:master-SNAPSHOT")
+    api(project(":filesystem"))
+    api(project(":definitions"))
 }
