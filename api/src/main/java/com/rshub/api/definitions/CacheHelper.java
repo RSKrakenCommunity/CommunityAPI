@@ -57,4 +57,12 @@ public final class CacheHelper {
     public static Pair<MapTilesDefinition, ObjectTilesDefinition> getMap(int regionId) {
         return REGION_MANAGER.load(regionId);
     }
+
+    public static int getMapArchiveId(int rx, int ry) {
+        return rx | ry << 7;
+    }
+
+    public static Filesystem getFilesystem() {
+        return FS;
+    }
 }

@@ -15,7 +15,10 @@ public class ObjectTilesLoader {
 
     public ObjectTilesDefinition load(int regionId, ByteBuffer stream) {
         ObjectTilesDefinition def = new ObjectTilesDefinition(regionId);
-        if(stream.capacity() == 0) return def;
+        if(stream.capacity() == 0) {
+            System.out.println("No objects data for region " + regionId);
+            return def;
+        }
         int regionX = regionId >> 8;
         int regionY = regionId & 0xff;
 
@@ -91,7 +94,7 @@ public class ObjectTilesLoader {
                     continue;
                 }
                 int objectPlane = plane;
-                if (tileDef.tileFlags != null && (tileDef.tileFlags[1][localX][localY] & 0x2) != 0)
+                if (tileDef != null && tileDef.tileFlags != null && (tileDef.tileFlags[1][localX][localY] & 0x2) != 0)
                     objectPlane--;
                 if (objectPlane < 0 || objectPlane >= 4 || plane < 0 || plane >= 4)
                     continue;

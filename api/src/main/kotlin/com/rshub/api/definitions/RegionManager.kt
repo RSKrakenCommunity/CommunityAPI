@@ -1,5 +1,6 @@
 package com.rshub.api.definitions
 
+import com.rshub.api.map.RenderFlag
 import com.rshub.definitions.maps.MapTilesDefinition
 import com.rshub.definitions.maps.ObjectTilesDefinition
 import com.rshub.definitions.maps.loaders.MapTilesLoader
@@ -11,22 +12,27 @@ class RegionManager(val fs: Filesystem) {
 
     private val tilesLoader = MapTilesLoader()
 
-    fun load(regionId: Int) : Pair<MapTilesDefinition, ObjectTilesDefinition>? {
+    fun load(regionId: Int) : Pair<MapTilesDefinition?, ObjectTilesDefinition?> {
         val regionX = regionId shr 8
         val regionY = regionId and 0xff
         val maps = fs.getReferenceTable(5)
         if (maps != null) {
-            val mapArchive = maps.loadArchive(regionX or regionY shl 7)
+            val mapArchive = maps.loadArchive(CacheHelper.getMapArchiveId(regionX, regionY))
             if(mapArchive != null) {
+                println(mapArchive.files.size)
                 val objs = mapArchive.files[0]
-                val tiles = mapArchive.files[3]
-                val mapTiles = tilesLoader.load(regionId, ByteBuffer.wrap(tiles?.data ?: byteArrayOf()))
-                val loader = ObjectTilesLoader(mapTiles)
-                val objTiles = loader.load(regionId, ByteBuffer.wrap(objs?.data ?: byteArrayOf()))
-                return mapTiles to objTiles
+                val tiles = mapArchive.files[2]
+                val tilesDef = if(tiles != null) {
+                    tilesLoader.load(regionId, ByteBuffer.wrap(tiles.data))
+                } else null
+                val objsDef = if(objs != null) {
+                    val loader = ObjectTilesLoader(tilesDef)
+                    loader.load(regionId, ByteBuffer.wrap(objs?.data ?: byteArrayOf()))
+                } else null
+                return tilesDef to objsDef
             }
         }
-        return null
+        return null to null
     }
 
 }

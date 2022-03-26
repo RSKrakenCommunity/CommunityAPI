@@ -9,6 +9,7 @@ public class MapTilesLoader {
 
     public MapTilesDefinition load(int regionId, ByteBuffer buffer) {
         MapTilesDefinition def = new MapTilesDefinition(regionId);
+        System.out.println("Cap " + buffer.capacity());
         if(buffer.capacity() == 0) return def;
         for (int plane = 0; plane < 4; plane++) {
             for (int x = 0; x < 64; x++) {

@@ -45,9 +45,34 @@ public class Region {
 
     public void load() {
         Pair<MapTilesDefinition, ObjectTilesDefinition> map = CacheHelper.getMap(regionId);
+        MapTilesDefinition mtd = map.getFirst();
         ObjectTilesDefinition otd = map.getSecond();
-        otd.getObjects().forEach(this::spawnObject);
-        loaded = true;
+        if(mtd != null) {
+            clipTiles(mtd);
+        }
+        if (otd != null) {
+            otd.getObjects().forEach(this::spawnObject);
+        }
+        if(mtd != null || otd != null) {
+            loaded = true;
+        }
+    }
+
+    private void clipTiles(MapTilesDefinition mtd) {
+        for (int plane = 0; plane < 4; plane++) {
+            for (int x = 0; x < 64; x++) {
+                for (int y = 0; y < 64; y++) {
+                    if (RenderFlag.flagged(mtd.tileFlags[plane][x][y], RenderFlag.CLIPPED)) {
+                        int finalPlane = plane;
+                        if (RenderFlag.flagged(mtd.tileFlags[1][x][y], RenderFlag.LOWER_OBJECTS_TO_OVERRIDE_CLIPPING))
+                            finalPlane--;
+                        if (finalPlane >= 0) {
+                            getClipMap().addBlockedTile(finalPlane, x, y);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void spawnObject(WorldObject obj) {
@@ -121,6 +146,7 @@ public class Region {
     }
 
     public static Region get(int regionId, boolean load) {
+        System.out.println(regionId);
         Region region = REGIONS.get(regionId);
         if (region == null) {
             region = new Region(regionId, load);

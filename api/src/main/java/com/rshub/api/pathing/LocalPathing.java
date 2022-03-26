@@ -71,8 +71,10 @@ public class LocalPathing {
                 break;
         }
 
-        if (!found && !findAlternative)
+        if (!found && !findAlternative) {
+            System.out.println("Could not find route.");
             return null;
+        }
 
         int graphBaseX = start.getX() - (GRAPH_SIZE / 2);
         int graphBaseY = start.getY() - (GRAPH_SIZE / 2);
