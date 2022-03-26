@@ -29,7 +29,7 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
         runBlocking { paint() }
     }
 
-    override fun onPaintOverlay() {
+    final override fun onPaintOverlay() {
         runBlocking { paintOverlay() }
     }
 }
