@@ -4,8 +4,8 @@ import com.rshub.definitions.VarbitDefinition
 import com.rshub.filesystem.Filesystem
 import java.nio.ByteBuffer
 
-class VarbitLoader {
-    fun load(id: Int, buffer: ByteBuffer): VarbitDefinition {
+class VarbitLoader : Loader<VarbitDefinition> {
+    override fun load(id: Int, buffer: ByteBuffer): VarbitDefinition {
         val def = VarbitDefinition(id)
         while (buffer.hasRemaining()) {
             val opcode = buffer.get().toInt() and 0xff
@@ -25,5 +25,9 @@ class VarbitLoader {
             }
         }
         return def
+    }
+
+    override fun newDefinition(id: Int): VarbitDefinition {
+        return VarbitDefinition(id)
     }
 }

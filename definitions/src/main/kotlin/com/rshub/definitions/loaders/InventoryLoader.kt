@@ -5,13 +5,11 @@ import com.rshub.utilities.unsignedByte
 import com.rshub.utilities.unsignedShort
 import java.nio.ByteBuffer
 
-class InventoryLoader {
-
-    fun load(id: Int, data: ByteArray) : InventoryDefinition {
-        val buffer = ByteBuffer.wrap(data)
-        val def = InventoryDefinition(id)
-        while(true) {
-            when(buffer.unsignedByte) {
+class InventoryLoader : Loader<InventoryDefinition> {
+    override fun load(id: Int, buffer: ByteBuffer): InventoryDefinition {
+        val def = newDefinition(id)
+        while (true) {
+            when (buffer.unsignedByte) {
                 2 -> {
                     def.inventorySize = buffer.unsignedShort
                 }
@@ -26,6 +24,10 @@ class InventoryLoader {
             }
         }
         return def
+    }
+
+    override fun newDefinition(id: Int): InventoryDefinition {
+        return InventoryDefinition(id)
     }
 
 }

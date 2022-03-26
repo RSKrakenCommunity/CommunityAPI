@@ -3,6 +3,7 @@ package com.rshub.filesystem.test
 import com.rshub.definitions.loaders.InventoryLoader
 import com.rshub.filesystem.sqlite.SqliteFilesystem
 import org.junit.jupiter.api.Test
+import java.nio.ByteBuffer
 import java.nio.file.Paths
 
 class InventoryDefinitionTest {
@@ -17,7 +18,7 @@ class InventoryDefinitionTest {
 
         val loader = InventoryLoader()
 
-        val inv = loader.load(invId, data)
+        val inv = loader.load(invId, ByteBuffer.wrap(data))
 
         println(inv.id)
         println(inv.inventorySize)

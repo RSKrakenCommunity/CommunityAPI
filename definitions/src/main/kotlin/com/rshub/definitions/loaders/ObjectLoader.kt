@@ -6,8 +6,8 @@ import com.rshub.utilities.*
 import java.nio.ByteBuffer
 import java.util.*
 
-class ObjectLoader {
-    fun load(id: Int, buffer: ByteBuffer): ObjectDefinition {
+class ObjectLoader : Loader<ObjectDefinition> {
+    override fun load(id: Int, buffer: ByteBuffer): ObjectDefinition {
         val def = ObjectDefinition(id)
         try {
             def.decode(buffer)
@@ -288,5 +288,9 @@ class ObjectLoader {
             }
             previousOpcode = opcode
         }
+    }
+
+    override fun newDefinition(id: Int): ObjectDefinition {
+        return ObjectDefinition(id)
     }
 }
