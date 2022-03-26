@@ -12,4 +12,9 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
     fun getYInRegion(): Int {
         return y and 0x3F
     }
+    fun transform(x: Int, y: Int): WorldTile {
+        val tile = WorldTile(this.x, this.y, z);
+        tile.add(x, y, 0)
+        return tile
+    }
 }

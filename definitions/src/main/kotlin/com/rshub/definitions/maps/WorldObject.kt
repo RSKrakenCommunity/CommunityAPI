@@ -5,9 +5,9 @@ data class WorldObject(
     var objectX: Int,
     var objectY: Int,
     var objectPlane: Int,
-    val objectRotation: Int,
-    val objectType: ObjectType,
-    val localTile: WorldTile
+    val objectRotation: Int = 0,
+    val objectType: ObjectType = ObjectType.SCENERY_INTERACT,
+    val localTile: WorldTile = WorldTile(objectX, objectY, objectPlane)
 ) {
 
     val slot: Int get() = objectType.slot
