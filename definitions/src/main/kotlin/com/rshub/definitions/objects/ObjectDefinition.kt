@@ -13,8 +13,8 @@ class ObjectDefinition(override val id: Int) : Definition {
     var name = ""
     var sizeX = 1
     var sizeY = 1
-    var clipType = 2
-    var blocks = false
+    var solidType = 2
+    var blocksProjectile = true
     var interactable = 0
     var groundContoured: Byte = 0
     var delayShading = false

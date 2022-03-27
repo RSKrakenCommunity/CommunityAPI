@@ -36,33 +36,29 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (opcode == 2) {
                 this.name = stream.string
             } else if (opcode == 14) {
-                this.sizeX =
-                    stream.unsignedByte
+                this.sizeX = stream.unsignedByte
             } else if (15 == opcode) {
                 this.sizeY = stream.unsignedByte
             } else if (17 == opcode) {
-                this.clipType = 0
-                this.blocks = false
+                this.solidType = 0
+                this.blocksProjectile = false
             } else if (18 == opcode) {
-                this.blocks = false
+                this.blocksProjectile = false
             } else if (opcode == 19) {
-                this.interactable =
-                    stream.unsignedByte
+                this.interactable = stream.unsignedByte
             } else if (21 == opcode) {
                 this.groundContoured = 1.toByte()
             } else if (22 == opcode) {
                 this.delayShading = true
             } else if (opcode == 23) {
-                this.occludes =
-                    1
+                this.occludes = 1
             } else if (opcode == 24) {
                 val i_8_: Int = stream.getSmartInt()
                 if (i_8_ != -1) this.animations = intArrayOf(i_8_)
             } else if (opcode == 27) {
-                this.clipType = 1
+                this.solidType = 1
             } else if (opcode == 28) {
-                this.decorDisplacement =
-                    stream.unsignedByte shl 2
+                this.decorDisplacement = stream.unsignedByte shl 2
             } else if (opcode == 29) {
                 this.ambient = stream.get()
             } else if (39 == opcode) {
@@ -96,36 +92,27 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (opcode == 62) {
                 this.inverted = true
             } else if (opcode == 64) {
-                this.castsShadow =
-                    false
+                this.castsShadow = false
             } else if (65 == opcode) {
                 this.scaleX = stream.short.toInt()
             } else if (opcode == 66) {
-                this.scaleY =
-                    stream.short.toInt()
+                this.scaleY = stream.short.toInt()
             } else if (67 == opcode) {
-                this.scaleZ =
-                    stream.short.toInt()
+                this.scaleZ = stream.short.toInt()
             } else if (opcode == 69) {
-                this.accessBlockFlag =
-                    stream.unsignedByte
+                this.accessBlockFlag = stream.unsignedByte
             } else if (70 == opcode) {
-                this.offsetX =
-                    stream.short.toInt() shl 2
+                this.offsetX = stream.short.toInt() shl 2
             } else if (opcode == 71) {
-                this.offsetY =
-                    stream.short.toInt() shl 2
+                this.offsetY = stream.short.toInt() shl 2
             } else if (opcode == 72) {
-                this.offsetZ =
-                    stream.short.toInt() shl 2
+                this.offsetZ = stream.short.toInt() shl 2
             } else if (73 == opcode) {
-                this.obstructsGround =
-                    true
+                this.obstructsGround = true
             } else if (opcode == 74) {
                 this.ignoreAltClip = true
             } else if (opcode == 75) {
-                this.supportsItems =
-                    stream.unsignedByte
+                this.supportsItems = stream.unsignedByte
             } else if (77 == opcode || 92 == opcode) {
                 this.varpBit = stream.unsignedShort
                 if (65535 == this.varpBit) this.varpBit = -1
@@ -153,13 +140,11 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (opcode == 82) {
                 this.hidden = true
             } else if (88 == opcode) {
-                this.aBool5703 =
-                    false
+                this.aBool5703 = false
             } else if (opcode == 89) {
                 this.aBool5702 = false
             } else if (91 == opcode) {
-                this.members =
-                    true
+                this.members = true
             } else if (93 == opcode) {
                 this.groundContoured = 3.toByte()
                 this.anInt5654 = stream.short.toInt()
@@ -171,8 +156,7 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (97 == opcode) {
                 this.adjustMapSceneRotation = true
             } else if (98 == opcode) {
-                this.hasAnimation =
-                    true
+                this.hasAnimation = true
             } else if (99 == opcode) {
                 this.anInt5705 = stream.unsignedByte
                 this.anInt5665 = stream.short.toInt()
@@ -180,17 +164,13 @@ class ObjectLoader : Loader<ObjectDefinition> {
                 this.anInt5670 = stream.unsignedByte
                 this.anInt5666 = stream.short.toInt()
             } else if (101 == opcode) {
-                this.mapSpriteRotation =
-                    stream.unsignedByte
+                this.mapSpriteRotation = stream.unsignedByte
             } else if (opcode == 102) {
-                this.mapSpriteId =
-                    stream.short.toInt()
+                this.mapSpriteId = stream.short.toInt()
             } else if (opcode == 103) {
-                this.occludes =
-                    0
+                this.occludes = 0
             } else if (104 == opcode) {
-                this.ambientSoundVolume =
-                    stream.unsignedByte
+                this.ambientSoundVolume = stream.unsignedByte
             } else if (opcode == 105) {
                 this.flipMapSprite = true
             } else if (106 == opcode) {
@@ -223,33 +203,26 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (164 == opcode) {
                 this.anInt5682 = stream.short
             } else if (165 == opcode) {
-                this.anInt5683 =
-                    stream.short
+                this.anInt5683 = stream.short
             } else if (166 == opcode) {
-                this.anInt5710 =
-                    stream.short
+                this.anInt5710 = stream.short
             } else if (167 == opcode) {
-                this.anInt5704 =
-                    stream.short.toInt()
+                this.anInt5704 = stream.short.toInt()
             } else if (168 == opcode) {
-                this.aBool5696 =
-                    true
+                this.aBool5696 = true
             } else if (169 == opcode) {
                 this.aBool5700 = true
             } else if (opcode == 170) {
-                this.anInt5684 =
-                    stream.unsignedSmart
+                this.anInt5684 = stream.unsignedSmart
             } else if (opcode == 171) {
-                this.anInt5658 =
-                    stream.unsignedSmart
+                this.anInt5658 = stream.unsignedSmart
             } else if (opcode == 173) {
                 this.anInt5708 = stream.short.toInt()
                 this.anInt5709 = stream.short.toInt()
             } else if (177 == opcode) {
                 this.aBool5699 = true
             } else if (178 == opcode) {
-                this.anInt5694 =
-                    stream.unsignedByte
+                this.anInt5694 = stream.unsignedByte
             } else if (186 == opcode) {
                 val unk: Int = stream.unsignedByte
             } else if (188 == opcode) {
@@ -284,7 +257,11 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (249 == opcode) {
                 this.params.parse(stream)
             } else {
-                throw RuntimeException("Missing Object opcode: $opcode - $previousOpcode - $id\n${stream.toByteArray().contentToString()}")
+                throw RuntimeException(
+                    "Missing Object opcode: $opcode - $previousOpcode - $id\n${
+                        stream.toByteArray().contentToString()
+                    }"
+                )
             }
             previousOpcode = opcode
         }

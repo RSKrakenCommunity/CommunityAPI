@@ -1,6 +1,5 @@
 package com.rshub.api.entities
 
-import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.spirits.WorldSpirit
 import com.rshub.api.entities.spirits.npc.WorldNpc
 import com.rshub.api.entities.spirits.player.WorldPlayer
@@ -46,14 +45,24 @@ class SpiritManager {
 
     fun closestNpc(filter: WorldNpc.() -> Boolean): WorldNpc? {
         val distanceMap: MutableMap<Int, WorldNpc> = TreeMap()
+        val player = Players.self() ?: return null
         val spirits = npcs(filter)
-        for (wo in spirits) {
-            val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)
-            val def = CacheHelper.getNpc(wo.id)
-            val distance = LocalPathing.getLocalStepsTo(tile, def.size, EntityStrategy(wo), false)
-            if (distance != -1) distanceMap[distance] = wo
+        if(spirits.isEmpty()) {
+            Debug.log("No npcs found.")
+            return null
         }
-        if (distanceMap.isEmpty()) return null
+        val start = WorldTile(player.globalPosition.x, player.globalPosition.y, player.globalPosition.z)
+        for (wo in spirits) {
+            val distance = LocalPathing.getLocalStepsTo(start, wo.def.size, EntityStrategy(wo), false)
+            if (distance != -1) {
+                distanceMap[distance] = wo
+            } else {
+                Debug.log("Npc was not found.")
+            }
+        }
+        if (distanceMap.isEmpty()) {
+            return null
+        }
         val sortedKeys = ArrayList(distanceMap.keys)
         sortedKeys.sort()
         return distanceMap[sortedKeys[0]]

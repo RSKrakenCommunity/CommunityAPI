@@ -486,6 +486,7 @@ public class LocalPathing {
                         for (int fillY = startY; fillY < endY; fillY++)
                             clip[fillX - graphBaseX][fillY - graphBaseY] = -1;
                 } else {
+                    System.out.println("Clipping " + z);
                     int[][] masks = region.getClipMap().getMasks()[z];
                     for (int fillX = startX; fillX < endX; fillX++) {
                         for (int fillY = startY; fillY < endY; fillY++) {
@@ -507,5 +508,9 @@ public class LocalPathing {
 
     protected static boolean lastIsAlternative() {
         return isAlternative;
+    }
+
+    public static int[][] getClip() {
+        return clip;
     }
 }

@@ -1,6 +1,7 @@
 package com.rshub.filesystem
 
 import java.nio.ByteBuffer
+import kotlin.experimental.and
 
 class Archive(
     val id: Int,
@@ -14,8 +15,31 @@ class Archive(
     var hash = 0
 
     internal var loaded = false
-    internal var requiresUpdate = false
-    var files = sortedMapOf<Int, ArchiveFile>()
+    val files = sortedMapOf<Int, ArchiveFile>()
+
+    fun decodeSqlite(buffer: ByteBuffer) {
+        if (files.size == 1) {
+            for (file in files.values) file.data = buffer.array()
+            return
+        }
+
+        val first = (buffer.get() and 0xff.toByte()).toInt()
+        if (first != 1) {
+            System.err.println("Invalid first byte (Expected 1): $first")
+            return
+        }
+
+        val size = files.size
+        val ids = files.keys.stream().mapToInt { obj: Int -> obj }.toArray()
+        val offsets = IntArray(size + 1)
+        for (i in 0 until size + 1) offsets[i] = buffer.int and 0xffffff
+
+        for (i in ids.indices) {
+            val data = ByteArray(offsets[i + 1] - offsets[i])
+            buffer.get(data)
+            files[ids[i]]!!.data = data
+        }
+    }
 
     fun decode(buffer: ByteBuffer) {
         loaded = true

@@ -131,7 +131,8 @@ class ReferenceTable(val filesystem: Filesystem, val index: Int) {
 
         val raw = filesystem.read(index, id) ?: return null
         val file = Container.decode(raw).data
-        archive.decode(ByteBuffer.wrap(file))
+        //archive.decode(ByteBuffer.wrap(file))
+        archive.decodeSqlite(ByteBuffer.wrap(file))
         return archive
     }
 

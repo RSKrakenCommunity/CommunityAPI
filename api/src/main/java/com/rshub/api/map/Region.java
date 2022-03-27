@@ -19,7 +19,6 @@ package com.rshub.api.map;
 import com.rshub.api.definitions.CacheHelper;
 import com.rshub.definitions.maps.*;
 import com.rshub.definitions.objects.ObjectDefinition;
-import kotlin.Pair;
 
 import java.util.*;
 
@@ -46,32 +45,21 @@ public class Region {
     }
 
     public void load() {
-        System.out.println("Loading region " + regionId);
-        Pair<MapTilesDefinition, ObjectTilesDefinition> map = CacheHelper.getMap(regionId);
-        MapTilesDefinition mtd = map.getFirst();
-        ObjectTilesDefinition otd = map.getSecond();
-        if(mtd != null) {
-            clipTiles(mtd);
-        } else {
-            System.out.println("Tiles are null!");
+        RegionDefinition regionDef = CacheHelper.getRegion(regionId);
+        clipTiles(regionDef);
+        for (MapObject object : regionDef.getObjects()) {
+            spawnObject(object);
         }
-        if (otd != null) {
-            otd.getObjects().forEach(this::spawnObject);
-        } else {
-            System.out.println("No object spawns!");
-        }
-        if(mtd != null || otd != null) {
-            loaded = true;
-        }
+        loaded = true;
     }
 
-    private void clipTiles(MapTilesDefinition mtd) {
+    private void clipTiles(RegionDefinition def) {
         for (int plane = 0; plane < 4; plane++) {
             for (int x = 0; x < 64; x++) {
                 for (int y = 0; y < 64; y++) {
-                    if (RenderFlag.flagged(mtd.tileFlags[plane][x][y], RenderFlag.CLIPPED)) {
+                    if (RenderFlag.flagged(def.settings[plane][x][y], RenderFlag.CLIPPED)) {
                         int finalPlane = plane;
-                        if (RenderFlag.flagged(mtd.tileFlags[1][x][y], RenderFlag.LOWER_OBJECTS_TO_OVERRIDE_CLIPPING))
+                        if (RenderFlag.flagged(def.settings[1][x][y], RenderFlag.LOWER_OBJECTS_TO_OVERRIDE_CLIPPING))
                             finalPlane--;
                         if (finalPlane >= 0) {
                             getClipMap().addBlockedTile(finalPlane, x, y);
@@ -100,23 +88,18 @@ public class Region {
         int plane = object.getObjectPlane();
         ObjectType type = object.getObjectType();
         int rotation = object.getObjectRotation();
-        if (x < 0 || y < 0 || x >= clipMap.getMasks()[plane].length || y >= clipMap.getMasks()[plane][x].length) return;
-        ObjectDefinition defs = CacheHelper.getObject(object.getObjectId());
-
-        if(object.getObjectId() == 42378) {
-            System.out.println("Add clip for bank booth.");
+        if (x < 0 || y < 0 || x >= clipMap.getMasks()[plane].length || y >= clipMap.getMasks()[plane][x].length) {
+            return;
         }
-
-        if (defs.getClipType() == 0) return;
-
+        ObjectDefinition defs = CacheHelper.getObject(object.getObjectId());
         switch (type) {
             case WALL_STRAIGHT:
             case WALL_DIAGONAL_CORNER:
             case WALL_WHOLE_CORNER:
             case WALL_STRAIGHT_CORNER:
-                clipMap.addWall(plane, x, y, type, rotation, defs.getBlocks(), !defs.getIgnoreAltClip());
-                if (defs.getBlocks())
-                    clipMapProj.addWall(plane, x, y, type, rotation, defs.getBlocks(), !defs.getIgnoreAltClip());
+                clipMap.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                if (defs.getBlocksProjectile())
+                    clipMapProj.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
                 break;
             case WALL_INTERACT:
             case SCENERY_INTERACT:
@@ -140,12 +123,12 @@ public class Region {
                     sizeX = defs.getSizeY();
                     sizeY = defs.getSizeX();
                 }
-                clipMap.addObject(plane, x, y, sizeX, sizeY, defs.getBlocks(), !defs.getIgnoreAltClip());
-                if (defs.getClipType() != 0)
-                    clipMapProj.addObject(plane, x, y, sizeX, sizeY, defs.getBlocks(), !defs.getIgnoreAltClip());
+                clipMap.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                if (defs.getSolidType() != 0)
+                    clipMapProj.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
                 break;
             case GROUND_DECORATION:
-                if (defs.getClipType() == 1) clipMap.addBlockWalkAndProj(plane, x, y);
+                if (defs.getSolidType() == 1) clipMap.addBlockWalkAndProj(plane, x, y);
                 break;
             default:
                 break;
@@ -167,7 +150,9 @@ public class Region {
     }
 
     public ClipMap getClipMap() {
-        if (clipMap == null) clipMap = new ClipMap(regionId, false);
+        if (clipMap == null) {
+            clipMap = new ClipMap(regionId, false);
+        }
         return clipMap;
     }
 

@@ -25,7 +25,7 @@ public enum RenderFlag {
 	FORCE_TO_BOTTOM(0x8), //8
 	ROOF(0x10); //16
 	
-	private int flag;
+	private final int flag;
 	
 	private RenderFlag(int flag) {
 		this.flag = flag;

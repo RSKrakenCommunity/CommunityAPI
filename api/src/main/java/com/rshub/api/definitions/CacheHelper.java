@@ -5,12 +5,10 @@ import com.rshub.definitions.ItemDefinition;
 import com.rshub.definitions.NpcDefinition;
 import com.rshub.definitions.VarbitDefinition;
 import com.rshub.definitions.loaders.*;
-import com.rshub.definitions.maps.MapTilesDefinition;
-import com.rshub.definitions.maps.ObjectTilesDefinition;
+import com.rshub.definitions.maps.RegionDefinition;
 import com.rshub.definitions.objects.ObjectDefinition;
 import com.rshub.filesystem.Filesystem;
 import com.rshub.filesystem.sqlite.SqliteFilesystem;
-import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 import kraken.plugin.api.Client;
 import kraken.plugin.api.ConVar;
@@ -70,7 +68,7 @@ public final class CacheHelper {
         return itemManager.get(id, false);
     }
 
-    public static Pair<MapTilesDefinition, ObjectTilesDefinition> getMap(int regionId) {
+    public static RegionDefinition getRegion(int regionId) {
         return REGION_MANAGER.load(regionId);
     }
 

@@ -1,18 +1,17 @@
 package com.rshub.api.definitions
 
-import com.rshub.api.map.RenderFlag
-import com.rshub.definitions.maps.MapTilesDefinition
-import com.rshub.definitions.maps.ObjectTilesDefinition
-import com.rshub.definitions.maps.loaders.MapTilesLoader
-import com.rshub.definitions.maps.loaders.ObjectTilesLoader
+import com.rshub.definitions.maps.RegionDefinition
+import com.rshub.definitions.maps.loaders.RegionLoader
 import com.rshub.filesystem.Filesystem
 import java.nio.ByteBuffer
 
 class RegionManager(val fs: Filesystem) {
 
-    private val tilesLoader = MapTilesLoader()
+    private val regionLoader = RegionLoader()
+    private val regions = mutableMapOf<Int, RegionDefinition>()
 
-    fun load(regionId: Int) : Pair<MapTilesDefinition?, ObjectTilesDefinition?> {
+    fun load(regionId: Int) : RegionDefinition {
+        if(regions.containsKey(regionId)) return regions[regionId]!!
         val regionX = regionId shr 8
         val regionY = regionId and 0xff
         val maps = fs.getReferenceTable(5)
@@ -20,18 +19,19 @@ class RegionManager(val fs: Filesystem) {
             val mapArchive = maps.loadArchive(CacheHelper.getMapArchiveId(regionX, regionY))
             if(mapArchive != null) {
                 val objs = mapArchive.files[0]
-                val tiles = mapArchive.files[2]
-                val tilesDef = if(tiles != null) {
-                    tilesLoader.load(regionId, ByteBuffer.wrap(tiles.data))
+                val tiles = mapArchive.files[3]
+                val tilesData = if(tiles != null) {
+                    ByteBuffer.wrap(tiles.data)
                 } else null
-                val objsDef = if(objs != null) {
-                    val loader = ObjectTilesLoader(tilesDef)
-                    loader.load(regionId, ByteBuffer.wrap(objs.data))
+                val objsData = if(objs != null) {
+                    ByteBuffer.wrap(objs.data)
                 } else null
-                return tilesDef to objsDef
+                val def = regionLoader.load(regionId, objsData, tilesData)
+                regions[regionId] = def
+                return def
             }
         }
-        return null to null
+        return regions.getOrPut(regionId) { regionLoader.newDefinition(regionId) }
     }
 
 }

@@ -18,6 +18,7 @@ class InventoryDefinitionTest {
 
         val loader = InventoryLoader()
 
+        println(data.size)
         val inv = loader.load(invId, ByteBuffer.wrap(data))
 
         println(inv.id)

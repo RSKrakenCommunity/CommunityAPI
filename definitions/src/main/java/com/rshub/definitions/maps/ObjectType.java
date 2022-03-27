@@ -44,7 +44,7 @@ public enum ObjectType {
     STRAIGHT_BOTTOM_EDGE_CONNECT_CORNER_ROOF(21, 2),
     GROUND_DECORATION(22, 3);
 	
-	private static Map<Integer, ObjectType> MAP = new HashMap<>();
+	private static final Map<Integer, ObjectType> MAP = new HashMap<>();
 	
 	static {
 		for (ObjectType t : ObjectType.values())
