@@ -67,6 +67,8 @@ public enum ClipFlag {
 		this.flag = flag;
 	}
 
+	public static ClipFlag[] values = values();
+
 	public static ArrayList<ClipFlag> getFlags(int value) {
 		ArrayList<ClipFlag> flags = new ArrayList<>();
 		for (ClipFlag f : ClipFlag.values()) {

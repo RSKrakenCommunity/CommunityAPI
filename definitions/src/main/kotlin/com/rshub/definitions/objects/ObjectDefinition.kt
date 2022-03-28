@@ -14,7 +14,7 @@ class ObjectDefinition(override val id: Int) : Definition {
     var sizeX = 1
     var sizeY = 1
     var solidType = 2
-    var blocksProjectile = true
+    var blocksProjectile = false
     var interactable = 0
     var groundContoured: Byte = 0
     var delayShading = false
@@ -40,7 +40,7 @@ class ObjectDefinition(override val id: Int) : Definition {
     var offsetZ = 0
     var obstructsGround = false
     var supportsItems = 0
-    var ignoreAltClip = false
+    var breakroutefinding = false
     var varpBit = -1
     var varp = -1
     var transformTo: IntArray = intArrayOf()

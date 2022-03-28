@@ -22,8 +22,8 @@ class LocalPathingTest {
 
         3233, 3287, 0
          */
-        val start = WorldTile( 3086, 3496, 0)
-        val target = WorldTile(3086, 3495, 0)
+        val start = WorldTile( 3079, 3496, 0)
+        val target = WorldTile(3079, 3495, 0)
 
         println("${start.regionId} - ${target.regionId}")
 

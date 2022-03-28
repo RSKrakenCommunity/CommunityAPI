@@ -31,6 +31,7 @@ public class Region {
 
     public MapObject[][][][] objects;
     public List<MapObject> objectList;
+    public RegionDefinition def;
     private boolean loaded = false;
 
     public Region(int regionId, boolean load) {
@@ -45,9 +46,9 @@ public class Region {
     }
 
     public void load() {
-        RegionDefinition regionDef = CacheHelper.getRegion(regionId);
-        clipTiles(regionDef);
-        for (MapObject object : regionDef.getObjects()) {
+        def = CacheHelper.getRegion(regionId);
+        clipTiles(def);
+        for (MapObject object : def.getObjects()) {
             spawnObject(object);
         }
         loaded = true;
@@ -97,9 +98,9 @@ public class Region {
             case WALL_DIAGONAL_CORNER:
             case WALL_WHOLE_CORNER:
             case WALL_STRAIGHT_CORNER:
-                clipMap.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                clipMap.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getBreakroutefinding());
                 if (defs.getBlocksProjectile())
-                    clipMapProj.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                    clipMapProj.addWall(plane, x, y, type, rotation, defs.getBlocksProjectile(), !defs.getBreakroutefinding());
                 break;
             case WALL_INTERACT:
             case SCENERY_INTERACT:
@@ -123,9 +124,9 @@ public class Region {
                     sizeX = defs.getSizeY();
                     sizeY = defs.getSizeX();
                 }
-                clipMap.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                clipMap.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), defs.getBreakroutefinding());
                 if (defs.getSolidType() != 0)
-                    clipMapProj.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), !defs.getIgnoreAltClip());
+                    clipMapProj.addObject(plane, x, y, sizeX, sizeY, defs.getBlocksProjectile(), defs.getBreakroutefinding());
                 break;
             case GROUND_DECORATION:
                 if (defs.getSolidType() == 1) clipMap.addBlockWalkAndProj(plane, x, y);

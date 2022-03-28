@@ -120,8 +120,8 @@ public class RegionLoader {
 //							System.err.println("3 float flag 2: " + f1 + ", " + f2 + ", " + f3);
                 }
                 int objectPlane = plane;
-                /*if (def.settings != null && (def.settings[1][localX][localY] & 0x2) != 0)
-                    objectPlane--;*/
+                if (def.settings != null && (def.settings[1][localX][localY] & 0x2) != 0)
+                    objectPlane--;
                 if (objectPlane < 0 || objectPlane >= 4 || plane < 0 || plane >= 4)
                     continue;
                 if (ObjectType.forId(type) == null) {

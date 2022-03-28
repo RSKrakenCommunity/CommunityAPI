@@ -8,9 +8,9 @@ class RegionLoadTest {
 
     @Test
     fun `load region edgeville`() {
-        val edge = CacheHelper.getRegion(12342)
+        val start = WorldTile( 3233, 3287, 0)
+        val edge = CacheHelper.getRegion(start.regionId)
 
-        val start = WorldTile( 3079, 3496, 0)
         val target = WorldTile(3079, 3495, 0)
 
         val tile = WorldTile(3079, 3496, 0)

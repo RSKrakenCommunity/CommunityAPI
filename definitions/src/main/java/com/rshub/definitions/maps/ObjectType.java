@@ -66,4 +66,10 @@ public enum ObjectType {
     public boolean isWall() {
         return id >= ObjectType.WALL_STRAIGHT.id && id <= ObjectType.WALL_STRAIGHT_CORNER.id || id == ObjectType.WALL_INTERACT.id;
     }
+
+
+    @Override
+    public String toString() {
+        return name() + " Slot#" + slot;
+    }
 }

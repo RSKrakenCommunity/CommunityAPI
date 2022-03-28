@@ -2,6 +2,8 @@ package com.rshub.api.entities.objects
 
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.WorldEntity
+import com.rshub.definitions.maps.WorldTile
+import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.definitions.objects.ObjectDefinition
 import kraken.plugin.api.*
 

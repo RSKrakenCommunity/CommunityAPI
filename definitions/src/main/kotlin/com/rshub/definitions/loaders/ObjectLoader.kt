@@ -43,7 +43,7 @@ class ObjectLoader : Loader<ObjectDefinition> {
                 this.solidType = 0
                 this.blocksProjectile = false
             } else if (18 == opcode) {
-                this.blocksProjectile = false
+                //this.blocksProjectile = true
             } else if (opcode == 19) {
                 this.interactable = stream.unsignedByte
             } else if (21 == opcode) {
@@ -110,7 +110,7 @@ class ObjectLoader : Loader<ObjectDefinition> {
             } else if (73 == opcode) {
                 this.obstructsGround = true
             } else if (opcode == 74) {
-                this.ignoreAltClip = true
+                this.breakroutefinding = true
             } else if (opcode == 75) {
                 this.supportsItems = stream.unsignedByte
             } else if (77 == opcode || 92 == opcode) {

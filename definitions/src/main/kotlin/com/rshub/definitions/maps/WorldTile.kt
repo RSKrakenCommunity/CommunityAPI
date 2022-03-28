@@ -21,4 +21,13 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
     override fun toString(): String {
         return "Tile($x, $y, $z) - Region $regionId"
     }
+
+    companion object {
+        fun Vector3i.toTile() = WorldTile(x, y, z)
+        val Vector3i.regionX get() = x shr 6
+        val Vector3i.regionY get() = y shr 6
+        val Vector3i.regionId get() = (regionX shl 8) + regionY
+        val Vector3i.localX get() = x and 0x3f
+        val Vector3i.localY get() = y and 0x3f
+    }
 }
