@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.6.10" apply false
     java
+    `maven-publish`
 }
 
 group = "com.rshub"
@@ -12,6 +13,7 @@ subprojects {
 
     apply {
         plugin("kotlin")
+        plugin("maven-publish")
     }
 
     repositories {
@@ -31,5 +33,15 @@ subprojects {
     tasks.getByName<Test>("test") {
         useJUnitPlatform()
     }
-}
 
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.rshub"
+                artifactId = "KrakenCommunityAPI"
+                version = "1.0-SNAPSHOT"
+                from(components["java"])
+            }
+        }
+    }
+}
