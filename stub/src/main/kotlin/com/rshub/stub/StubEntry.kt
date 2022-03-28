@@ -10,21 +10,35 @@ import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY
 import com.rshub.definitions.maps.WorldTile.Companion.regionId
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import com.rshub.javafx.DebugUI
+import com.rshub.javafx.ui.DebugView
+import kotlinx.coroutines.*
 import kraken.plugin.api.*
 import java.awt.Color
+import java.io.FileOutputStream
+import java.io.PrintStream
+import java.nio.file.Paths
+import kotlin.io.path.exists
 
 class StubEntry : Plugin() {
 
-    val start = WorldTile(3094, 3491, 0)
-    val target = WorldTile(3079, 3494, 0)
-    val tiles = mutableListOf<WorldTile>()
+    val start = WorldTile(3093, 3494, 0)
+    val target = WorldTile(3087, 3502, 0)
+
+    private val errorPath = Paths.get("error.txt")
+    private val errorOutput = PrintStream(FileOutputStream(errorPath.toFile()))
 
     override fun onLoaded(pluginContext: PluginContext): Boolean {
         pluginContext.name = "Developer Plugin"
         pluginContext.isEnabled = true
-        this.tiles.addAll(tiles)
+        if(!errorPath.exists()) {
+            errorPath.toFile().createNewFile()
+        }
+        System.setOut(errorOutput)
+
+        GlobalScope.launch {
+            tornadofx.launch<DebugUI>()
+        }
         return super.onLoaded(pluginContext)
     }
 

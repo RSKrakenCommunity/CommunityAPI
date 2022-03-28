@@ -1,6 +1,7 @@
 dependencies {
     implementation("com.github.RSKraken:KrakenAPI:master-SNAPSHOT")
     implementation(project(":api"))
+    implementation(project(":javafx"))
 }
 
 tasks.withType<Jar> {
