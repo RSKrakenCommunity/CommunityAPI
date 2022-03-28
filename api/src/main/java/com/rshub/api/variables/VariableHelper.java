@@ -12,9 +12,8 @@ public final class VariableHelper {
 
     private static final Map<String, Variable> VARIABLES = new HashMap<>();
 
-    public static void registerVariable(@NotNull String name, Variable variable) {
-        Objects.requireNonNull(name);
-        VARIABLES.put(name, variable);
+    public static void registerVariable(@NotNull String nspace, @NotNull String name, @NotNull Variable variable) {
+        VARIABLES.put(nspace + ":" + name, variable);
     }
 
     public static int getVariable(@NotNull String nspace, @NotNull String name) {
