@@ -2,6 +2,10 @@ plugins {
     kotlin("jvm") version "1.6.10" apply false
     java
 }
+
+group = "com.rshub"
+version = "1.0-SNAPSHOT"
+
 subprojects {
     group = "com.rshub"
     version = "1.0-SNAPSHOT"
