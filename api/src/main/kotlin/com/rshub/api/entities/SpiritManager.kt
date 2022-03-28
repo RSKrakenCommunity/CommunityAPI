@@ -6,6 +6,7 @@ import com.rshub.api.entities.spirits.player.WorldPlayer
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.strategy.EntityStrategy
 import com.rshub.definitions.maps.WorldTile
+import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kraken.plugin.api.*
 import java.util.*
 
@@ -27,10 +28,13 @@ class SpiritManager {
         .filter(filter)
 
     fun closest(filter: WorldSpirit.() -> Boolean): WorldSpirit? {
+        val player = Players.self() ?: return null
         val distanceMap: MutableMap<Int, WorldSpirit> = TreeMap()
         val spirits: List<WorldSpirit> = all(filter)
         for (wo in spirits) {
-            val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)
+            val tile = WorldTile(player.globalPosition.x, player.globalPosition.y, player.globalPosition.z)
+            if(tile.z != wo.globalPosition.z)
+                continue
             val srcSize = if (wo is WorldNpc) {
                 wo.def.size
             } else 1
@@ -53,6 +57,8 @@ class SpiritManager {
         }
         val start = WorldTile(player.globalPosition.x, player.globalPosition.y, player.globalPosition.z)
         for (wo in spirits) {
+            if(wo.globalPosition.z != start.z)
+                continue
             val distance = LocalPathing.getLocalStepsTo(start, wo.def.size, EntityStrategy(wo), false)
             if (distance != -1) {
                 distanceMap[distance] = wo
@@ -69,10 +75,13 @@ class SpiritManager {
     }
 
     fun closestPlayer(filter: WorldPlayer.() -> Boolean): WorldPlayer? {
+        val player = Players.self() ?: return null
         val distanceMap: MutableMap<Int, WorldPlayer> = TreeMap()
         val spirits = players(filter)
         for (wo in spirits) {
-            val tile = WorldTile(wo.globalPosition.x, wo.globalPosition.y, wo.globalPosition.z)
+            if(wo.globalPosition.z != player.globalPosition.z)
+                continue
+            val tile = player.globalPosition.toTile()
             val distance = LocalPathing.getLocalStepsTo(tile, 1, EntityStrategy(wo), false)
             if (distance != -1) distanceMap[distance] = wo
         }
