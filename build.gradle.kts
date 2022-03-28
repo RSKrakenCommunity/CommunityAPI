@@ -33,15 +33,4 @@ subprojects {
     tasks.getByName<Test>("test") {
         useJUnitPlatform()
     }
-
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.rshub"
-                artifactId = "KrakenCommunityAPI"
-                version = "1.0-SNAPSHOT"
-                from(components["java"])
-            }
-        }
-    }
 }

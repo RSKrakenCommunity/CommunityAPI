@@ -5,3 +5,14 @@ dependencies {
     implementation("org.tmatesoft.sqljet:sqljet:1.1.14")
     api(project(":utilities"))
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.rshub.filesystem"
+            artifactId = "KrakenCommunityFilesystem"
+            version = "1.0-SNAPSHOT"
+            from(components["java"])
+        }
+    }
+}
