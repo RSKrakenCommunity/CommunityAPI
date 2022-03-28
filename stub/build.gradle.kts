@@ -11,8 +11,11 @@ tasks.withType<Jar> {
 }
 
 tasks.create("copy", Copy::class.java) {
-    from(tasks.withType<Jar>())
-    into("C:\\Users\\david\\OneDrive\\Documents\\Kraken")
+    val file = File("C:\\Users\\david\\OneDrive\\Documents\\Kraken")
+    if(file.exists()) {
+        from(tasks.withType<Jar>())
+        into("C:\\Users\\david\\OneDrive\\Documents\\Kraken")
+    }
 }
 
 
