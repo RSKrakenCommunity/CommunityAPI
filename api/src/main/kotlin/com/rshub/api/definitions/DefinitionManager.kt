@@ -32,6 +32,10 @@ class DefinitionManager<T : Definition>(
         definitions.remove(definition.id)
     }
 
+    fun cacheAll() {
+        all()
+    }
+
     fun all(filter: T.() -> Boolean = { true }): List<T> {
         val defs = mutableListOf<T>()
         repeat(getFileCount()) {

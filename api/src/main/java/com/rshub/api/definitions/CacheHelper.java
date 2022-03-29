@@ -42,6 +42,7 @@ public final class CacheHelper {
         VarbitDefinition def = getVarbit(varbitId);
         int bits = (def.getMsb() - def.getLsb());
         ConVar convar = Client.getConVarById(def.getIndex());
+        if(convar == null) return 0;
         if(bits == 0) {
             return convar.getValueMasked(def.getLsb(), 1);
         }
