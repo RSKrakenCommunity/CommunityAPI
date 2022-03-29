@@ -18,6 +18,7 @@ class Archive(
     val files = sortedMapOf<Int, ArchiveFile>()
 
     fun decodeSqlite(buffer: ByteBuffer) {
+        loaded = true
         if (files.size == 1) {
             for (file in files.values) file.data = buffer.array()
             return
