@@ -1,25 +1,39 @@
 package com.rshub.javafx.ui.tabs
 
-import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.PlayerModel
-import kraken.plugin.api.Players
+import javafx.beans.binding.Bindings
 import tornadofx.Fragment
-import tornadofx.button
 import tornadofx.label
+import tornadofx.paddingAll
 import tornadofx.vbox
 
 class PlayerTab : Fragment("Local Player") {
 
-    private val playerModel: PlayerModel by inject()
+    private val playerModel: PlayerModel by di()
 
     override val root = vbox {
         spacing = 10.0
+        paddingAll = 10.0
         label(playerModel.tile)
-        button("Update").setOnAction {
-            val player = Players.self()
-            if(player != null) {
-                playerModel.tile.set(player.globalPosition.toTile().toString())
-            }
+        label {
+            textProperty().bind(Bindings.createStringBinding({
+                "Server Index ${playerModel.serverIndex.get()}"
+            }, playerModel.serverIndex))
+        }
+        label {
+            textProperty().bind(Bindings.createStringBinding({
+                "Health: ${playerModel.health.get()}"
+            }, playerModel.health))
+        }
+        label {
+            textProperty().bind(Bindings.createStringBinding({
+                "Adrenaline: ${playerModel.adrenaline.get()}"
+            }, playerModel.adrenaline))
+        }
+        label {
+            textProperty().bind(Bindings.createStringBinding({
+                "Total Level: ${playerModel.totalLevel.get()}"
+            }, playerModel.totalLevel))
         }
     }
 }
