@@ -24,6 +24,7 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
 
     companion object {
         fun Vector3i.toTile() = WorldTile(x, y, z)
+        fun Vector3i.expand(by: Int) = expand(Vector3i(by, by, z))
         val Vector3i.regionX get() = x shr 6
         val Vector3i.regionY get() = y shr 6
         val Vector3i.regionId get() = (regionX shl 8) + regionY

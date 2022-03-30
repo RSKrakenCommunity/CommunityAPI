@@ -1,10 +1,7 @@
 package com.rshub.javafx
 
 import com.rshub.javafx.ui.DebugView
-import com.rshub.javafx.ui.model.GlobalModel
-import com.rshub.javafx.ui.model.PlayerModel
-import com.rshub.javafx.ui.model.VariableDebuggerModel
-import com.rshub.javafx.ui.model.VariableScanModel
+import com.rshub.javafx.ui.model.*
 import javafx.stage.Stage
 import kraken.plugin.api.Kraken
 import org.koin.core.component.KoinComponent

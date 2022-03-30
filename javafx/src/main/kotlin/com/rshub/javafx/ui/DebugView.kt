@@ -4,8 +4,6 @@ import com.rshub.api.kraken.BreakHelper
 import com.rshub.javafx.ui.model.GlobalModel
 import com.rshub.javafx.ui.tabs.PlayerTab
 import com.rshub.javafx.ui.tabs.VariableDebuggerTab
-import javafx.beans.binding.Bindings
-import kraken.plugin.api.Kraken
 import tornadofx.*
 import java.util.concurrent.TimeUnit
 

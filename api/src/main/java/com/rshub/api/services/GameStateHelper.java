@@ -16,6 +16,7 @@ public final class GameStateHelper {
 
     static {
         registerService(new ContainerStateService());
+        GAME_STATE_SERVICE_MANAGER.start();
     }
 
     public static void registerService(GameStateService service) {
