@@ -18,6 +18,7 @@ package com.rshub.api.pathing;
 
 import com.rshub.api.map.ClipFlag;
 import com.rshub.api.map.Region;
+import com.rshub.api.pathing.strategy.FixedTileStrategy;
 import com.rshub.definitions.maps.WorldTile;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class LocalPathing {
     public static int getLocalStepsTo(WorldTile start, int srcSize, RouteStrategy strategy, boolean findAlternative) {
         List<WorldTile> steps = findLocalRoute(start, srcSize, strategy, findAlternative);
         return steps == null ? -1 : steps.size();
+    }
+
+    public static boolean isReachable(WorldTile dest) {
+        return getLocalStepsTo(dest, 1, new FixedTileStrategy(dest), false) > -1;
     }
 
     public static List<WorldTile> findLocalRoute(WorldTile start, int srcSize, RouteStrategy strategy, boolean findAlternative) {
