@@ -1,13 +1,18 @@
 package com.rshub.javafx.ui.tabs
 
+import com.rshub.api.pathing.WalkHelper
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.walking.*
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kraken.plugin.api.Players
 import tornadofx.*
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class WebWalkingTab : Fragment("Web Walking") {
 
@@ -18,35 +23,51 @@ class WebWalkingTab : Fragment("Web Walking") {
         spacing = 10.0
         vbox {
             alignment = Pos.CENTER_LEFT
-            hbox {
-                alignment = Pos.CENTER
-                checkbox("Auto Update", model.autoUpdate) {
-                    paddingRight = 5.0
-                }
-                button("Add Vertex") {
-                    setOnAction {
-                        val tile = if(editor.usePlayerTile.get()) {
-                            Players.self()?.globalPosition?.toTile()
-                        } else {
-                            val x = editor.tileX.get()
-                            val y = editor.tileY.get()
-                            val z = editor.tileZ.get()
-                            WorldTile(x, y, z)
+            vbox {
+                hbox {
+                    alignment = Pos.CENTER
+                    button("Add Vertex") {
+                        setOnAction {
+                            val tile = if(editor.usePlayerTile.get()) {
+                                Players.self()?.globalPosition?.toTile()
+                            } else {
+                                val x = editor.tileX.get()
+                                val y = editor.tileY.get()
+                                val z = editor.tileZ.get()
+                                WorldTile(x, y, z)
+                            }
+                            if(tile != null) {
+                                val id = model.vertices.size
+                                model.vertices.add(VertexModel(id, tile))
+                            }
+                            if(model.autoUpdate.get()) {
+                                model.update()
+                            }
                         }
-                        if(tile != null) {
-                            val id = model.vertices.size
-                            model.vertices.add(VertexModel(id, tile))
+                    }
+                    button("Remove Vertex") {
+                        disableWhen(model.selectedVertex.isNull)
+                        setOnAction {
+
                         }
-                        if(model.autoUpdate.get()) {
+                    }
+                    separator(Orientation.VERTICAL)
+                    button("Update Vertices") {
+                        disableWhen(model.autoUpdate)
+                        setOnAction {
                             model.update()
                         }
                     }
                 }
-                separator(Orientation.VERTICAL)
-                button("Update Vertices") {
-                    disableWhen(model.autoUpdate)
-                    setOnAction {
-                        model.update()
+                hbox {
+                    checkbox("Auto Update", model.autoUpdate) {
+                        paddingRight = 5.0
+                    }
+                    button("Save Vertices") {
+                        setOnAction {
+                            val data = Json.encodeToString(WalkHelper.getGraph())
+                            Files.write(Paths.get(""))
+                        }
                     }
                 }
             }

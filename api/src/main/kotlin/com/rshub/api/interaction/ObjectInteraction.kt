@@ -4,6 +4,7 @@ import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.map.Region
+import com.rshub.api.pathing.WalkHelper
 import com.rshub.definitions.maps.MapObject
 import kotlin.math.ceil
 
