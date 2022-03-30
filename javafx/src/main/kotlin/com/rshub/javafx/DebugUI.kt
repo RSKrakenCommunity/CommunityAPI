@@ -2,6 +2,8 @@ package com.rshub.javafx
 
 import com.rshub.javafx.ui.DebugView
 import com.rshub.javafx.ui.model.*
+import com.rshub.javafx.ui.model.walking.VertexEditorModel
+import com.rshub.javafx.ui.model.walking.WebWalkingModel
 import javafx.stage.Stage
 import kraken.plugin.api.Kraken
 import org.koin.core.component.KoinComponent
@@ -23,6 +25,7 @@ class DebugUI : App(DebugView::class), KoinComponent {
     }
 
     override fun start(stage: Stage) {
+        stage.isResizable = false
         stage.title = Kraken.getEmail()
         stage.setOnCloseRequest {
             it.consume()
@@ -36,6 +39,8 @@ class DebugUI : App(DebugView::class), KoinComponent {
             single { PlayerModel() }
             single { VariableDebuggerModel() }
             single { VariableScanModel() }
+            single { WebWalkingModel() }
+            single { VertexEditorModel() }
         }
     }
 }

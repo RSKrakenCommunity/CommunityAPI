@@ -17,10 +17,7 @@ import com.rshub.javafx.ui.model.VariableModel
 import com.rshub.stub.services.PlayerUpdateService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kraken.plugin.api.Client
-import kraken.plugin.api.ConVar
-import kraken.plugin.api.ImGui
-import kraken.plugin.api.Players
+import kraken.plugin.api.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
@@ -107,7 +104,9 @@ class DevPlugin : KotlinPlugin("Dev Plugin"), KoinComponent {
         val graph = WalkHelper.getGraph()
         for ((id, vertex) in graph.getAllVertices().withIndex()) {
             val pos = Client.worldToMinimap(vertex.tile.toScene())
-            ImGui.freeText("$id", pos, Color.WHITE.rgb)
+            val s = pos.expand(Vector2i(12, 12)).center()
+            drawRect(pos, 12, 12)
+            ImGui.freeText("$id", s, Color.WHITE.rgb)
             val abjs = graph.adjacentVertices(vertex)
             if (abjs.isNotEmpty()) {
                 for (abj in abjs) {
@@ -127,5 +126,15 @@ class DevPlugin : KotlinPlugin("Dev Plugin"), KoinComponent {
                 vd.varps[conv.id] = VariableModel(conv.id, "Varp ${conv.id}", newValue)
             }
         }
+    }
+
+    private fun drawRect(pos: Vector2i, width: Int, height: Int) {
+        ImGui.freePoly4(
+            Vector2i(pos.x, pos.y + height),
+            Vector2i(pos.x + width, pos.y + height),
+            Vector2i(pos.x + width, pos.y),
+            Vector2i(pos.x, pos.y),
+            Color.BLACK.rgb
+        )
     }
 }

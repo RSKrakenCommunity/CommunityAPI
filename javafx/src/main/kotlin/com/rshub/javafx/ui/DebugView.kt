@@ -4,6 +4,7 @@ import com.rshub.api.kraken.BreakHelper
 import com.rshub.javafx.ui.model.GlobalModel
 import com.rshub.javafx.ui.tabs.PlayerTab
 import com.rshub.javafx.ui.tabs.VariableDebuggerTab
+import com.rshub.javafx.ui.tabs.WebWalkingTab
 import tornadofx.*
 import java.util.concurrent.TimeUnit
 
@@ -12,7 +13,7 @@ class DebugView : View() {
     private val global: GlobalModel by inject()
 
     override val root = vbox {
-        prefWidth = 800.0
+        prefWidth = 1000.0
         prefHeight = 600.0
         style {
             baseColor = c("000000")
@@ -42,6 +43,9 @@ class DebugView : View() {
                 closableProperty().bind(false.toProperty())
             }
             tab<VariableDebuggerTab> {
+                closableProperty().bind(false.toProperty())
+            }
+            tab<WebWalkingTab> {
                 closableProperty().bind(false.toProperty())
             }
         }

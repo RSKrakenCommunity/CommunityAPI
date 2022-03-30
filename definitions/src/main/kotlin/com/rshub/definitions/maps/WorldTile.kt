@@ -1,7 +1,9 @@
 package com.rshub.definitions.maps
 
+import kotlinx.serialization.Serializable
 import kraken.plugin.api.Vector3i
 
+@Serializable(with = WorldTileSerializer::class)
 class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
     val regionX: Int get() = x shr 6
     val regionY: Int get() = y shr 6
@@ -9,9 +11,11 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
     fun getXInRegion(): Int {
         return x and 0x3F
     }
+
     fun getYInRegion(): Int {
         return y and 0x3F
     }
+
     fun transform(x: Int, y: Int): WorldTile {
         val tile = WorldTile(this.x, this.y, z);
         tile.add(x, y, 0)
