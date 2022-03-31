@@ -4,7 +4,6 @@ import com.rshub.api.definitions.CacheHelper
 import com.rshub.javafx.ui.model.VariableDebuggerModel
 import com.rshub.javafx.ui.model.VariableModel
 import com.rshub.javafx.ui.model.VariableScanModel
-import javafx.beans.binding.Bindings
 import kraken.plugin.api.Client
 import tornadofx.*
 
@@ -15,54 +14,54 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
 
     override val root = borderpane {
         model.selectedVarp.onChange {
-            if(it != null && it.variableId.get() > -1) {
-                if(model.varbits.isBound) {
+            if (it != null && it.variableId.get() > -1) {
+                if (model.varbits.isBound) {
                     model.varbits.unbind()
                 }
-                if(it.isVarp.get()) {
+                if (it.isVarp.get()) {
                     it.varbits.setAll(
                         CacheHelper.findVarbitsFor(it.variableId.get())
                             .map { def -> VariableModel(def.id, "", CacheHelper.getVarbitValue(def.id), false) })
-                } else if(it.varbits.isNotEmpty()) {
+                } else if (it.varbits.isNotEmpty()) {
                     it.varbits.clear()
                 }
                 model.varbits.bind(it.varbits)
             }
         }
         center {
-            vbox {
-                spacing = 10.0
-                paddingAll = 10.0
-                label {
-                    textProperty().bind(Bindings.createStringBinding({
-                        "Scan Mode: ${model.isScanMode.get()}"
-                    }, model.isScanMode))
-                }
-                button("Reset Scan") {
-                    enableWhen(model.isScanMode)
-                    setOnAction {
-                        model.isScanMode.set(false)
-                        model.varps.clear()
+            form {
+                fieldset {
+                    field("Scan Mode") {
+                        label(model.isScanMode)
                     }
-                }
-                separator()
-                hbox {
-                    spacing = 5.0
-                    button("Scan") {
-                        setOnAction {
-                            model.isScanMode.set(true)
-                            val values = scanner.scan()
-                            model.varps.clear()
-                            model.varps.putAll(values.associateBy { it.variableId.get() })
+                    field {
+                        button("Reset Scan") {
+                            enableWhen(model.isScanMode)
+                            setOnAction {
+                                model.isScanMode.set(false)
+                                model.varps.clear()
+                            }
                         }
                     }
-                    textfield(scanner.scanValue) {
-                        disableWhen(scanner.isValueUnknown)
-                        stripNonInteger()
-                        promptText = "Enter value"
+                    field {
+                        button("Scan") {
+                            setOnAction {
+                                model.isScanMode.set(true)
+                                val values = scanner.scan()
+                                model.varps.clear()
+                                model.varps.putAll(values.associateBy { it.variableId.get() })
+                            }
+                        }
+                        textfield(scanner.scanValue) {
+                            disableWhen(scanner.isValueUnknown)
+                            stripNonInteger()
+                            promptText = "Enter value"
+                        }
+                    }
+                    field("Unknown Value") {
+                        checkbox(property = scanner.isValueUnknown)
                     }
                 }
-                checkbox("Unknown Value", scanner.isValueUnknown)
             }
         }
         left {
@@ -97,7 +96,7 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
                 column<VariableModel, Boolean>("Variable Type") {
                     it.value.isVarp
                 }.cellFormat {
-                    text = if(it) "Varp" else "Varbit"
+                    text = if (it) "Varp" else "Varbit"
                 }
                 column<VariableModel, Number>("Variable ID") {
                     it.value.variableId
@@ -105,7 +104,7 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
                 column<VariableModel, Boolean>("Variable Value") {
                     it.value.isVarp
                 }.cellFormat {
-                    text = if(it) {
+                    text = if (it) {
                         Client.getConVarById(rowItem.variableId.get()).valueInt.toString()
                     } else {
                         CacheHelper.getVarbitValue(rowItem.variableId.get()).toString()

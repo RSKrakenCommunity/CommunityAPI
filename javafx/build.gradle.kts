@@ -6,12 +6,20 @@ plugins {
 }
 
 dependencies {
+    implementation("org.fxmisc.richtext:richtextfx:0.10.8")
     implementation("no.tornado:tornadofx:1.7.20")
     implementation("io.insert-koin:koin-core:3.2.0-beta-1")
     implementation("org.pf4j:pf4j:3.6.0")
     implementation(project(":api"))
     implementation(project(":stub:api"))
     kapt("org.pf4j:pf4j:3.6.0")
+
+    implementation("org.jetbrains.kotlin:kotlin-scripting-common")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-dependencies")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-dependencies-maven")
+    implementation("org.jetbrains.kotlin:kotlin-scripting-jvm-host")
+
 }
 
 tasks.named("build") {

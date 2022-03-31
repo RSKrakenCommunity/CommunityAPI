@@ -2,10 +2,7 @@ package com.rshub.javafx.ui
 
 import com.rshub.api.kraken.BreakHelper
 import com.rshub.javafx.ui.model.GlobalModel
-import com.rshub.javafx.ui.tabs.PlayerTab
-import com.rshub.javafx.ui.tabs.VariableDebuggerTab
-import com.rshub.javafx.ui.tabs.WalkingTab
-import com.rshub.javafx.ui.tabs.WebWalkingTab
+import com.rshub.javafx.ui.tabs.*
 import tornadofx.*
 import java.util.concurrent.TimeUnit
 
@@ -50,6 +47,9 @@ class DebugView : View() {
                 closableProperty().bind(false.toProperty())
             }
             tab<WalkingTab> {
+                closableProperty().bind(false.toProperty())
+            }
+            tab<ScriptingTab> {
                 closableProperty().bind(false.toProperty())
             }
         }

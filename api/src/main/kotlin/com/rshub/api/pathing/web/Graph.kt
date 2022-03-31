@@ -52,6 +52,7 @@ class Graph {
     fun getDistance(from: GraphVertex, to: GraphVertex): Int {
         return edges
             .filter { it.from == from && it.to == to }
+            .filter { !it.blocked() }
             .map { it.cost }
             .first()
     }
