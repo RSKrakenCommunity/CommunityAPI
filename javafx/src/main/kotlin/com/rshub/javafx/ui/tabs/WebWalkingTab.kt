@@ -1,12 +1,15 @@
 package com.rshub.javafx.ui.tabs
 
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.pathing.WebWalkerSerializer
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.walking.*
+import javafx.beans.binding.Bindings
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
+import javafx.util.StringConverter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kraken.plugin.api.Players
@@ -60,13 +63,13 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                 }
                 hbox {
+                    alignment = Pos.CENTER
                     checkbox("Auto Update", model.autoUpdate) {
                         paddingRight = 5.0
                     }
                     button("Save Vertices") {
                         setOnAction {
-                            val data = Json.encodeToString(WalkHelper.getGraph())
-                            Files.write(Paths.get(""))
+                            WebWalkerSerializer.save()
                         }
                     }
                 }
@@ -85,7 +88,32 @@ class WebWalkingTab : Fragment("Web Walking") {
                 }
                 model.reload()
                 cellFormat {
-                    text = "${it.id.get()} - ${it.edges.size}"
+                    graphic = anchorpane {
+                        label {
+                            textProperty().bind(Bindings.createStringBinding({
+                                "Vertex ${it.id.get()} - ${it.edges.size}"
+                            }, it.edges.sizeProperty()))
+                            anchorpaneConstraints { leftAnchor = 0.0; topAnchor = 0.0; bottomAnchor = 0.0 }
+                        }
+                        hbox {
+                            spacing = 10.0
+                            anchorpaneConstraints { rightAnchor = 0.0; topAnchor = 0.0; bottomAnchor = 0.0 }
+                            button("Link") {
+                                disableWhen(model.selectedVertex.isNull.or(model.selectedVertex.isEqualTo(it)))
+                                setOnAction { _ ->
+                                    val sel = model.selectedVertex.get()
+                                    if(sel != null) {
+                                        val strat = editor.strategy.get()
+                                        val edge = EdgeModel(sel, it, strat)
+                                        sel.edges.add(edge)
+                                        if(strat === EdgeStrategy.TILE) {
+                                            it.edges.add(EdgeModel(it, sel))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -93,6 +121,7 @@ class WebWalkingTab : Fragment("Web Walking") {
         vbox {
             paddingAll = 10.0
             spacing = 10.0
+            minWidth = 200.0
             checkbox("Use Player Tile", editor.usePlayerTile)
             vbox {
                 spacing = 10.0
@@ -125,9 +154,28 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                 }
             }
+            choicebox(editor.strategy) {
+                items.addAll(EdgeStrategy.values())
+                selectionModel.select(EdgeStrategy.TILE)
+                converter = object : StringConverter<EdgeStrategy>() {
+                    override fun toString(strat: EdgeStrategy): String {
+                        return strat.name.lowercase().capitalize().replace('_', ' ')
+                    }
+
+                    override fun fromString(string: String): EdgeStrategy {
+                        return EdgeStrategy.valueOf(
+                            string
+                                .uppercase()
+                                .replace(' ', '_')
+                        )
+                    }
+                }
+            }
         }
         separator(Orientation.VERTICAL)
         hbox {
+            alignment = Pos.CENTER_RIGHT
+            spacing = 10.0
             vbox {
                 dynamicContent(editor.strategy) {
                     nodesByStrategy(it)

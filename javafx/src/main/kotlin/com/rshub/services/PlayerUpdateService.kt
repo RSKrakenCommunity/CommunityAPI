@@ -1,4 +1,4 @@
-package com.rshub.stub.services
+package com.rshub.services
 
 import com.rshub.api.services.GameStateService
 import com.rshub.definitions.maps.WorldTile.Companion.toTile

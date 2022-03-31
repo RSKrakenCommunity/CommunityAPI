@@ -19,7 +19,7 @@ class EdgeModel(from: VertexModel, to: VertexModel, strategy: EdgeStrategy = Edg
         }
         val from = this.from.get().toVertex()
         val to = this.to.get().toVertex()
-        return Edge(from, to, from.tile.distance(to.tile), strategy)
+        return Edge(from, to, strategy)
     }
 
 }
