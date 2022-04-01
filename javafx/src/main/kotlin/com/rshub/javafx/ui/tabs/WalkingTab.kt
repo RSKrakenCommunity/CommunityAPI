@@ -1,11 +1,18 @@
 package com.rshub.javafx.ui.tabs
 
+import com.rshub.api.pathing.walking.Traverse
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.walking.LocationModel
 import com.rshub.javafx.ui.model.walking.WalkingModel
 import javafx.geometry.Orientation
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kraken.plugin.api.Kraken
 import kraken.plugin.api.Players
 import tornadofx.*
+import java.nio.file.Paths
+import kotlin.io.path.exists
 
 class WalkingTab : Fragment("Walking") {
 
@@ -13,7 +20,6 @@ class WalkingTab : Fragment("Walking") {
 
     override val root = hbox {
         spacing = 10.0
-        LocationModel.load()
         listview<LocationModel> {
             items.bind(model.locations) { it }
             bindSelected(model.selectedLocation)
@@ -32,8 +38,10 @@ class WalkingTab : Fragment("Walking") {
                             topAnchor = 0.0
                             bottomAnchor = 0.0
                         }
-                        setOnAction {
-                            TODO("Not yet implemented")
+                        setOnAction { _ ->
+                            GlobalScope.launch {
+                                Traverse.walkTo(it.tile.get())
+                            }
                         }
                     }
                 }
@@ -54,7 +62,11 @@ class WalkingTab : Fragment("Walking") {
                     if(player != null) {
                         val name = model.locationName.get()
                         model.locations.add(LocationModel(name, player.globalPosition.toTile()))
-                        LocationModel.save()
+                        val path = Paths.get(System.getProperty("user.home")).resolve("kraken-plugins")
+                        if(!path.exists()) {
+                            path.toFile().mkdirs()
+                        }
+                        LocationModel.save(path)
                     }
                 }
             }

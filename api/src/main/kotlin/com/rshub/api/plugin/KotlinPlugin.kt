@@ -1,6 +1,7 @@
 package com.rshub.api.plugin
 
 import kotlinx.coroutines.runBlocking
+import kraken.plugin.api.Client
 import kraken.plugin.api.Plugin
 import kraken.plugin.api.PluginContext
 
@@ -30,6 +31,10 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
     }
 
     final override fun onPaintOverlay() {
-        runBlocking { paintOverlay() }
+        runBlocking {
+            if(Client.getState() == Client.IN_GAME) {
+                paintOverlay()
+            }
+        }
     }
 }

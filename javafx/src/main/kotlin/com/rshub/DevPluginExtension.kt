@@ -6,7 +6,6 @@ import com.rshub.api.map.ClipFlag
 import com.rshub.api.map.Region
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.world.WorldHelper
-import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY
 import com.rshub.definitions.maps.WorldTile.Companion.regionId
@@ -69,17 +68,21 @@ class DevPluginExtension : PluginExtension, KoinComponent {
     }
 
     override fun paintOverlay() {
-        val graph = WalkHelper.getGraph()
-        for ((id, vertex) in graph.getAllVertices().withIndex()) {
-            val pos = Client.worldToMinimap(vertex.tile.toScene())
-            //val s = pos.expand(Vector2i(12, 12)).center()
-            //drawRect(pos, 12, 12)
-            ImGui.freeText("$id", pos, Color.WHITE.rgb)
-            val abjs = graph.adjacentVertices(vertex)
-            if (abjs.isNotEmpty()) {
-                for (abj in abjs) {
-                    val end = Client.worldToMinimap(abj.tile.toScene())
-                    ImGui.freeLine(pos, end, Color.GREEN.rgb)
+        if(Client.getState() == Client.IN_GAME) {
+            val graph = WalkHelper.getGraph()
+            if(graph != null) {
+                for ((id, vertex) in graph.getAllVertices().withIndex()) {
+                    val pos = Client.worldToMinimap(vertex.tile.toScene()) ?: continue
+                    //val s = pos.expand(Vector2i(12, 12)).center()
+                    //drawRect(pos, 12, 12)
+                    ImGui.freeText("$id", pos, Color.WHITE.rgb)
+                    val abjs = graph.adjacentVertices(vertex)
+                    if (abjs.isNotEmpty()) {
+                        for (abj in abjs) {
+                            val end = Client.worldToMinimap(abj.tile.toScene())
+                            ImGui.freeLine(pos, end, Color.GREEN.rgb)
+                        }
+                    }
                 }
             }
         }

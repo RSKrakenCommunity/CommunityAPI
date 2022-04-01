@@ -32,9 +32,9 @@ object EdgeSerializer : KSerializer<Edge> {
         decoder.decodeStructure(descriptor) {
             val from = decodeSerializableElement(descriptor, 0, GraphVertex.serializer())
             val to = decodeSerializableElement(descriptor, 1, GraphVertex.serializer())
-            val strategyName = decodeStringElement(descriptor,2)
-            val strategy = when(strategyName) {
-               "EdgeTileStrategy" -> EdgeTileStrategy()
+            val strategyName = decodeStringElement(descriptor, 2)
+            val strategy = when (strategyName) {
+                "EdgeTileStrategy" -> EdgeTileStrategy()
                 else -> error("Unknown strategy")
             }
             return Edge(from, to, strategy)

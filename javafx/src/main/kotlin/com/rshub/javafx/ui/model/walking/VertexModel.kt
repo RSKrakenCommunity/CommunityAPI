@@ -1,6 +1,5 @@
 package com.rshub.javafx.ui.model.walking
 
-import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.definitions.maps.WorldTile
 import javafx.beans.property.SimpleIntegerProperty
@@ -15,7 +14,7 @@ class VertexModel(id: Int, tile: WorldTile) : ViewModel() {
     val tile = bind { SimpleObjectProperty(this, "tile", tile) }
     val edges = bind { SimpleSetProperty<EdgeModel>(this, "edges", FXCollections.observableSet(mutableSetOf())) }
 
-    fun toVertex() : GraphVertex {
+    fun toVertex(): GraphVertex {
         return GraphVertex(tile.get())
     }
 

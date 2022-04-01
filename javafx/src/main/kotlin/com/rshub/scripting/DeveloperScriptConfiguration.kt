@@ -3,6 +3,7 @@ package com.rshub.scripting
 import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.definitions.CacheHelper
+import com.rshub.api.pathing.walking.Traverse
 import com.rshub.api.world.WorldHelper
 import kraken.plugin.api.Client
 import kraken.plugin.api.Debug
@@ -24,7 +25,8 @@ object DeveloperScriptConfiguration : ScriptCompilationConfiguration({
             ActionHelper::class,
             MenuAction::class,
             Players::class,
-            WorldHelper::class
+            WorldHelper::class,
+            Traverse::class
         )
 
         dependenciesFromCurrentContext(wholeClasspath = true)

@@ -1,8 +1,13 @@
 package com.rshub
 
+import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.pathing.WebWalkerSerializer
 import com.rshub.api.services.GameStateHelper
 import com.rshub.javafx.DebugUI
+import com.rshub.javafx.ui.model.walking.LocationModel
 import com.rshub.services.PlayerUpdateService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.context.startKoin
@@ -29,6 +34,8 @@ class DeveloperPlugin(wrapper: PluginWrapper?) : Plugin(wrapper) {
         }
         GameStateHelper.registerService(PlayerUpdateService())
         GlobalScope.launch {
+            WalkHelper.loadWeb()
+            LocationModel.load(Paths.get(System.getProperty("user.home")).resolve("kraken-plugins"))
             tornadofx.launch<DebugUI>()
         }
     }

@@ -13,6 +13,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import tornadofx.ViewModel
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.exists
 import kotlin.io.path.readText
@@ -25,13 +26,13 @@ class LocationModel(name: String, tile: WorldTile) : ViewModel() {
 
 
     companion object : KoinComponent {
-        fun save() {
+        fun save(path: Path) {
             val model: WalkingModel = get()
             val data = Json.encodeToString(model.locations.toList())
-            Files.write(Paths.get(Kraken.getPluginDir()).resolve("locations.json"), data.toByteArray())
+            Files.write(path.resolve("locations.json"), data.toByteArray())
         }
-        fun load() {
-            val locs = Paths.get(Kraken.getPluginDir()).resolve("locations.json")
+        fun load(path: Path) {
+            val locs = path.resolve("locations.json")
             if(locs.exists()) {
                 val model: WalkingModel = get()
                 val locations = Json.decodeFromString<List<LocationModel>>(locs.readText())

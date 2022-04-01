@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable(with = EdgeStrategySerializer::class)
 interface EdgeStrategy {
     fun traverse(edge: Edge) : Boolean
+    fun reached(edge: Edge): Boolean
     fun isPlayerMoving() : Boolean
-    fun blocked(): Boolean
+    fun modifyCost(cost: Int) : Int
+    fun blocked(edge: Edge): Boolean
 }

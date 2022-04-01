@@ -10,9 +10,10 @@ class Edge(
     val strategy: EdgeStrategy
 ) {
 
-    val cost: Int = from.distance(to)
+    val dist: Int = from.distance(to)
 
     fun traverse() = strategy.traverse(this)
-    fun blocked() = strategy.blocked()
+    fun blocked() = strategy.blocked(this)
+    fun reached() = strategy.reached(this)
 }
 

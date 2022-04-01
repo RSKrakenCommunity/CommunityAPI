@@ -51,7 +51,15 @@ class WebWalkingTab : Fragment("Web Walking") {
                     button("Remove Vertex") {
                         disableWhen(model.selectedVertex.isNull)
                         setOnAction {
-
+                            val sel = model.selectedVertex.get()
+                            val vertices = model.vertices.filter { it.edges.any { e -> e.to.get() === sel } }
+                            for (vertex in vertices) {
+                                vertex.edges.removeIf { it.to.get() === sel }
+                            }
+                            model.vertices.remove(sel)
+                            if(model.autoUpdate.get()) {
+                                model.update()
+                            }
                         }
                     }
                     separator(Orientation.VERTICAL)
@@ -69,7 +77,12 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                     button("Save Vertices") {
                         setOnAction {
-                            WebWalkerSerializer.save()
+                            WalkHelper.saveWeb()
+                        }
+                    }
+                    button("Load Web") {
+                        setOnAction {
+                            WalkHelper.loadWeb()
                         }
                     }
                 }
@@ -108,6 +121,9 @@ class WebWalkingTab : Fragment("Web Walking") {
                                         sel.edges.add(edge)
                                         if(strat === EdgeStrategy.TILE) {
                                             it.edges.add(EdgeModel(it, sel))
+                                        }
+                                        if(model.autoUpdate.get()) {
+                                            model.update()
                                         }
                                     }
                                 }

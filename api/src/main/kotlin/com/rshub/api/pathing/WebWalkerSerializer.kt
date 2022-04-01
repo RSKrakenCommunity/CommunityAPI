@@ -7,19 +7,20 @@ import kotlinx.serialization.json.Json
 import kraken.plugin.api.Kraken
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.exists
 import kotlin.io.path.readText
 
 object WebWalkerSerializer {
 
-    fun save() {
+    fun save(path: Path) {
         val data = Json.encodeToString(WalkHelper.getGraph())
-        Files.write(Paths.get(Kraken.getPluginDir()).resolve("web.json"), data.toByteArray())
+        Files.write(path.resolve("web.json"), data.toByteArray())
     }
 
-    fun load() {
-        val webJson = Paths.get(Kraken.getPluginDir()).resolve("web.json")
+    fun load(path: Path) {
+        val webJson = path.resolve("web.json")
         if(webJson.exists()) {
             val graph = Json.decodeFromString<Graph>(webJson.readText())
             WalkHelper.setGraph(graph)

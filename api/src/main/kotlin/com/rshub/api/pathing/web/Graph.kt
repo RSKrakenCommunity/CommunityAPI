@@ -53,7 +53,7 @@ class Graph {
         return edges
             .filter { it.from == from && it.to == to }
             .filter { !it.blocked() }
-            .map { it.cost }
+            .map { it.dist }
             .first()
     }
 
@@ -75,5 +75,7 @@ class Graph {
         return result
     }
 
-
+    companion object {
+        fun Graph.toWeb() = RuneScapeWeb(edges.toList())
+    }
 }

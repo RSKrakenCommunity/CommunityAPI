@@ -1,5 +1,6 @@
 package com.rshub.api.plugin;
 
+import kraken.plugin.api.Client;
 import kraken.plugin.api.Plugin;
 import kraken.plugin.api.PluginContext;
 
@@ -13,6 +14,7 @@ public abstract class JavaPlugin extends Plugin {
     }
 
     protected abstract void onLoad();
+    protected abstract void painOverlay();
 
     @Override
     public final boolean onLoaded(PluginContext pluginContext) {
@@ -20,6 +22,13 @@ public abstract class JavaPlugin extends Plugin {
         this.context = pluginContext;
         this.onLoad();
         return super.onLoaded(pluginContext);
+    }
+
+    @Override
+    public final void onPaintOverlay() {
+        if(Client.getState() == Client.IN_GAME) {
+            painOverlay();
+        }
     }
 
     public String getName() {
