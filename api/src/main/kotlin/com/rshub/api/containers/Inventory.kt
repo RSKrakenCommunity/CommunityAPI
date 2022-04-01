@@ -59,6 +59,15 @@ class Inventory(override val containerId: Int) : Container {
         changeFlow.tryEmit(event)
     }
 
+    override fun get(slot: Int): Item? {
+        for ((index, item) in items.withIndex()) {
+            if(index == slot) {
+                return item
+            }
+        }
+        return null
+    }
+
     override fun iterator(): Iterator<Item> {
         return object : Iterator<Item> {
             private val items = getItems()

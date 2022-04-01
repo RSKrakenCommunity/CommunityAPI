@@ -11,7 +11,7 @@ public final class BindingHelper {
     public static void bind(Widget widget, Container container) {
         widget.addContainer(container);
         container.addListener((slot, prev, next) -> {
-            widget.containerChanged(container, widget.asWidgetItem(slot, prev), widget.asWidgetItem(slot, next));
+            Widget.Companion.containerChanged(container, widget, slot, prev, next);
             return Unit.INSTANCE;
         });
     }

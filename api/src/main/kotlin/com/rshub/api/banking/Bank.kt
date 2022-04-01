@@ -4,9 +4,19 @@ import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.containers.Container
 import com.rshub.api.containers.Inventory
+import com.rshub.api.coroutines.delayRandom
+import com.rshub.api.coroutines.delayUntil
+import com.rshub.api.entities.items.ContainerItem.Companion.toContainerItem
+import com.rshub.api.entities.items.GameItem
 import com.rshub.api.input.InputHelper
+import com.rshub.api.services.GameStateServiceManager.Companion.GAME_STATE
 import com.rshub.api.widgets.Widget
+import com.rshub.api.widgets.WidgetEvent
 import com.rshub.api.widgets.WidgetHelper
+import com.rshub.api.widgets.events.ContainerChangedEvent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kraken.plugin.api.Bank
 import kraken.plugin.api.WidgetItem
 
@@ -19,7 +29,16 @@ class Bank : Widget {
         95 to Inventory(95)
     )
 
-    fun withdrawItem(id: Int, amount: Int = -1) {
+    override val events: MutableSharedFlow<WidgetEvent<*>> = MutableSharedFlow(extraBufferCapacity = 100)
+
+    override fun watchContainers(action: (Widget, Container, GameItem, GameItem) -> Unit) {
+        events.filterIsInstance<ContainerChangedEvent>()
+            .onEach {
+                action(it.source, it.con, it.prev, it.next)
+            }.launchIn(CoroutineScope(Dispatchers.GAME_STATE))
+    }
+
+    suspend fun withdrawItem(id: Int, amount: Int = -1) {
         val option = when(amount) {
             1 -> WITHDRAW_ONE
             5 -> WITHDRAW_FIVE
@@ -30,7 +49,7 @@ class Bank : Widget {
         Bank.withdraw({ it.id == id }, option)
     }
 
-    fun depositItem(id: Int, amount: Int = -1) {
+    suspend fun depositItem(id: Int, amount: Int = -1) {
         val option = when (amount) {
             1 -> DEPOSIT_ONE
             5 -> DEPOSIT_FIVE
@@ -41,7 +60,7 @@ class Bank : Widget {
         Bank.deposit({ it.id == id }, option)
     }
 
-    fun depositInventory(useKey: Boolean = true) {
+    suspend fun depositInventory(useKey: Boolean = true) {
         if (useKey) {
             InputHelper.pressKey('3')
         } else {
@@ -49,7 +68,7 @@ class Bank : Widget {
         }
     }
 
-    fun depositEquipment(useKey: Boolean = true) {
+    suspend fun depositEquipment(useKey: Boolean = true) {
         if (useKey) {
             InputHelper.pressKey('4')
         } else {
@@ -57,7 +76,7 @@ class Bank : Widget {
         }
     }
 
-    fun depositBurden(useKey: Boolean = true) {
+    suspend fun depositBurden(useKey: Boolean = true) {
         if (useKey) {
             InputHelper.pressKey('5')
         } else {
@@ -77,16 +96,19 @@ class Bank : Widget {
         return containers[id]
     }
 
-    override fun containerChanged(container: Container, prev: WidgetItem, next: WidgetItem) {
-
+    override suspend fun containerChanged(container: Container, prev: WidgetItem, next: WidgetItem) {
+        events.emit(ContainerChangedEvent(this, container, prev.toContainerItem(container), next.toContainerItem(container)))
     }
 
     override fun exit() {
         InputHelper.pressKey(InputHelper.ESC)
     }
 
-    override fun close() {
-        ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, closeButton))
+    override suspend fun close() {
+        exit()
+        if(!delayUntil { isClosed() }) {
+            ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, closeButton))
+        }
     }
 
     companion object {

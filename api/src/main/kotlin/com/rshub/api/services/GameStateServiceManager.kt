@@ -31,5 +31,7 @@ class GameStateServiceManager {
     companion object {
         val GAME_STATE_EXECUTOR = Executors.newSingleThreadExecutor()
         val GAME_STATE_DISPATCHER = GAME_STATE_EXECUTOR.asCoroutineDispatcher()
+
+        val Dispatchers.GAME_STATE get() = GAME_STATE_DISPATCHER
     }
 }
