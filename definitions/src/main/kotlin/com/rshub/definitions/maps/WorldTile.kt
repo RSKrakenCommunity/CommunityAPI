@@ -1,5 +1,6 @@
 package com.rshub.definitions.maps
 
+
 import kotlinx.serialization.Serializable
 import kraken.plugin.api.Vector3i
 

@@ -3,6 +3,8 @@ package com.rshub.javafx.ui.model.walking
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
+import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
+import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleSetProperty
@@ -11,7 +13,9 @@ import tornadofx.ViewModel
 
 class WebWalkingModel : ViewModel() {
 
+    val showOnMinimap = bind { SimpleBooleanProperty(this, "show_on_minimap", false) }
     val autoUpdate = bind { SimpleBooleanProperty(this, "auto_update", true) }
+    val autoLink = bind { SimpleBooleanProperty(this, "auto_link", false) }
 
     val vertices = bind { SimpleSetProperty<VertexModel>(this, "vertices", FXCollections.observableSet(mutableSetOf())) }
 
@@ -31,6 +35,8 @@ class WebWalkingModel : ViewModel() {
         val vmTo = vertices.find { it.tile.get() == edge.to.tile }!!
         val strategy = when (edge.strategy) {
             is EdgeTileStrategy -> EdgeStrategy.TILE
+            is ObjectStrategy -> EdgeStrategy.OBJECT
+            is NpcStrategy -> EdgeStrategy.NPC
             else -> EdgeStrategy.TILE
         }
         vmFrom.edges.add(EdgeModel(vmFrom, vmTo, strategy))

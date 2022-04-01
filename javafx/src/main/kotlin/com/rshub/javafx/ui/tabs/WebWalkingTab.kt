@@ -1,5 +1,6 @@
 package com.rshub.javafx.ui.tabs
 
+import com.rshub.api.actions.NpcAction
 import com.rshub.api.actions.ObjectAction
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.skills.Skill
@@ -12,6 +13,7 @@ import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import javafx.util.StringConverter
 import kraken.plugin.api.Players
+import kraken.plugin.api.Vector3i
 import tornadofx.*
 
 class WebWalkingTab : Fragment("Web Walking") {
@@ -19,6 +21,7 @@ class WebWalkingTab : Fragment("Web Walking") {
     private val model: WebWalkingModel by di()
     private val editor: VertexEditorModel by di()
     private val osEditor: ObjectStrategyEditorModel by di()
+    private val npcEditor: NpcStrategyEditorModel by di()
 
     override val root = hbox {
         spacing = 10.0
@@ -70,9 +73,6 @@ class WebWalkingTab : Fragment("Web Walking") {
                 }
                 hbox {
                     alignment = Pos.CENTER
-                    checkbox("Auto Update", model.autoUpdate) {
-                        paddingRight = 5.0
-                    }
                     button("Save Vertices") {
                         setOnAction {
                             WalkHelper.saveWeb()
@@ -81,6 +81,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                     button("Load Web") {
                         setOnAction {
                             WalkHelper.loadWeb()
+                            model.reload()
                         }
                     }
                 }
@@ -89,6 +90,26 @@ class WebWalkingTab : Fragment("Web Walking") {
                 fitToParentHeight()
                 items.bind(model.vertices) { it }
                 bindSelected(model.selectedVertex)
+                items.onChange { it ->
+                    if (it.next() && it.wasAdded()) {
+                        val added = it.addedSubList.firstOrNull()
+                        if (added != null) {
+                            selectionModel.select(added)
+                            if (model.autoLink.get() && editor.strategy.get() === EdgeStrategy.TILE) {
+                                val player = Players.self()
+                                if (player != null) {
+                                    val index = model.vertices.size - 2
+                                    if(index > -1 && index < model.vertices.size) {
+                                        val vertex = model.vertices.elementAt(index)
+                                        if(vertex != added) {
+                                            linkEdges(vertex)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 model.selectedVertex.onChange {
                     if (it != null) {
                         if (model.edges.isBound) {
@@ -100,11 +121,16 @@ class WebWalkingTab : Fragment("Web Walking") {
                 model.reload()
                 cellFormat {
                     graphic = anchorpane {
-                        label {
-                            textProperty().bind(Bindings.createStringBinding({
-                                "Vertex ${it.id.get()} - ${it.edges.size}"
-                            }, it.edges.sizeProperty()))
+                        vbox {
+                            spacing = 2.5
+                            alignment = Pos.CENTER_LEFT
                             anchorpaneConstraints { leftAnchor = 0.0; topAnchor = 0.0; bottomAnchor = 0.0 }
+                            label {
+                                textProperty().bind(Bindings.createStringBinding({
+                                    "Vertex ${it.id.get()} - ${it.edges.size}"
+                                }, it.edges.sizeProperty()))
+                            }
+                            label(it.tile)
                         }
                         hbox {
                             spacing = 10.0
@@ -112,19 +138,9 @@ class WebWalkingTab : Fragment("Web Walking") {
                             button("Link") {
                                 disableWhen(model.selectedVertex.isNull.or(model.selectedVertex.isEqualTo(it)))
                                 setOnAction { _ ->
-                                    val sel = model.selectedVertex.get()
-                                    if (sel != null) {
-                                        val strat = editor.strategy.get()
-                                        val edge = EdgeModel(sel, it, strat)
-                                        sel.edges.add(edge)
-                                        if (strat === EdgeStrategy.TILE) {
-                                            it.edges.add(EdgeModel(it, sel))
-                                        }
-                                        if (model.autoUpdate.get()) {
-                                            model.update()
-                                        }
-                                    }
+                                    linkEdges(it)
                                 }
+                                Vector3i(0, 0, 0).toTile()
                             }
                         }
                     }
@@ -136,7 +152,15 @@ class WebWalkingTab : Fragment("Web Walking") {
             paddingAll = 10.0
             spacing = 10.0
             minWidth = 200.0
+            checkbox("Show Minimap", model.showOnMinimap)
             checkbox("Use Player Tile", editor.usePlayerTile)
+            checkbox("Auto Link") {
+                disableWhen(editor.strategy.isNotEqualTo(EdgeStrategy.TILE))
+                bind(model.autoLink)
+            }
+            checkbox("Auto Update", model.autoUpdate) {
+                paddingRight = 5.0
+            }
             vbox {
                 spacing = 10.0
                 dynamicContent(editor.usePlayerTile) {
@@ -202,6 +226,21 @@ class WebWalkingTab : Fragment("Web Walking") {
                     text =
                         "Edge( From: ${it.from.get().id.get()} To: ${it.to.get().id.get()} ) - ${it.strategy.get().name}"
                 }
+            }
+        }
+    }
+
+    private fun linkEdges(it: VertexModel) {
+        val sel = model.selectedVertex.get()
+        if (sel != null) {
+            val strat = editor.strategy.get()
+            val edge = EdgeModel(sel, it, strat)
+            sel.edges.add(edge)
+            if (strat === EdgeStrategy.TILE) {
+                it.edges.add(EdgeModel(it, sel))
+            }
+            if (model.autoUpdate.get()) {
+                model.update()
             }
         }
     }
@@ -277,7 +316,33 @@ class WebWalkingTab : Fragment("Web Walking") {
                         }
                         field("Level") {
                             textfield(osEditor.level) {
+                                disableWhen(osEditor.skill.isEqualTo(Skill.NONE))
                                 stripNonInteger()
+                            }
+                        }
+                    }
+                }
+            }
+            EdgeStrategy.NPC -> {
+                form {
+                    fieldset("Npc Interaction") {
+                        field("Npc ID") {
+                            textfield(npcEditor.npcId)
+                        }
+                        field("Action") {
+                            choicebox(npcEditor.action) {
+                                items.addAll(NpcAction.values())
+                                selectionModel.select(NpcAction.NPC1)
+                                converter = object : StringConverter<NpcAction>() {
+                                    override fun toString(value: NpcAction): String {
+                                        return value.name.lowercase().capitalize()
+                                            .replace('_', ' ')
+                                    }
+
+                                    override fun fromString(string: String): NpcAction {
+                                        return NpcAction.valueOf(string.uppercase().replace(' ', '_'))
+                                    }
+                                }
                             }
                         }
                     }

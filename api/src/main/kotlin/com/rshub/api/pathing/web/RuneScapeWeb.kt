@@ -4,6 +4,7 @@ import com.rshub.api.pathing.walking.TraversalNode
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
+import kraken.plugin.api.Debug
 
 class RuneScapeWeb(val edges: List<Edge>) {
     private val GraphVertex.neighbors: List<GraphVertex>
@@ -21,12 +22,15 @@ class RuneScapeWeb(val edges: List<Edge>) {
 
     private fun findRoute(from: GraphVertex, to: GraphVertex): Edge? {
         return edges.find {
+            println(it.strategy !is EdgeTileStrategy)
             (it.from == from && it.to == to) || (it.from == to && it.to == from)
         }
     }
 
     private fun findRouteOrDefault(from: GraphVertex, to: GraphVertex): Edge {
-        return findRoute(from, to) ?: Edge(from, to, EdgeTileStrategy())
+        return findRoute(from, to) ?: kotlin.run {
+            Edge(from, to, EdgeTileStrategy())
+        }
     }
 
     private fun generatePath(currentPos: GraphVertex, cameFrom: Map<GraphVertex, TraversalNode>): List<TraversalNode> {
@@ -53,8 +57,7 @@ class RuneScapeWeb(val edges: List<Edge>) {
 
         val costFromStart = mutableMapOf(begin to 0.0)
 
-        val estimatedRoute = findRouteOrDefault(from = begin, to = end).cost
-        val estimatedTotalCost = mutableMapOf(begin to estimatedRoute)
+        val estimatedTotalCost = mutableMapOf(begin to begin.tile.distance(end.tile).toDouble())
 
         while (openVertices.isNotEmpty()) {
             val currentPos = openVertices.minByOrNull { estimatedTotalCost.getValue(it) }!!
@@ -74,8 +77,8 @@ class RuneScapeWeb(val edges: List<Edge>) {
 
             for (neighbour in (currentPos.neighbors - closedVertices)) {
                 val edge = findRouteOrDefault(from = currentPos, to = neighbour)
-                if (edge.blocked())
-                    continue
+                /*if (edge.blocked())
+                    continue*/
                 val cost: Double = costFromStart.getValue(currentPos) + edge.cost
 
                 if (cost < costFromStart.getOrDefault(neighbour, Double.MAX_VALUE)) {
@@ -92,7 +95,6 @@ class RuneScapeWeb(val edges: List<Edge>) {
                 }
             }
         }
-
-        throw IllegalArgumentException("No Path from Start $begin to Finish $end")
+        return emptyList<TraversalNode>() to Double.POSITIVE_INFINITY
     }
 }

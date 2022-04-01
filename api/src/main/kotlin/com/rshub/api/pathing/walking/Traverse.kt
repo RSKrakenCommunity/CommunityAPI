@@ -36,6 +36,9 @@ object Traverse {
     suspend fun walkTo(dest: WorldTile): Boolean {
         val ctx = TraversalContext(dest)
         var failure = false
+        if(ctx.path.isEmpty()){
+            return false
+        }
         while (ctx.path.isNotEmpty() && !failure) {
             val player = ctx.player
             if (player == null) {
@@ -44,7 +47,7 @@ object Traverse {
             }
             val node = ctx.path.peek() ?: continue
             if (node.traverse()) {
-                val timeout = player.globalPosition.distance(node.vertex.tile).toLong()
+                val timeout = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(node.vertex.tile), false)
                 if (delayUntil((timeout * 650L)) { node.edge.reached() }) {
                     ctx.lastNode = ctx.path.poll()
                 }

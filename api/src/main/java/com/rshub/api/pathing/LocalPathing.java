@@ -20,6 +20,8 @@ import com.rshub.api.map.ClipFlag;
 import com.rshub.api.map.Region;
 import com.rshub.api.pathing.strategy.FixedTileStrategy;
 import com.rshub.definitions.maps.WorldTile;
+import kraken.plugin.api.Player;
+import kraken.plugin.api.Players;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +53,12 @@ public class LocalPathing {
     }
 
     public static boolean isReachable(WorldTile dest) {
-        return getLocalStepsTo(dest, 1, new FixedTileStrategy(dest), false) > -1;
+        Player player = Players.self();
+        if(player == null) {
+            return false;
+        }
+        WorldTile tile = WorldTile.Companion.toTile(player.getGlobalPosition());
+        return getLocalStepsTo(tile, 1, new FixedTileStrategy(dest), false) > -1;
     }
 
     public static List<WorldTile> findLocalRoute(WorldTile start, int srcSize, RouteStrategy strategy, boolean findAlternative) {

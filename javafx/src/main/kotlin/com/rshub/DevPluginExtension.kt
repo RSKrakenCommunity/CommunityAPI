@@ -11,15 +11,20 @@ import com.rshub.definitions.maps.WorldTile.Companion.localY
 import com.rshub.definitions.maps.WorldTile.Companion.regionId
 import com.rshub.javafx.ui.model.VariableDebuggerModel
 import com.rshub.javafx.ui.model.VariableModel
+import com.rshub.javafx.ui.model.walking.WebWalkingModel
 import kraken.plugin.api.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import org.pf4j.Extension
 import tornadofx.runLater
 import java.awt.Color
 
 @Extension
 class DevPluginExtension : PluginExtension, KoinComponent {
+
+    private val web: WebWalkingModel by inject()
+
     override fun onLoad(): Boolean {
         return true
     }
@@ -68,7 +73,7 @@ class DevPluginExtension : PluginExtension, KoinComponent {
     }
 
     override fun paintOverlay() {
-        if(Client.getState() == Client.IN_GAME) {
+        if(Client.getState() == Client.IN_GAME && web.showOnMinimap.get()) {
             val graph = WalkHelper.getGraph()
             if(graph != null) {
                 for ((id, vertex) in graph.getAllVertices().withIndex()) {

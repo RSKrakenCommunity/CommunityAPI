@@ -40,7 +40,12 @@ class WalkingTab : Fragment("Walking") {
                         }
                         setOnAction { _ ->
                             GlobalScope.launch {
-                                Traverse.walkTo(it.tile.get())
+                                val failed = !Traverse.walkTo(it.tile.get())
+                                if (failed) {
+                                    runLater {
+                                        warning("Path not found", "No route found for ${it.tile.get()}")
+                                    }
+                                }
                             }
                         }
                     }

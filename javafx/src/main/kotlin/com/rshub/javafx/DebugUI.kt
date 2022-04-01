@@ -45,6 +45,7 @@ class DebugUI : App(DebugView::class), KoinComponent {
             single { VertexEditorModel() }
             single { WalkingModel() }
             single { ObjectStrategyEditorModel() }
+            single { NpcStrategyEditorModel() }
         }
     }
 }

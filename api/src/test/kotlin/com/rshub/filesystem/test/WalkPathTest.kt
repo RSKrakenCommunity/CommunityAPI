@@ -11,7 +11,6 @@ import kotlin.collections.ArrayDeque
 
 class WalkPathTest {
 
-    @Test
     fun `web walk test`() {
         WalkHelper.loadWeb()
         val graph = WalkHelper.getGraph()

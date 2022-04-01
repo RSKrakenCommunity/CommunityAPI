@@ -1,9 +1,7 @@
 package com.rshub.api.entities.spirits.npc
 
 import com.rshub.api.actions.ActionHelper
-import com.rshub.api.actions.MenuAction
 import com.rshub.api.actions.NpcAction
-import com.rshub.api.actions.ObjectAction.forAction
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.spirits.WorldSpirit
 import com.rshub.api.pathing.LocalPathing

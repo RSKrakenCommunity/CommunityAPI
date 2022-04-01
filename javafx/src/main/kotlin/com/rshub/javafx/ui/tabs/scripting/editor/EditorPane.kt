@@ -44,7 +44,7 @@ class EditorPane : TabPane() {
 			val maybeTab = openTabs().find { path == it.path }
 			if (maybeTab == null) {
 				createNewTabInBackground {
-					EditorTab(path = path)
+					EditorTab(path = path, newBlankScript = true)
 				}
 			} else {
 				focus(maybeTab)

@@ -2,6 +2,7 @@ package com.rshub.api.pathing.web
 
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.EdgeStrategy
+import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
 import kotlinx.serialization.Serializable
 
@@ -35,7 +36,7 @@ class Graph {
     }
 
     fun adjacentVertices(vertex: GraphVertex): Set<GraphVertex> {
-        return edges.filter { it.from == vertex }.map { it.to }.toSet()
+        return edges.filter { it.from == vertex && it.strategy is EdgeTileStrategy }.map { it.to }.toSet()
     }
 
     fun setVertices(vertices: List<GraphVertex>) {

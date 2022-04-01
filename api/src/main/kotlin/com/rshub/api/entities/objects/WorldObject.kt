@@ -3,11 +3,9 @@ package com.rshub.api.entities.objects
 import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.ObjectAction
 import com.rshub.api.definitions.CacheHelper
-import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.entities.WorldEntity
 import com.rshub.api.map.Region
 import com.rshub.api.pathing.LocalPathing
-import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.definitions.objects.ObjectDefinition
 import kraken.plugin.api.*
@@ -46,7 +44,7 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
         val valid = tile == validTile
         val x = (if (valid) pos.x else pos.x - ceil(def.sizeX.toDouble() / 2)).toInt()
         val y = (if (valid) pos.y else pos.y - ceil(def.sizeY.toDouble() / 2)).toInt()
-        if (LocalPathing.isReachable(globalPosition.toTile())) {
+        if (LocalPathing.isReachable(pos.toTile())) {
             val objId = if(interactId == -1) id else interactId
             ActionHelper.menu(option, objId, x, y)
             return true

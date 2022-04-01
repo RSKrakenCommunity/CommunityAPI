@@ -23,14 +23,17 @@ class TraversalContext(val dest: WorldTile) {
         val plr = player ?: return
         val graph = WalkHelper.getGraph()
         val pos = plr.globalPosition.toTile()
-        val start = graph.getAllVertices().firstOrNull { it.tile.distance(pos) < 63 } ?: return
+        val possibleStarts = graph.getAllVertices().filter { it.tile.distance(pos) < 63 }
+        val start = possibleStarts.minByOrNull { it.tile.distance(pos) } ?: return
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(dest) }!!
         if (end.tile.distance(dest) >= 63) {
             return
         }
         val web = graph.toWeb()
         val (route, _) = web.findPath(start, end)
-        path = LinkedList(route)
+        if(route.isNotEmpty()) {
+            path = LinkedList(route)
+        }
     }
 
 }
