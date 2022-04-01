@@ -6,10 +6,7 @@ import com.rshub.javafx.ui.model.GlobalModel
 import com.rshub.javafx.ui.model.PlayerModel
 import com.rshub.javafx.ui.model.VariableDebuggerModel
 import com.rshub.javafx.ui.model.VariableScanModel
-import com.rshub.javafx.ui.model.walking.LocationModel
-import com.rshub.javafx.ui.model.walking.VertexEditorModel
-import com.rshub.javafx.ui.model.walking.WalkingModel
-import com.rshub.javafx.ui.model.walking.WebWalkingModel
+import com.rshub.javafx.ui.model.walking.*
 import javafx.stage.Stage
 import kraken.plugin.api.Kraken
 import org.koin.core.component.KoinComponent
@@ -47,6 +44,7 @@ class DebugUI : App(DebugView::class), KoinComponent {
             single { WebWalkingModel() }
             single { VertexEditorModel() }
             single { WalkingModel() }
+            single { ObjectStrategyEditorModel() }
         }
     }
 }

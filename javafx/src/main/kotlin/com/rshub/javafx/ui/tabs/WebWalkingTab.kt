@@ -1,7 +1,8 @@
 package com.rshub.javafx.ui.tabs
 
+import com.rshub.api.actions.ObjectAction
 import com.rshub.api.pathing.WalkHelper
-import com.rshub.api.pathing.WebWalkerSerializer
+import com.rshub.api.skills.Skill
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.walking.*
@@ -10,17 +11,14 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import javafx.util.StringConverter
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import kraken.plugin.api.Players
 import tornadofx.*
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class WebWalkingTab : Fragment("Web Walking") {
 
     private val model: WebWalkingModel by di()
     private val editor: VertexEditorModel by di()
+    private val osEditor: ObjectStrategyEditorModel by di()
 
     override val root = hbox {
         spacing = 10.0
@@ -31,7 +29,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                     alignment = Pos.CENTER
                     button("Add Vertex") {
                         setOnAction {
-                            val tile = if(editor.usePlayerTile.get()) {
+                            val tile = if (editor.usePlayerTile.get()) {
                                 Players.self()?.globalPosition?.toTile()
                             } else {
                                 val x = editor.tileX.get()
@@ -39,11 +37,11 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 val z = editor.tileZ.get()
                                 WorldTile(x, y, z)
                             }
-                            if(tile != null) {
+                            if (tile != null) {
                                 val id = model.vertices.size
                                 model.vertices.add(VertexModel(id, tile))
                             }
-                            if(model.autoUpdate.get()) {
+                            if (model.autoUpdate.get()) {
                                 model.update()
                             }
                         }
@@ -57,7 +55,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 vertex.edges.removeIf { it.to.get() === sel }
                             }
                             model.vertices.remove(sel)
-                            if(model.autoUpdate.get()) {
+                            if (model.autoUpdate.get()) {
                                 model.update()
                             }
                         }
@@ -93,7 +91,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                 bindSelected(model.selectedVertex)
                 model.selectedVertex.onChange {
                     if (it != null) {
-                        if(model.edges.isBound) {
+                        if (model.edges.isBound) {
                             model.edges.unbind()
                         }
                         model.edges.bind(it.edges)
@@ -115,14 +113,14 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 disableWhen(model.selectedVertex.isNull.or(model.selectedVertex.isEqualTo(it)))
                                 setOnAction { _ ->
                                     val sel = model.selectedVertex.get()
-                                    if(sel != null) {
+                                    if (sel != null) {
                                         val strat = editor.strategy.get()
                                         val edge = EdgeModel(sel, it, strat)
                                         sel.edges.add(edge)
-                                        if(strat === EdgeStrategy.TILE) {
+                                        if (strat === EdgeStrategy.TILE) {
                                             it.edges.add(EdgeModel(it, sel))
                                         }
-                                        if(model.autoUpdate.get()) {
+                                        if (model.autoUpdate.get()) {
                                             model.update()
                                         }
                                     }
@@ -142,7 +140,7 @@ class WebWalkingTab : Fragment("Web Walking") {
             vbox {
                 spacing = 10.0
                 dynamicContent(editor.usePlayerTile) {
-                    if(it == false) {
+                    if (it == false) {
                         hbox {
                             disableWhen(editor.usePlayerTile)
                             spacing = 2.0
@@ -201,20 +199,90 @@ class WebWalkingTab : Fragment("Web Walking") {
                 items.bind(model.edges) { it }
                 bindSelected(model.selectedEdge)
                 cellFormat {
-                    text = "Edge( From: ${it.from.get().id.get()} To: ${it.to.get().id.get()} ) - ${it.strategy.get().name}"
+                    text =
+                        "Edge( From: ${it.from.get().id.get()} To: ${it.to.get().id.get()} ) - ${it.strategy.get().name}"
                 }
             }
         }
     }
 
     private fun VBox.nodesByStrategy(strategy: EdgeStrategy?) {
-        if(strategy == null) return
-        when(strategy) {
+        if (strategy == null) return
+        when (strategy) {
             EdgeStrategy.TILE -> {
                 label("Tile strategy has no configuration.")
             }
-            EdgeStrategy.OBJECT -> TODO()
-            EdgeStrategy.AGILITY -> TODO()
+            EdgeStrategy.OBJECT -> {
+                form {
+                    fieldset("Object Interaction") {
+                        field("Object ID") {
+                            textfield(osEditor.objectId) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object X") {
+                            textfield(osEditor.objectX) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object Y") {
+                            textfield(osEditor.objectY) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object Z") {
+                            textfield(osEditor.objectZ) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object Action") {
+                            choicebox(osEditor.action) {
+                                items.addAll(ObjectAction.values())
+                                selectionModel.select(ObjectAction.OBJECT1)
+                                converter = object : StringConverter<ObjectAction>() {
+                                    override fun toString(strat: ObjectAction): String {
+                                        return strat.name.lowercase().capitalize().replace('_', ' ')
+                                    }
+
+                                    override fun fromString(string: String): ObjectAction {
+                                        return ObjectAction.valueOf(
+                                            string
+                                                .uppercase()
+                                                .replace(' ', '_')
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    fieldset("Skill Requirement") {
+                        field("Skill") {
+                            choicebox(osEditor.skill) {
+                                items.addAll(Skill.values())
+                                selectionModel.select(Skill.NONE)
+                                converter = object : StringConverter<Skill>() {
+                                    override fun toString(strat: Skill): String {
+                                        return strat.name.lowercase().capitalize().replace('_', ' ')
+                                    }
+
+                                    override fun fromString(string: String): Skill {
+                                        return Skill.valueOf(
+                                            string
+                                                .uppercase()
+                                                .replace(' ', '_')
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        field("Level") {
+                            textfield(osEditor.level) {
+                                stripNonInteger()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

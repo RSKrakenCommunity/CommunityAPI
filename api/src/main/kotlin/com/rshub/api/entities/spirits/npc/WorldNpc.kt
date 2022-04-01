@@ -1,8 +1,14 @@
 package com.rshub.api.entities.spirits.npc
 
+import com.rshub.api.actions.ActionHelper
+import com.rshub.api.actions.MenuAction
+import com.rshub.api.actions.NpcAction
+import com.rshub.api.actions.ObjectAction.forAction
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.spirits.WorldSpirit
+import com.rshub.api.pathing.LocalPathing
 import com.rshub.definitions.NpcDefinition
+import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kraken.plugin.api.*
 
 class WorldNpc(private val npc: Npc) : WorldSpirit {
@@ -33,6 +39,23 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
         return Client.getConVarById(def.varp)
     }
     val varbit: Int get() = CacheHelper.getVarbitValue(def.varbit)
+
+    fun interact(action: NpcAction) : Boolean {
+        if(LocalPathing.isReachable(globalPosition.toTile())) {
+            ActionHelper.menu(action, serverIndex, 0, 0)
+            return true
+        }
+        return false
+    }
+
+    fun interact(option: String) : Boolean {
+        for ((index, opt) in options.withIndex()) {
+            if(option.equals(opt, true)) {
+                return interact(NpcAction.forAction(index))
+            }
+        }
+        return false
+    }
 
     inline operator fun <reified T> get(key: Int) : T? {
         val map = def.params.map ?: return null

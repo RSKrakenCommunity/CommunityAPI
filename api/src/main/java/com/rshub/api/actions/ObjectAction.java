@@ -1,7 +1,5 @@
 package com.rshub.api.actions;
 
-import kotlinx.serialization.Serializable;
-
 public enum ObjectAction implements ActionType {
 
     OBJECT1(13),
@@ -29,7 +27,7 @@ public enum ObjectAction implements ActionType {
 
     public static ObjectAction forAction(int index) {
         for (ObjectAction value : values()) {
-            if(value.getActionIndex() == index) {
+            if (value.getActionIndex() == index) {
                 return value;
             }
         }
