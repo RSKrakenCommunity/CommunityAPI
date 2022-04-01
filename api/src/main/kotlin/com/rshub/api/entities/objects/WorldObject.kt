@@ -1,11 +1,17 @@
 package com.rshub.api.entities.objects
 
+import com.rshub.api.actions.ActionHelper
+import com.rshub.api.actions.ObjectAction
 import com.rshub.api.definitions.CacheHelper
+import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.entities.WorldEntity
+import com.rshub.api.map.Region
+import com.rshub.api.pathing.LocalPathing
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.definitions.objects.ObjectDefinition
 import kraken.plugin.api.*
+import kotlin.math.ceil
 
 class WorldObject(private val so: SceneObject) : WorldEntity {
 
@@ -31,6 +37,30 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
         val index = varbit
         if (index < 0 || index >= def.transformTo.size) return this.id
         return def.transformTo[index]
+    }
+
+    fun interact(option: ObjectAction) : Boolean {
+        val tile = globalPosition.toTile()
+        val validTile = Region.validateObjCoords(id, globalPosition.toTile())
+        val pos = globalPosition
+        val valid = tile == validTile
+        val x = (if (valid) pos.x else pos.x - ceil(def.sizeX.toDouble() / 2)).toInt()
+        val y = (if (valid) pos.y else pos.y - ceil(def.sizeY.toDouble() / 2)).toInt()
+        if (LocalPathing.isReachable(globalPosition.toTile())) {
+            val objId = if(interactId == -1) id else interactId
+            ActionHelper.menu(option, objId, x, y)
+            return true
+        }
+        return false
+    }
+
+    fun interact(option: String): Boolean {
+        for ((index, action) in def.options.withIndex()) {
+            if(option.equals(action, true)) {
+                return interact(ObjectAction.forAction(index))
+            }
+        }
+        return false
     }
 
     inline operator fun <reified T> get(key: Int): T? {

@@ -5,9 +5,12 @@ import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.EdgeStrategy
 import com.rshub.definitions.maps.WorldTile.Companion.expand
+import com.rshub.definitions.maps.WorldTile.Companion.toTile
+import kotlinx.serialization.Serializable
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players
 
+@Serializable
 class EdgeTileStrategy : EdgeStrategy {
     override fun traverse(edge: Edge): Boolean {
         Move.to(edge.from.tile)
@@ -18,15 +21,12 @@ class EdgeTileStrategy : EdgeStrategy {
         return edge.from.tile.expand(4).contains(Players.self())
     }
 
-    override fun isPlayerMoving(): Boolean {
-        return Players.self()?.isMoving ?: false
-    }
-
     override fun modifyCost(cost: Int): Int {
         return cost
     }
 
     override fun blocked(edge: Edge): Boolean {
-        return LocalPathing.getLocalStepsTo(edge.from.tile, 1, FixedTileStrategy(edge.to.tile), false) == -1
+        val player = Players.self() ?: return true
+        return LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(edge.from.tile), false) == -1
     }
 }

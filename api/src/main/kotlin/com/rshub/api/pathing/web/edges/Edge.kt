@@ -9,9 +9,6 @@ class Edge(
     val to: GraphVertex,
     val strategy: EdgeStrategy
 ) {
-
-    val dist: Int = from.distance(to)
-
     fun traverse() = strategy.traverse(this)
     fun blocked() = strategy.blocked(this)
     fun reached() = strategy.reached(this)

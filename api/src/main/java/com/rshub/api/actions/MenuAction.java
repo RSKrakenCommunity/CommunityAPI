@@ -1,6 +1,6 @@
 package com.rshub.api.actions;
 
-public enum MenuAction {
+public enum MenuAction implements ActionType {
 
     WALK(0),
     PLAYER1(1),
@@ -42,9 +42,19 @@ public enum MenuAction {
     SELECT_PLAYER(28)
     ;
 
-    public final int type;
+    private final int type;
 
     MenuAction(int type) {
         this.type = type;
+    }
+
+    @Override
+    public int getActionIndex() {
+        return -1;
+    }
+
+    @Override
+    public int getType() {
+        return type;
     }
 }

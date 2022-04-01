@@ -166,28 +166,25 @@ public class Region {
         return objectList;
     }
 
-    public static boolean validateObjCoords(MapObject object) {
-        Region region = Region.get(object.getTile().getRegionId());
+    public static WorldTile validateObjCoords(int objectId, WorldTile tile) {
+        Region region = Region.get(tile.getRegionId());
         List<MapObject> realObjects = region.getObjectList();
-        if (realObjects == null || realObjects.size() <= 0) return false;
+        if (realObjects == null || realObjects.size() <= 0) return tile;
         Map<Integer, MapObject> distanceMap = new TreeMap<>();
         for (MapObject real : realObjects) {
-            if (object.getObjectPlane() != real.getObjectPlane() || real.getObjectId() != object.getObjectId())
+            if (tile.getZ() != real.getObjectPlane() || real.getObjectId() != objectId)
                 continue;
-            int distance = object.getTile().distance(real.getTile());
+            int distance = tile.distance(real.getTile());
             if (distance != -1) distanceMap.put(distance, real);
         }
-        if (distanceMap.isEmpty()) return false;
+        if (distanceMap.isEmpty()) return tile;
         List<Integer> sortedKeys = new ArrayList<>(distanceMap.keySet());
         Collections.sort(sortedKeys);
         MapObject closest = distanceMap.get(sortedKeys.get(0));
-        ObjectDefinition def = CacheHelper.getObject(object.getObjectId());
-        if (object.getTile().distance(closest.getTile()) <= Math.max(def.getSizeX(), def.getSizeY())) {
-            object.setObjectX(closest.getObjectX());
-            object.setObjectY(closest.getObjectY());
-            object.setObjectPlane(closest.getObjectPlane());
-            return true;
+        ObjectDefinition def = CacheHelper.getObject(objectId);
+        if (tile.distance(closest.getTile()) <= Math.max(def.getSizeX(), def.getSizeY())) {
+            return new WorldTile(closest.getObjectX(), closest.getObjectY(), closest.getObjectPlane());
         }
-        return false;
+        return tile;
     }
 }

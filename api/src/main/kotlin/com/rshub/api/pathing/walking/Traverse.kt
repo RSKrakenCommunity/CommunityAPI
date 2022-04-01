@@ -26,7 +26,7 @@ object Traverse {
         if (isReachable) {
             Move.to(tile)
             val timeout = player.globalPosition.distance(tile).toLong()
-            delayUntil(timeout) { tile.expand(8).contains(Players.self()) }
+            delayUntil((timeout * 650L)) { tile.expand(8).contains(Players.self()) }
             return true
         }
         return false
@@ -43,11 +43,14 @@ object Traverse {
                 continue
             }
             val node = ctx.path.peek() ?: continue
-            Debug.log("Moving to ${node.edge.from.tile}")
-            node.traverse()
-            val timeout = player.globalPosition.distance(node.vertex.tile).toLong()
-            if (delayUntil((timeout * 650L)) { node.edge.reached() }) {
-                ctx.lastNode = ctx.path.poll()
+            if (node.traverse()) {
+                val timeout = player.globalPosition.distance(node.vertex.tile).toLong()
+                if (delayUntil((timeout * 650L)) { node.edge.reached() }) {
+                    ctx.lastNode = ctx.path.poll()
+                }
+            } else {
+                failure = true
+                continue
             }
             delay(600)
         }

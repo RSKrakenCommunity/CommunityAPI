@@ -49,14 +49,6 @@ class Graph {
         this.edges.addAll(edges)
     }
 
-    fun getDistance(from: GraphVertex, to: GraphVertex): Int {
-        return edges
-            .filter { it.from == from && it.to == to }
-            .filter { !it.blocked() }
-            .map { it.dist }
-            .first()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
