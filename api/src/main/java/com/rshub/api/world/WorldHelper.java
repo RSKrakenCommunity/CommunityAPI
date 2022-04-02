@@ -7,10 +7,6 @@ import com.rshub.api.entities.items.WorldItem;
 import com.rshub.api.entities.objects.WorldObject;
 import com.rshub.api.entities.spirits.npc.WorldNpc;
 import com.rshub.api.entities.spirits.player.WorldPlayer;
-import com.rshub.definitions.maps.MapObject;
-import kraken.plugin.api.GroundItem;
-import kraken.plugin.api.Npc;
-import kraken.plugin.api.Player;
 
 import java.util.function.Predicate;
 
@@ -21,6 +17,10 @@ public final class WorldHelper {
     private static final WorldObjectManager OBJECT_MANAGER = new WorldObjectManager();
     private static final SpiritManager SPIRIT_MANAGER = new SpiritManager();
     private static final GroundItemManager GROUND_ITEM_MANAGER = new GroundItemManager();
+
+    public static WorldObject closestObjectIgnoreClip(Predicate<WorldObject> predicate) {
+        return OBJECT_MANAGER.closestIgnoreClip(predicate::test);
+    }
 
     public static WorldObject closestObject(Predicate<WorldObject> predicate) {
         return OBJECT_MANAGER.closest(predicate::test);

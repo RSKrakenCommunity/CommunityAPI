@@ -7,6 +7,7 @@ import com.rshub.api.pathing.web.edges.EdgeStrategy
 import com.rshub.api.skills.Skill
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile
+import com.rshub.definitions.maps.WorldTile.Companion.tile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -24,7 +25,8 @@ class ObjectStrategy(
 ) : EdgeStrategy {
 
     override fun traverse(edge: Edge): Boolean {
-        val obj = WorldHelper.closestObject { it.id == objectId }
+        val objTile = tile(objectX, objectY, objectZ)
+        val obj = WorldHelper.closestObject { it.id == objectId && it.globalPosition.toTile() == objTile }
         return obj?.interact(option) ?: false
     }
 

@@ -15,6 +15,12 @@ class WorldObjectManager {
         .filterNot { it.hidden }
         .filter(filter)
 
+    fun closestIgnoreClip(filter: WorldObject.() -> Boolean) : WorldObject? {
+        val player = Players.self() ?: return null
+        return all(filter)
+            .minByOrNull { it.globalPosition.distance(player.globalPosition) }
+    }
+
     fun closest(filter: WorldObject.() -> Boolean) : WorldObject? {
         val player = Players.self() ?: return null
         val distanceMap: MutableMap<Int, WorldObject> = TreeMap()

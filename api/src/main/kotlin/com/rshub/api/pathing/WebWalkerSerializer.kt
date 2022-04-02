@@ -2,6 +2,7 @@ package com.rshub.api.pathing
 
 import com.rshub.api.pathing.web.Graph
 import com.rshub.api.pathing.web.edges.EdgeStrategy
+import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
@@ -23,6 +24,7 @@ object WebWalkerSerializer {
             subclass(EdgeTileStrategy::class)
             subclass(ObjectStrategy::class)
             subclass(NpcStrategy::class)
+            subclass(DoorStrategy::class)
         }
     }
 

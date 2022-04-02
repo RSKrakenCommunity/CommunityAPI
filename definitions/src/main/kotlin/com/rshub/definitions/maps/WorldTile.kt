@@ -37,4 +37,6 @@ class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
         val Vector3i.localX get() = x and 0x3f
         val Vector3i.localY get() = y and 0x3f
     }
+
+
 }
