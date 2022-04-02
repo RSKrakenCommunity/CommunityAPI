@@ -24,8 +24,7 @@ class ObjectStrategy(
 ) : EdgeStrategy {
 
     override fun traverse(edge: Edge): Boolean {
-        val objTile = WorldTile(objectX, objectY, objectZ)
-        val obj = WorldHelper.closestObject { it.id == objectId && it.globalPosition == objTile }
+        val obj = WorldHelper.closestObject { it.id == objectId }
         return obj?.interact(option) ?: false
     }
 
@@ -39,7 +38,7 @@ class ObjectStrategy(
     override fun reached(edge: Edge): Boolean {
         val player = Players.self()
         if(player != null) {
-            return player.globalPosition.toTile() == edge.to.tile
+            return player.globalPosition.toTile() == edge.to.tile && !player.isMoving
         }
         return false
     }

@@ -37,7 +37,7 @@ class WebWalkingModel : ViewModel() {
             is EdgeTileStrategy -> EdgeStrategy.TILE
             is ObjectStrategy -> EdgeStrategy.OBJECT
             is NpcStrategy -> EdgeStrategy.NPC
-            else -> EdgeStrategy.TILE
+            else -> error("Unknown strategy : ${edge.strategy::class.java.signers}")
         }
         vmFrom.edges.add(EdgeModel(vmFrom, vmTo, strategy))
     }

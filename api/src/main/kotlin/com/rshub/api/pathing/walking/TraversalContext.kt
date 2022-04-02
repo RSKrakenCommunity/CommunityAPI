@@ -14,6 +14,7 @@ class TraversalContext(val dest: WorldTile) {
     val player: Player? get() = Players.self()
     var path: Queue<TraversalNode> = LinkedList()
         private set
+    var skipThreshold: Int = 0
 
     init {
         generatePath()

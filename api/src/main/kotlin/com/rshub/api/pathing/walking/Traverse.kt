@@ -8,7 +8,6 @@ import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.expand
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.coroutines.runBlocking
-import kraken.plugin.api.Debug
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players
 
@@ -45,11 +44,14 @@ object Traverse {
                 failure = true
                 continue
             }
-            val node = ctx.path.peek() ?: continue
+            val node = ctx.path.poll() ?: continue
             if (node.traverse()) {
-                val timeout = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(node.vertex.tile), false)
-                if (delayUntil((timeout * 650L)) { node.edge.reached() }) {
-                    ctx.lastNode = ctx.path.poll()
+                val steps = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(node.vertex.tile), false)
+                val timeout = if(steps < 5000) {
+                    5000
+                } else steps * 650L
+                if (delayUntil(timeout) { node.edge.reached() }) {
+                    ctx.lastNode = node
                 }
             } else {
                 failure = true
