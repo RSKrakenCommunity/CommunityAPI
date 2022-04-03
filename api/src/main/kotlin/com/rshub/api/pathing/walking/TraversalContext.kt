@@ -4,6 +4,7 @@ import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
+import kraken.plugin.api.Debug
 import kraken.plugin.api.Player
 import kraken.plugin.api.Players
 import java.util.*
@@ -14,7 +15,6 @@ class TraversalContext(val dest: WorldTile) {
     val player: Player? get() = Players.self()
     var path: Queue<TraversalNode> = LinkedList()
         private set
-    var skipThreshold: Int = 0
 
     init {
         generatePath()
@@ -28,6 +28,7 @@ class TraversalContext(val dest: WorldTile) {
         val start = possibleStarts.minByOrNull { it.tile.distance(pos) } ?: return
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(dest) }!!
         if (end.tile.distance(dest) >= 63) {
+            Debug.log("Dest to far from closest node.")
             return
         }
         val web = graph.toWeb()

@@ -26,7 +26,6 @@ class EdgeTileStrategy : EdgeStrategy {
     }
 
     override fun blocked(edge: Edge): Boolean {
-        val player = Players.self() ?: return true
-        return LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(edge.from.tile), false) == -1
+        return false
     }
 }

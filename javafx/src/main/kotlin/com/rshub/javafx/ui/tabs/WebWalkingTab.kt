@@ -22,6 +22,7 @@ class WebWalkingTab : Fragment("Web Walking") {
     private val editor: VertexEditorModel by di()
     private val osEditor: ObjectStrategyEditorModel by di()
     private val npcEditor: NpcStrategyEditorModel by di()
+    private val doorEditor: DoorEditorModel by di()
 
     override val root = hbox {
         spacing = 10.0
@@ -99,9 +100,9 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 val player = Players.self()
                                 if (player != null) {
                                     val index = model.vertices.size - 2
-                                    if(index > -1 && index < model.vertices.size) {
+                                    if (index > -1 && index < model.vertices.size) {
                                         val vertex = model.vertices.elementAt(index)
-                                        if(vertex != added) {
+                                        if (vertex != added) {
                                             linkEdges(vertex)
                                         }
                                     }
@@ -344,6 +345,26 @@ class WebWalkingTab : Fragment("Web Walking") {
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+            }
+            EdgeStrategy.DOOR -> {
+                form {
+                    fieldset("Door Interaction") {
+                        field("Object ID") {
+                            textfield(doorEditor.objectId) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object X") {
+                            textfield(doorEditor.objectX)
+                        }
+                        field("Object Y") {
+                            textfield(doorEditor.objectY)
+                        }
+                        field("Object Z") {
+                            textfield(doorEditor.objectZ)
                         }
                     }
                 }

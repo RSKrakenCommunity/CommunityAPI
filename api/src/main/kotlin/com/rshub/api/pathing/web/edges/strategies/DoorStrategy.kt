@@ -14,6 +14,7 @@ class DoorStrategy(
     val action: ObjectAction,
     val objectTile: WorldTile
 ) : EdgeStrategy {
+
     override fun traverse(edge: Edge): Boolean {
         val door = WorldHelper.closestObjectIgnoreClip { it.id == objectId && it.globalPosition.toTile() == objectTile }
         return door?.interact(action) ?: false

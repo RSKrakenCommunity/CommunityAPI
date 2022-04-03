@@ -12,6 +12,7 @@ import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kraken.plugin.api.Players
+import kraken.plugin.api.SceneObjects
 
 @Serializable
 class ObjectStrategy(
@@ -32,9 +33,10 @@ class ObjectStrategy(
 
     override fun blocked(edge: Edge): Boolean {
         if(skill !== Skill.NONE) {
-            return skill.level < level && LocalPathing.isReachable(edge.from.tile)
+            if(skill.level <= 0) return false
+            return skill.level < level
         }
-        return LocalPathing.isReachable(edge.from.tile)
+        return false
     }
 
     override fun reached(edge: Edge): Boolean {

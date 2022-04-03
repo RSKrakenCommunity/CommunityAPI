@@ -1,9 +1,11 @@
 package com.rshub.javafx.ui.model.walking
 
 import com.rshub.api.pathing.web.edges.Edge
+import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
+import com.rshub.definitions.maps.WorldTile
 import javafx.beans.property.SimpleObjectProperty
 import tornadofx.ViewModel
 
@@ -11,6 +13,7 @@ class EdgeModel(from: VertexModel, to: VertexModel, strategy: EdgeStrategy = Edg
 
     private val osEditor: ObjectStrategyEditorModel by di()
     private val npcEditor: NpcStrategyEditorModel by di()
+    private val doorEditor: DoorEditorModel by di()
 
     val from = bind { SimpleObjectProperty(this, "from", from) }
     val to = bind { SimpleObjectProperty(this, "to", to) }
@@ -34,6 +37,17 @@ class EdgeModel(from: VertexModel, to: VertexModel, strategy: EdgeStrategy = Edg
                 NpcStrategy(
                     npcEditor.npcId.get(),
                     npcEditor.action.get()
+                )
+            }
+            EdgeStrategy.DOOR -> {
+                DoorStrategy(
+                    doorEditor.objectId.get(),
+                    doorEditor.action.get(),
+                    WorldTile(
+                        doorEditor.objectX.get(),
+                        doorEditor.objectY.get(),
+                        doorEditor.objectZ.get()
+                    )
                 )
             }
         }

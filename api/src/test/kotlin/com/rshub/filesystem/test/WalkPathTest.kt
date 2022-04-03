@@ -1,22 +1,21 @@
 package com.rshub.filesystem.test
 
 import com.rshub.api.pathing.WalkHelper
-import com.rshub.api.pathing.walking.TraversalNode
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
-import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.definitions.maps.WorldTile
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.collections.ArrayDeque
 
 class WalkPathTest {
 
+    @Test
     fun `web walk test`() {
         WalkHelper.loadWeb()
         val graph = WalkHelper.getGraph()
-        val plrTile = WorldTile(3212, 3373, 0)
-        val destTile = WorldTile(3169, 3455, 0)
-        val start = graph.getAllVertices().firstOrNull { it.tile.distance(plrTile) <= 63 }
+        val plrTile = WorldTile(2967, 3402, 0)
+        val destTile = WorldTile(2957, 3296, 0)
+        val possibleStarts = graph.getAllVertices().filter { it.tile.distance(plrTile) < 63 }
+        val start = possibleStarts.minByOrNull { it.tile.distance(plrTile) }
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(destTile) }
 
         if (start != null && end != null) {
@@ -32,13 +31,10 @@ class WalkPathTest {
 
             val p = LinkedList(path)
 
-            val c = p.poll()
-
-            println(c.vertex.tile)
-            println("---------------------------------")
-            println(c.edge.from.tile)
-            println(c.edge.to.tile)
-
+            while(p.isNotEmpty()) {
+                val n = p.poll() ?: continue
+                println(n.edge.strategy::class.simpleName)
+            }
         }
     }
 

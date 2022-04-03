@@ -1,5 +1,6 @@
 package com.rshub.api.plugin;
 
+import com.rshub.api.services.GameStateHelper;
 import kraken.plugin.api.Client;
 import kraken.plugin.api.Plugin;
 import kraken.plugin.api.PluginContext;

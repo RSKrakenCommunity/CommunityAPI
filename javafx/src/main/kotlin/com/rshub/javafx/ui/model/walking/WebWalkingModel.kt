@@ -2,6 +2,7 @@ package com.rshub.javafx.ui.model.walking
 
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.edges.Edge
+import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
@@ -37,6 +38,7 @@ class WebWalkingModel : ViewModel() {
             is EdgeTileStrategy -> EdgeStrategy.TILE
             is ObjectStrategy -> EdgeStrategy.OBJECT
             is NpcStrategy -> EdgeStrategy.NPC
+            is DoorStrategy -> EdgeStrategy.DOOR
             else -> error("Unknown strategy : ${edge.strategy::class.java.signers}")
         }
         vmFrom.edges.add(EdgeModel(vmFrom, vmTo, strategy))

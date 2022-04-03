@@ -8,6 +8,7 @@ import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.expand
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.coroutines.runBlocking
+import kraken.plugin.api.Debug
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players
 
@@ -20,12 +21,13 @@ object Traverse {
 
     suspend fun moveTo(tile: WorldTile): Boolean {
         val player = Players.self() ?: return false
-        val isReachable =
-            LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(tile), false) > -1
+        val steps =
+            LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, FixedTileStrategy(tile), false)
+        val isReachable = steps > -1
         if (isReachable) {
             Move.to(tile)
-            val timeout = player.globalPosition.distance(tile).toLong()
-            delayUntil((timeout * 650L)) { tile.expand(8).contains(Players.self()) }
+            val timeout = steps * 650L
+            delayUntil(timeout) { tile.expand(8).contains(Players.self()) }
             return true
         }
         return false
@@ -36,11 +38,13 @@ object Traverse {
         val ctx = TraversalContext(dest)
         var failure = false
         if(ctx.path.isEmpty()){
+            Debug.log("No path found on walkTo")
             return false
         }
         while (ctx.path.isNotEmpty() && !failure) {
             val player = ctx.player
             if (player == null) {
+                Debug.log("Player null on loop start.")
                 failure = true
                 continue
             }
@@ -54,13 +58,19 @@ object Traverse {
                     ctx.lastNode = node
                 }
             } else {
+                Debug.log("Traverse failed.")
                 failure = true
                 continue
             }
             delay(600)
         }
         if (!failure && ctx.path.isEmpty()) {
-            val dist = ctx.player?.globalPosition?.distance(dest) ?: return false
+            val player = ctx.player
+            if(player == null) {
+                Debug.log("Player is null on dest walk.")
+                return false
+            }
+            val dist = player.globalPosition.distance(dest)
             if (dist <= 63) {
                 return moveTo(dest)
             }

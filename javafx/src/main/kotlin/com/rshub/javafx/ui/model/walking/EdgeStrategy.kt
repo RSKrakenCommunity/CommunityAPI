@@ -4,6 +4,7 @@ enum class EdgeStrategy {
 
     TILE,
     OBJECT,
+    DOOR,
     NPC
 
 }
