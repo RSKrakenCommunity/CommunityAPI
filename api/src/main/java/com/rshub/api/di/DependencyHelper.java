@@ -9,4 +9,8 @@ public final class DependencyHelper {
         return DEPENDENCY_INJECTION.get(clazz);
     }
 
+    public static void register(Class<?> clazz, Object instance) {
+        DEPENDENCY_INJECTION.register(clazz, instance);
+    }
+
 }
