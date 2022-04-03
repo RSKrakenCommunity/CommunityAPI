@@ -6,6 +6,8 @@ import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.WorldEntity
 import com.rshub.api.map.Region
 import com.rshub.api.pathing.LocalPathing
+import com.rshub.api.state.SelfCorrectionState
+import com.rshub.api.state.events.ObjectInteractError
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.definitions.objects.ObjectDefinition
 import kraken.plugin.api.*
@@ -49,6 +51,7 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
             ActionHelper.menu(option, objId, x, y)
             return true
         }
+        SelfCorrectionState.events.tryEmit(ObjectInteractError(this))
         return false
     }
 

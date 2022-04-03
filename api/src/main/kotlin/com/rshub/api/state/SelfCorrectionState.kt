@@ -1,14 +1,16 @@
 package com.rshub.api.state
 
-import com.rshub.api.state.events.ObjectInteractError
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kraken.plugin.api.Debug
 import kraken.plugin.api.Kraken
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class SelfCorrectionState {
+object SelfCorrectionState {
 
     val jobs = mutableListOf<Job>()
     val events = MutableSharedFlow<ErrorEvent<*>>(extraBufferCapacity = 100)
@@ -43,10 +45,6 @@ class SelfCorrectionState {
         }
     }
 
-    suspend fun fireEvent(event: ErrorEvent<*>) {
-        events.emit(event)
-    }
-
     fun reactToError(clazz: Class<*>, reaction: ErrorEvent<*>.(EventStatus) -> Unit): Job {
         return events
             .onEach {
@@ -72,9 +70,6 @@ class SelfCorrectionState {
     fun shutdown() {
         jobs.forEach(Job::cancel)
     }
-
-    companion object {
-        val DISPATCHER = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-        val Dispatchers.SELF_CORRECTION get() = DISPATCHER
-    }
+    private val DISPATCHER = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    val Dispatchers.SELF_CORRECTION get() = DISPATCHER
 }

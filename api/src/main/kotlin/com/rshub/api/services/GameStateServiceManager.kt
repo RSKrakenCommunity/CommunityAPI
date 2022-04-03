@@ -3,7 +3,7 @@ package com.rshub.api.services
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 
-class GameStateServiceManager {
+object GameStateServiceManager {
     private val services = mutableSetOf<GameStateService>()
     private var job: Job? = null
 
@@ -28,10 +28,7 @@ class GameStateServiceManager {
         job?.cancel()
     }
 
-    companion object {
-        val GAME_STATE_EXECUTOR = Executors.newSingleThreadExecutor()
-        val GAME_STATE_DISPATCHER = GAME_STATE_EXECUTOR.asCoroutineDispatcher()
-
-        val Dispatchers.GAME_STATE get() = GAME_STATE_DISPATCHER
-    }
+    private val GAME_STATE_EXECUTOR = Executors.newSingleThreadExecutor()
+    private val GAME_STATE_DISPATCHER = GAME_STATE_EXECUTOR.asCoroutineDispatcher()
+    val Dispatchers.GAME_STATE get() = GAME_STATE_DISPATCHER
 }
