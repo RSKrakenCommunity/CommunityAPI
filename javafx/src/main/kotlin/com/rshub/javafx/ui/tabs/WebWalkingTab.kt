@@ -3,6 +3,8 @@ package com.rshub.javafx.ui.tabs
 import com.rshub.api.actions.NpcAction
 import com.rshub.api.actions.ObjectAction
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.pathing.web.edges.Edge
+import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.api.skills.Skill
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
@@ -43,7 +45,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                             }
                             if (tile != null) {
                                 val id = model.vertices.size
-                                model.vertices.add(VertexModel(id, tile))
+                                model.vertices.add(VertexModel(id, GraphVertex(tile)))
                             }
                             if (model.autoUpdate.get()) {
                                 model.update()
@@ -91,22 +93,14 @@ class WebWalkingTab : Fragment("Web Walking") {
                 fitToParentHeight()
                 items.bind(model.vertices) { it }
                 bindSelected(model.selectedVertex)
-                items.onChange { it ->
+                items.onChange {
                     if (it.next() && it.wasAdded()) {
                         val added = it.addedSubList.firstOrNull()
                         if (added != null) {
+                            val prevSel = model.selectedVertex.get()
                             selectionModel.select(added)
-                            if (model.autoLink.get() && editor.strategy.get() === EdgeStrategy.TILE) {
-                                val player = Players.self()
-                                if (player != null) {
-                                    val index = model.vertices.size - 2
-                                    if (index > -1 && index < model.vertices.size) {
-                                        val vertex = model.vertices.elementAt(index)
-                                        if (vertex != added) {
-                                            linkEdges(vertex)
-                                        }
-                                    }
-                                }
+                            if (model.autoLink.get() && editor.strategy.get() === EdgeStrategyType.TILE) {
+                                linkEdges(prevSel)
                             }
                         }
                     }
@@ -156,7 +150,7 @@ class WebWalkingTab : Fragment("Web Walking") {
             checkbox("Show Minimap", model.showOnMinimap)
             checkbox("Use Player Tile", editor.usePlayerTile)
             checkbox("Auto Link") {
-                disableWhen(editor.strategy.isNotEqualTo(EdgeStrategy.TILE))
+                disableWhen(editor.strategy.isNotEqualTo(EdgeStrategyType.TILE))
                 bind(model.autoLink)
             }
             checkbox("Auto Update", model.autoUpdate) {
@@ -194,15 +188,15 @@ class WebWalkingTab : Fragment("Web Walking") {
                 }
             }
             choicebox(editor.strategy) {
-                items.addAll(EdgeStrategy.values())
-                selectionModel.select(EdgeStrategy.TILE)
-                converter = object : StringConverter<EdgeStrategy>() {
-                    override fun toString(strat: EdgeStrategy): String {
+                items.addAll(EdgeStrategyType.values())
+                selectionModel.select(EdgeStrategyType.TILE)
+                converter = object : StringConverter<EdgeStrategyType>() {
+                    override fun toString(strat: EdgeStrategyType): String {
                         return strat.name.lowercase().capitalize().replace('_', ' ')
                     }
 
-                    override fun fromString(string: String): EdgeStrategy {
-                        return EdgeStrategy.valueOf(
+                    override fun fromString(string: String): EdgeStrategyType {
+                        return EdgeStrategyType.valueOf(
                             string
                                 .uppercase()
                                 .replace(' ', '_')
@@ -235,10 +229,11 @@ class WebWalkingTab : Fragment("Web Walking") {
         val sel = model.selectedVertex.get()
         if (sel != null) {
             val strat = editor.strategy.get()
-            val edge = EdgeModel(sel, it, strat)
-            sel.edges.add(edge)
-            if (strat === EdgeStrategy.TILE) {
-                it.edges.add(EdgeModel(it, sel))
+            val edge = Edge(sel.toVertex(), it.toVertex(), editor.createStrategy())
+            val edgeModel = EdgeModel(sel, it, edge)
+            sel.edges.add(edgeModel)
+            if (strat === EdgeStrategyType.TILE) {
+                it.edges.add(EdgeModel(it, sel, edge))
             }
             if (model.autoUpdate.get()) {
                 model.update()
@@ -246,13 +241,13 @@ class WebWalkingTab : Fragment("Web Walking") {
         }
     }
 
-    private fun VBox.nodesByStrategy(strategy: EdgeStrategy?) {
+    private fun VBox.nodesByStrategy(strategy: EdgeStrategyType?) {
         if (strategy == null) return
         when (strategy) {
-            EdgeStrategy.TILE -> {
+            EdgeStrategyType.TILE -> {
                 label("Tile strategy has no configuration.")
             }
-            EdgeStrategy.OBJECT -> {
+            EdgeStrategyType.OBJECT -> {
                 form {
                     fieldset("Object Interaction") {
                         field("Object ID") {
@@ -324,7 +319,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                 }
             }
-            EdgeStrategy.NPC -> {
+            EdgeStrategyType.NPC -> {
                 form {
                     fieldset("Npc Interaction") {
                         field("Npc ID") {
@@ -349,7 +344,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                 }
             }
-            EdgeStrategy.DOOR -> {
+            EdgeStrategyType.DOOR -> {
                 form {
                     fieldset("Door Interaction") {
                         field("Object ID") {
@@ -365,6 +360,22 @@ class WebWalkingTab : Fragment("Web Walking") {
                         }
                         field("Object Z") {
                             textfield(doorEditor.objectZ)
+                        }
+                        field("Action") {
+                            choicebox(doorEditor.action) {
+                                items.addAll(ObjectAction.values())
+                                selectionModel.select(ObjectAction.OBJECT1)
+                                converter = object : StringConverter<ObjectAction>() {
+                                    override fun toString(value: ObjectAction): String {
+                                        return value.name.lowercase().capitalize()
+                                            .replace('_', ' ')
+                                    }
+
+                                    override fun fromString(string: String): ObjectAction {
+                                        return ObjectAction.valueOf(string.uppercase().replace(' ', '_'))
+                                    }
+                                }
+                            }
                         }
                     }
                 }

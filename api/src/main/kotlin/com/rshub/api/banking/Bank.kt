@@ -4,12 +4,11 @@ import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.containers.Container
 import com.rshub.api.containers.Inventory
-import com.rshub.api.coroutines.delayRandom
 import com.rshub.api.coroutines.delayUntil
 import com.rshub.api.entities.items.ContainerItem.Companion.toContainerItem
 import com.rshub.api.entities.items.GameItem
 import com.rshub.api.input.InputHelper
-import com.rshub.api.services.GameStateServiceManager.Companion.GAME_STATE
+import com.rshub.api.services.GameStateServiceManager.GAME_STATE
 import com.rshub.api.widgets.Widget
 import com.rshub.api.widgets.WidgetEvent
 import com.rshub.api.widgets.WidgetHelper
@@ -39,7 +38,7 @@ class Bank : Widget {
     }
 
     suspend fun withdrawItem(id: Int, amount: Int = -1) {
-        val option = when(amount) {
+        val option = when (amount) {
             1 -> WITHDRAW_ONE
             5 -> WITHDRAW_FIVE
             10 -> WITHDRAW_TEN
@@ -97,7 +96,14 @@ class Bank : Widget {
     }
 
     override suspend fun containerChanged(container: Container, prev: WidgetItem, next: WidgetItem) {
-        events.emit(ContainerChangedEvent(this, container, prev.toContainerItem(container), next.toContainerItem(container)))
+        events.emit(
+            ContainerChangedEvent(
+                this,
+                container,
+                prev.toContainerItem(container),
+                next.toContainerItem(container)
+            )
+        )
     }
 
     override fun exit() {
@@ -106,7 +112,7 @@ class Bank : Widget {
 
     override suspend fun close() {
         exit()
-        if(!delayUntil { isClosed() }) {
+        if (!delayUntil { isClosed() }) {
             ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, closeButton))
         }
     }

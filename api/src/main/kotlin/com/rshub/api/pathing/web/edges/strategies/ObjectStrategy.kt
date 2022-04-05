@@ -11,6 +11,7 @@ import com.rshub.definitions.maps.WorldTile.Companion.tile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kraken.plugin.api.Debug
 import kraken.plugin.api.Players
 import kraken.plugin.api.SceneObjects
 
@@ -26,8 +27,11 @@ class ObjectStrategy(
 ) : EdgeStrategy {
 
     override fun traverse(edge: Edge): Boolean {
-        val objTile = tile(objectX, objectY, objectZ)
-        val obj = WorldHelper.closestObject { it.id == objectId && it.globalPosition.toTile() == objTile }
+        Debug.log("Object($objectId, $objectX, $objectY, $objectZ, $option)")
+        val obj = WorldHelper.closestObjectIgnoreClip {
+            val pos = it.globalPosition
+            it.id == objectId && pos.x == objectX && pos.y == objectY && pos.z == objectZ
+        }
         return obj?.interact(option) ?: false
     }
 

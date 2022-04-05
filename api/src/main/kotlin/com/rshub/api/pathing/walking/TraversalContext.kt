@@ -12,6 +12,7 @@ import java.util.*
 class TraversalContext(val dest: WorldTile) {
 
     var lastNode: TraversalNode? = null
+    val pathWalked: Queue<TraversalNode> = LinkedList()
     val player: Player? get() = Players.self()
     var path: Queue<TraversalNode> = LinkedList()
         private set

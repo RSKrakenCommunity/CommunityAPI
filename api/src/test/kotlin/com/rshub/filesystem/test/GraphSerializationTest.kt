@@ -1,9 +1,12 @@
 package com.rshub.filesystem.test
 
 import com.rshub.api.actions.ObjectAction
+import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.Graph
 import com.rshub.api.pathing.web.edges.EdgeStrategy
+import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
+import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.api.skills.Skill
@@ -46,6 +49,8 @@ class GraphSerializationTest {
                 polymorphic(EdgeStrategy::class) {
                     subclass(EdgeTileStrategy::class)
                     subclass(ObjectStrategy::class)
+                    subclass(NpcStrategy::class)
+                    subclass(DoorStrategy::class)
                 }
             }
         }
@@ -57,6 +62,41 @@ class GraphSerializationTest {
         val g1 = json.decodeFromString<Graph>(encoded)
 
         println(json.encodeToString(g1))
+
+    }
+
+    @Test
+    fun `actual graph serialization`() {
+        WalkHelper.loadWeb()
+        var graph = WalkHelper.getGraph()
+
+        graph.getAllEdges().forEach {
+            val strat = it.strategy
+            if(strat is ObjectStrategy) {
+                val id = strat.objectId
+                val x = strat.objectX
+                val y = strat.objectY
+                val z = strat.objectZ
+                println("Object($id, $x, $y, $z)")
+            }
+        }
+
+        WalkHelper.saveWeb()
+
+        WalkHelper.loadWeb()
+
+        graph = WalkHelper.getGraph()
+
+        graph.getAllEdges().forEach {
+            val strat = it.strategy
+            if(strat is ObjectStrategy) {
+                val id = strat.objectId
+                val x = strat.objectX
+                val y = strat.objectY
+                val z = strat.objectZ
+                println("Object($id, $x, $y, $z)")
+            }
+        }
 
     }
 

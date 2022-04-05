@@ -8,7 +8,6 @@ import java.util.*
 
 class WalkPathTest {
 
-    @Test
     fun `web walk test`() {
         WalkHelper.loadWeb()
         val graph = WalkHelper.getGraph()
@@ -23,7 +22,6 @@ class WalkPathTest {
                 println("Dest not mapped.")
                 return
             }
-
 
             val (path, dist) = graph.toWeb().findPath(start, end)
 

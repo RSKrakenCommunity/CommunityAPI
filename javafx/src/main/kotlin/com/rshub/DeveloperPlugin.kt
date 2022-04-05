@@ -33,9 +33,9 @@ class DeveloperPlugin(wrapper: PluginWrapper?) : Plugin(wrapper) {
             modules(DebugUI.fxModule)
         }
         GameStateHelper.registerService(PlayerUpdateService())
+        WalkHelper.loadWeb()
+        LocationModel.load(Paths.get(System.getProperty("user.home")).resolve("kraken-plugins"))
         GlobalScope.launch {
-            WalkHelper.loadWeb()
-            LocationModel.load(Paths.get(System.getProperty("user.home")).resolve("kraken-plugins"))
             tornadofx.launch<DebugUI>()
         }
     }

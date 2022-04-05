@@ -27,26 +27,19 @@ class WebWalkingModel : ViewModel() {
 
     fun reload() {
         val graph = WalkHelper.getGraph()
-        vertices.set(FXCollections.observableSet(graph.getAllVertices().mapIndexed { index, graphVertex -> VertexModel(index, graphVertex.tile)}.toMutableSet()))
+        vertices.set(FXCollections.observableSet(graph.getAllVertices().mapIndexed { index, graphVertex -> VertexModel(index, graphVertex)}.toMutableSet()))
         graph.getAllEdges().forEach { addEdgeModel(it) }
     }
 
     private fun addEdgeModel(edge: Edge) {
         val vmFrom = vertices.find { it.tile.get() == edge.from.tile }!!
         val vmTo = vertices.find { it.tile.get() == edge.to.tile }!!
-        val strategy = when (edge.strategy) {
-            is EdgeTileStrategy -> EdgeStrategy.TILE
-            is ObjectStrategy -> EdgeStrategy.OBJECT
-            is NpcStrategy -> EdgeStrategy.NPC
-            is DoorStrategy -> EdgeStrategy.DOOR
-            else -> error("Unknown strategy : ${edge.strategy::class.java.signers}")
-        }
-        vmFrom.edges.add(EdgeModel(vmFrom, vmTo, strategy))
+        vmFrom.edges.add(EdgeModel(vmFrom, vmTo, edge))
     }
 
     fun update() {
         val graph = WalkHelper.getGraph()
-        graph.setVertices(vertices.map { it.toVertex() })
-        graph.setEdges(vertices.flatMap { it.edges }.map { it.toEdge() })
+        graph.setVertices(vertices.map { it.update(); it.item })
+        graph.setEdges(vertices.flatMap { it.edges }.map { it.update(); it.edge })
     }
 }

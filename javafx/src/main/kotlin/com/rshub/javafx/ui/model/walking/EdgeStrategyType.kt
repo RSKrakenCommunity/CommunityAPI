@@ -1,6 +1,6 @@
 package com.rshub.javafx.ui.model.walking
 
-enum class EdgeStrategy {
+enum class EdgeStrategyType {
 
     TILE,
     OBJECT,
