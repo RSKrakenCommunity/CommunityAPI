@@ -23,7 +23,8 @@ class ObjectStrategy(
     val objectZ: Int,
     val option: ObjectAction,
     val skill: Skill = Skill.NONE,
-    val level: Int = 0
+    val level: Int = 0,
+    val timeoutMod: Long = 0
 ) : EdgeStrategy {
 
     override fun traverse(edge: Edge): Boolean {
@@ -53,5 +54,13 @@ class ObjectStrategy(
 
     override fun modifyCost(cost: Int): Int {
         return cost
+    }
+
+    override fun modifyTimeout(timeout: Long): Long {
+        return timeout + this.timeoutMod
+    }
+
+    override fun skipThreshold(): Int {
+        return 1
     }
 }

@@ -54,14 +54,21 @@ object Traverse {
                     val steps = LocalPathing.getLocalStepsTo(
                         player.globalPosition.toTile(),
                         1,
-                        FixedTileStrategy(node.vertex.tile),
+                        FixedTileStrategy(node.edge.from.tile),
                         false
                     )
-                    val timeout = if (steps < 5000) {
+                    val waitFor = (steps * 650L)
+                    val timeout = if (waitFor < 5000) {
                         5000
-                    } else steps * 800L
-                    if (delayUntil(timeout) { node.edge.reached() }) {
+                    } else waitFor
+                    if(delayUntil(node.edge.strategy.modifyTimeout(timeout)) { node.edge.reached() }) {
                         ctx.pathWalked.offer(node)
+                        val toSkip = node.edge.strategy.skipThreshold()
+                        repeat(toSkip) {
+                            if(ctx.path.isNotEmpty()) {
+                                ctx.pathWalked.offer(ctx.path.poll())
+                            }
+                        }
                     }
                 } else {
                     Debug.log("Traverse failed: ${node.edge.strategy::class.java.simpleName}")

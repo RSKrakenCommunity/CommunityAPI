@@ -1,5 +1,7 @@
 package com.rshub.api.pathing.web
 
+import com.rshub.api.pathing.LocalPathing
+import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.api.pathing.walking.TraversalNode
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
@@ -42,7 +44,8 @@ class RuneScapeWeb(val edges: List<Edge>) {
     }
 
     private fun costToMoveThrough(edge: Edge): Double {
-        return edge.strategy.modifyCost(edge.from.distance(edge.to)).toDouble()
+        val cost = LocalPathing.getLocalStepsTo(edge.from.tile, 1, FixedTileStrategy(edge.to.tile), false)
+        return edge.strategy.modifyCost(cost).toDouble()
     }
 
     fun findPath(begin: GraphVertex, end: GraphVertex): Pair<List<TraversalNode>, Double> {

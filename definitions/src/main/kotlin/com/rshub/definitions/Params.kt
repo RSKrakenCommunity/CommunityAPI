@@ -18,13 +18,15 @@ package com.rshub.definitions
 
 import com.rshub.utilities.getMedium
 import com.rshub.utilities.string
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.nio.ByteBuffer
 
 class Params {
-    var map: MutableMap<Int, Any>? = HashMap()
+    var map: MutableMap<Int, @Contextual Any>? = HashMap()
     fun parse(buffer: ByteBuffer) {
         val size: Int = buffer.get().toInt()
         for (index in 0 until size) {

@@ -1,7 +1,10 @@
 package com.rshub.filesystem.test
 
+import com.rshub.api.definitions.CacheHelper
 import com.rshub.definitions.loaders.InventoryLoader
 import com.rshub.filesystem.sqlite.SqliteFilesystem
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.Test
 import java.nio.ByteBuffer
 import java.nio.file.Paths
@@ -26,6 +29,14 @@ class InventoryDefinitionTest {
         println(inv.size)
         println(inv.someIntArray1.toTypedArray().contentToString())
         println(inv.someIntArray2.toTypedArray().contentToString())
+
+    }
+
+    @Test
+    fun `object dump`() {
+        val def = CacheHelper.getObject(28691)
+        val json = Json { prettyPrint = true }
+        println(json.encodeToString(def.toJsonObject()))
 
     }
 

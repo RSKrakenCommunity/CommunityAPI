@@ -4,7 +4,9 @@ import com.javatar.plugin.api.PluginExtension
 import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.map.ClipFlag
 import com.rshub.api.map.Region
+import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY

@@ -1,11 +1,8 @@
 package com.rshub.api.pathing.web.edges.strategies
 
-import com.rshub.api.pathing.LocalPathing
-import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.EdgeStrategy
 import com.rshub.definitions.maps.WorldTile.Companion.expand
-import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.serialization.Serializable
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players

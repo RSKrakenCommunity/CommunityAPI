@@ -35,7 +35,8 @@ class VertexEditorModel : ViewModel() {
                     osEditor.objectZ.get(),
                     osEditor.action.get(),
                     osEditor.skill.get(),
-                    osEditor.level.get()
+                    osEditor.level.get(),
+                    timeoutMod = osEditor.timeout.get()
                 )
             }
             EdgeStrategyType.NPC -> {

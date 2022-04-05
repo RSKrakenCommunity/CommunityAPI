@@ -6,6 +6,7 @@ import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import javafx.beans.property.SimpleObjectProperty
+import kraken.plugin.api.Debug
 import tornadofx.ViewModel
 
 class EdgeModel(from: VertexModel, to: VertexModel, var edge: Edge) :
@@ -38,6 +39,7 @@ class EdgeModel(from: VertexModel, to: VertexModel, var edge: Edge) :
             EdgeStrategyType.NPC -> npcEditor.npcId.get() != -1
         }
         if (canUpdate) {
+            Debug.log("Updating!")
             edge = toEdge()
         }
     }

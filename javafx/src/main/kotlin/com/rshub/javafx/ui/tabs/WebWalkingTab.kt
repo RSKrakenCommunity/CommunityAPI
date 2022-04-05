@@ -4,6 +4,9 @@ import com.rshub.api.actions.NpcAction
 import com.rshub.api.actions.ObjectAction
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.edges.Edge
+import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
+import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
+import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.api.skills.Skill
 import com.rshub.definitions.maps.WorldTile
@@ -78,6 +81,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                     alignment = Pos.CENTER
                     button("Save Vertices") {
                         setOnAction {
+                            model.update()
                             WalkHelper.saveWeb()
                         }
                     }
@@ -187,7 +191,8 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                 }
             }
-            choicebox(editor.strategy) {
+            choicebox<EdgeStrategyType> {
+                valueProperty().bindBidirectional(editor.strategy)
                 items.addAll(EdgeStrategyType.values())
                 selectionModel.select(EdgeStrategyType.TILE)
                 converter = object : StringConverter<EdgeStrategyType>() {
@@ -217,6 +222,35 @@ class WebWalkingTab : Fragment("Web Walking") {
             listview<EdgeModel> {
                 items.bind(model.edges) { it }
                 bindSelected(model.selectedEdge)
+                model.selectedEdge.onChange {
+                    if (it != null) {
+                        when (it.strategy.get()!!) {
+                            EdgeStrategyType.TILE -> {}
+                            EdgeStrategyType.OBJECT -> {
+                                val strat = it.edge.strategy as ObjectStrategy
+                                osEditor.objectId.set(strat.objectId)
+                                osEditor.objectX.set(strat.objectX)
+                                osEditor.objectY.set(strat.objectY)
+                                osEditor.objectZ.set(strat.objectZ)
+                                osEditor.action.set(strat.option)
+                            }
+                            EdgeStrategyType.DOOR -> {
+                                val strat = it.edge.strategy as DoorStrategy
+                                doorEditor.objectId.set(strat.objectId)
+                                doorEditor.objectX.set(strat.objectTile.x)
+                                doorEditor.objectY.set(strat.objectTile.y)
+                                doorEditor.objectZ.set(strat.objectTile.z)
+                                doorEditor.action.set(strat.action)
+                            }
+                            EdgeStrategyType.NPC -> {
+                                val strat = it.edge.strategy as NpcStrategy
+                                npcEditor.npcId.set(strat.npcId)
+                                npcEditor.action.set(strat.action)
+                            }
+                        }
+                        editor.strategy.set(it.strategy.get())
+                    }
+                }
                 cellFormat {
                     text =
                         "Edge( From: ${it.from.get().id.get()} To: ${it.to.get().id.get()} ) - ${it.strategy.get().name}"
@@ -271,7 +305,8 @@ class WebWalkingTab : Fragment("Web Walking") {
                             }
                         }
                         field("Object Action") {
-                            choicebox(osEditor.action) {
+                            choicebox<ObjectAction> {
+                                valueProperty().bindBidirectional(osEditor.action)
                                 items.addAll(ObjectAction.values())
                                 selectionModel.select(ObjectAction.OBJECT1)
                                 converter = object : StringConverter<ObjectAction>() {
@@ -317,6 +352,13 @@ class WebWalkingTab : Fragment("Web Walking") {
                             }
                         }
                     }
+                    fieldset("Other Configurations") {
+                        dynamicContent(osEditor.skill) {
+                            if(it != null) {
+                                otherSettingsBySkill(it)
+                            }
+                        }
+                    }
                 }
             }
             EdgeStrategyType.NPC -> {
@@ -326,7 +368,8 @@ class WebWalkingTab : Fragment("Web Walking") {
                             textfield(npcEditor.npcId)
                         }
                         field("Action") {
-                            choicebox(npcEditor.action) {
+                            choicebox<NpcAction> {
+                                valueProperty().bindBidirectional(npcEditor.action)
                                 items.addAll(NpcAction.values())
                                 selectionModel.select(NpcAction.NPC1)
                                 converter = object : StringConverter<NpcAction>() {
@@ -362,7 +405,8 @@ class WebWalkingTab : Fragment("Web Walking") {
                             textfield(doorEditor.objectZ)
                         }
                         field("Action") {
-                            choicebox(doorEditor.action) {
+                            choicebox<ObjectAction> {
+                                valueProperty().bindBidirectional(doorEditor.action)
                                 items.addAll(ObjectAction.values())
                                 selectionModel.select(ObjectAction.OBJECT1)
                                 converter = object : StringConverter<ObjectAction>() {
@@ -379,6 +423,120 @@ class WebWalkingTab : Fragment("Web Walking") {
                         }
                     }
                 }
+            }
+        }
+        button("Update Strategy") {
+            disableWhen(editor.strategy.isEqualTo(EdgeStrategyType.TILE))
+            setOnAction {
+                model.selectedEdge.get()?.update()
+                when (editor.strategy.get()!!) {
+                    EdgeStrategyType.TILE -> {}
+                    EdgeStrategyType.OBJECT -> {
+                        osEditor.clear()
+                    }
+                    EdgeStrategyType.DOOR -> {
+                        doorEditor.clear()
+                    }
+                    EdgeStrategyType.NPC -> {
+                        npcEditor.clear()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Fieldset.otherSettingsBySkill(skill: Skill) {
+        when (skill) {
+            Skill.ATTACK -> {
+
+            }
+            Skill.DEFENSE -> {
+
+            }
+            Skill.STRENGTH -> {
+
+            }
+            Skill.CONSTITUTION -> {
+
+            }
+            Skill.RANGE -> {
+
+            }
+            Skill.PRAYER -> {
+
+            }
+            Skill.MAGIC -> {
+
+            }
+            Skill.COOKING -> {
+
+            }
+            Skill.WOODCUTTING -> {
+
+            }
+            Skill.FLETCHING -> {
+
+            }
+            Skill.FISHING -> {
+
+            }
+            Skill.FIREMAKING -> {
+
+            }
+            Skill.CRAFTING -> {
+
+            }
+            Skill.SMITHING -> {
+
+            }
+            Skill.MINING -> {
+
+            }
+            Skill.HERBLORE -> {
+
+            }
+            Skill.AGILITY -> {
+                field("Timeout Modification") {
+                    textfield(osEditor.timeout) {
+                        stripNonInteger()
+                    }
+                }
+            }
+            Skill.THIEVING -> {
+
+            }
+            Skill.SLAYER -> {
+
+            }
+            Skill.FARMING -> {
+
+            }
+            Skill.RUNECRAFTING -> {
+
+            }
+            Skill.HUNTER -> {
+
+            }
+            Skill.CONSTRUCTION -> {
+
+            }
+            Skill.SUMMONING -> {
+
+            }
+            Skill.DUNGEONEERING -> {
+
+            }
+            Skill.DIVINATION -> {
+
+            }
+            Skill.INVENTION -> {
+
+            }
+            Skill.ARCHAEOLOGY -> {
+
+            }
+            Skill.NONE -> {
+
             }
         }
     }

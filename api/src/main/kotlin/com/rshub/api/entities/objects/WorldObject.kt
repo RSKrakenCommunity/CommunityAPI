@@ -39,14 +39,14 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
         return def.transformTo[index]
     }
 
-    fun interact(option: ObjectAction) : Boolean {
+    fun interact(option: ObjectAction, clipCheck: Boolean = true) : Boolean {
         val tile = globalPosition.toTile()
         val validTile = Region.validateObjCoords(id, globalPosition.toTile())
         val pos = globalPosition
         val valid = tile == validTile
         val x = (if (valid) pos.x else pos.x - ceil(def.sizeX.toDouble() / 2)).toInt()
         val y = (if (valid) pos.y else pos.y - ceil(def.sizeY.toDouble() / 2)).toInt()
-        if (LocalPathing.isReachable(pos.toTile())) {
+        if (!clipCheck || LocalPathing.isReachable(pos.toTile())) {
             val objId = if(interactId == -1) id else interactId
             ActionHelper.menu(option, objId, x, y)
             return true
