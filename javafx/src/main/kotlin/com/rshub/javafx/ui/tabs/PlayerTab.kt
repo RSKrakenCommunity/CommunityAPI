@@ -16,6 +16,9 @@ class PlayerTab : Fragment("Local Player") {
             field {
                 label(playerModel.tile)
             }
+            field {
+                label(playerModel.localTile)
+            }
             field("Server Index") {
                 label(playerModel.serverIndex)
             }

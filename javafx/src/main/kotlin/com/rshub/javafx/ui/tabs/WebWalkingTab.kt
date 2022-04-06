@@ -103,7 +103,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                         if (added != null) {
                             val prevSel = model.selectedVertex.get()
                             selectionModel.select(added)
-                            if (model.autoLink.get() && editor.strategy.get() === EdgeStrategyType.TILE) {
+                            if (prevSel != null && model.autoLink.get() && editor.strategy.get() === EdgeStrategyType.TILE) {
                                 linkEdges(prevSel)
                             }
                         }
@@ -233,13 +233,19 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 osEditor.objectY.set(strat.objectY)
                                 osEditor.objectZ.set(strat.objectZ)
                                 osEditor.action.set(strat.option)
+                                osEditor.skill.set(strat.skill)
+                                osEditor.level.set(strat.level)
                             }
                             EdgeStrategyType.DOOR -> {
                                 val strat = it.edge.strategy as DoorStrategy
-                                doorEditor.objectId.set(strat.objectId)
-                                doorEditor.objectX.set(strat.objectTile.x)
-                                doorEditor.objectY.set(strat.objectTile.y)
-                                doorEditor.objectZ.set(strat.objectTile.z)
+                                doorEditor.openDoorId.set(strat.openDoorId)
+                                doorEditor.closedDoorId.set(strat.closedDoorId)
+                                doorEditor.openX.set(strat.openDoorTile.x)
+                                doorEditor.openY.set(strat.openDoorTile.y)
+                                doorEditor.openZ.set(strat.openDoorTile.z)
+                                doorEditor.closedX.set(strat.closedDoorTile.x)
+                                doorEditor.closedY.set(strat.closedDoorTile.y)
+                                doorEditor.closedZ.set(strat.closedDoorTile.z)
                                 doorEditor.action.set(strat.action)
                             }
                             EdgeStrategyType.NPC -> {
@@ -327,7 +333,8 @@ class WebWalkingTab : Fragment("Web Walking") {
                     }
                     fieldset("Skill Requirement") {
                         field("Skill") {
-                            choicebox(osEditor.skill) {
+                            choicebox<Skill> {
+                                valueProperty().bindBidirectional(osEditor.skill)
                                 items.addAll(Skill.values())
                                 selectionModel.select(Skill.NONE)
                                 converter = object : StringConverter<Skill>() {
@@ -389,20 +396,20 @@ class WebWalkingTab : Fragment("Web Walking") {
             }
             EdgeStrategyType.DOOR -> {
                 form {
-                    fieldset("Door Interaction") {
+                    fieldset("Open Door Interaction") {
                         field("Object ID") {
-                            textfield(doorEditor.objectId) {
+                            textfield(doorEditor.openDoorId) {
                                 stripNonInteger()
                             }
                         }
                         field("Object X") {
-                            textfield(doorEditor.objectX)
+                            textfield(doorEditor.openX)
                         }
                         field("Object Y") {
-                            textfield(doorEditor.objectY)
+                            textfield(doorEditor.openY)
                         }
                         field("Object Z") {
-                            textfield(doorEditor.objectZ)
+                            textfield(doorEditor.openZ)
                         }
                         field("Action") {
                             choicebox<ObjectAction> {
@@ -420,6 +427,22 @@ class WebWalkingTab : Fragment("Web Walking") {
                                     }
                                 }
                             }
+                        }
+                    }
+                    fieldset("Close Door Interaction") {
+                        field("Object ID") {
+                            textfield(doorEditor.closedDoorId) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Object X") {
+                            textfield(doorEditor.closedX)
+                        }
+                        field("Object Y") {
+                            textfield(doorEditor.closedY)
+                        }
+                        field("Object Z") {
+                            textfield(doorEditor.closedZ)
                         }
                     }
                 }

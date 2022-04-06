@@ -1,6 +1,8 @@
 package com.rshub.services
 
 import com.rshub.api.services.GameStateService
+import com.rshub.definitions.maps.WorldTile.Companion.localX
+import com.rshub.definitions.maps.WorldTile.Companion.toLocal
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.GlobalModel
 import com.rshub.javafx.ui.model.PlayerModel
@@ -22,6 +24,7 @@ class PlayerUpdateService : GameStateService, KoinComponent {
             runLater {
                 if (model.tile.get() != player.globalPosition.toTile().toString()) {
                     model.tile.set(player.globalPosition.toTile().toString())
+                    model.localTile.set(player.globalPosition.toLocal().toString())
                 }
                 if (model.serverIndex.get() != player.serverIndex) {
                     model.serverIndex.set(player.serverIndex)

@@ -12,21 +12,22 @@ class WorldObjectManager {
     fun all(filter: (WorldObject) -> Boolean) = SceneObjects.all()
         .filterNotNull()
         .map { WorldObject(it) }
-        .filterNot { it.hidden }
         .filter(filter)
 
-    fun closestIgnoreClip(filter: WorldObject.() -> Boolean) : WorldObject? {
+    fun at(x: Int, y: Int) = SceneObjects.at(x, y)?.map { WorldObject(it) } ?: emptyList()
+
+    fun closestIgnoreClip(filter: WorldObject.() -> Boolean): WorldObject? {
         val player = Players.self() ?: return null
         return all(filter)
             .minByOrNull { it.globalPosition.distance(player.globalPosition) }
     }
 
-    fun closest(filter: WorldObject.() -> Boolean) : WorldObject? {
+    fun closest(filter: WorldObject.() -> Boolean): WorldObject? {
         val player = Players.self() ?: return null
         val distanceMap: MutableMap<Int, WorldObject> = TreeMap()
         val objects = all(filter)
         for (wo in objects) {
-            if(wo.globalPosition.z != player.globalPosition.z)
+            if (wo.globalPosition.z != player.globalPosition.z)
                 continue
             val distance = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, ObjectStrategy(wo), false)
             if (distance != -1) distanceMap[distance] = wo

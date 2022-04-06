@@ -97,6 +97,18 @@ class ObjectDefinition(override val id: Int) : Definition {
             put("supports_items", supportsItems)
             put("interactable", interactable)
 
+            put("types", buildJsonArray {
+                types.forEach {
+                    if (it != null) {
+                        addJsonObject {
+                            put("type", it.name)
+                            put("isWall", it.isWall)
+                            put("slot", it.slot)
+                        }
+                    }
+                }
+            })
+
             put("vars", buildJsonObject {
                 put("varp", varp)
                 put("varbit", varpBit)

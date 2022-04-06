@@ -25,8 +25,7 @@ class TraversalContext(val dest: WorldTile) {
         val plr = player ?: return
         val graph = WalkHelper.getGraph()
         val pos = plr.globalPosition.toTile()
-        val possibleStarts = graph.getAllVertices().filter { it.tile.distance(pos) < 63 }
-        val start = possibleStarts.minByOrNull { it.tile.distance(pos) } ?: return
+        val start = graph.getAllVertices().minByOrNull { it.tile.distance(pos) } ?: return
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(dest) }!!
         if (end.tile.distance(dest) >= 63) {
             Debug.log("Dest to far from closest node.")

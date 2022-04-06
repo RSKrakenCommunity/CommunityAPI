@@ -34,7 +34,7 @@ class InventoryDefinitionTest {
 
     @Test
     fun `object dump`() {
-        val def = CacheHelper.getObject(28691)
+        val def = CacheHelper.getObject(28693)
         val json = Json { prettyPrint = true }
         println(json.encodeToString(def.toJsonObject()))
 

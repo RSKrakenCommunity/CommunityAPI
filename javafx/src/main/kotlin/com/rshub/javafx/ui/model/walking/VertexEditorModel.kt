@@ -24,7 +24,7 @@ class VertexEditorModel : ViewModel() {
 
     val strategy = bind { SimpleObjectProperty(this, "edge_strategy", EdgeStrategyType.TILE) }
 
-    fun createStrategy(strategy: EdgeStrategyType = this.strategy.get()) : EdgeStrategy {
+    fun createStrategy(strategy: EdgeStrategyType = this.strategy.get()): EdgeStrategy {
         return when (strategy) {
             EdgeStrategyType.TILE -> EdgeTileStrategy()
             EdgeStrategyType.OBJECT -> {
@@ -47,13 +47,19 @@ class VertexEditorModel : ViewModel() {
             }
             EdgeStrategyType.DOOR -> {
                 DoorStrategy(
-                    doorEditor.objectId.get(),
-                    doorEditor.action.get(),
+                    doorEditor.openDoorId.get(),
+                    doorEditor.closedDoorId.get(),
                     WorldTile(
-                        doorEditor.objectX.get(),
-                        doorEditor.objectY.get(),
-                        doorEditor.objectZ.get()
-                    )
+                        doorEditor.openX.get(),
+                        doorEditor.openY.get(),
+                        doorEditor.openZ.get()
+                    ),
+                    WorldTile(
+                        doorEditor.closedX.get(),
+                        doorEditor.closedY.get(),
+                        doorEditor.closedZ.get()
+                    ),
+                    doorEditor.action.get(),
                 )
             }
         }
