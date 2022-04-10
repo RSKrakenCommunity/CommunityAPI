@@ -31,6 +31,14 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
         center {
             form {
                 fieldset {
+                    fieldset {
+                        button("Clear Variables") {
+                            disableWhen(model.varps.emptyProperty())
+                            setOnAction {
+                                model.varps.clear()
+                            }
+                        }
+                    }
                     field("Scan Mode") {
                         label(model.isScanMode)
                     }
@@ -49,7 +57,7 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
                                 model.isScanMode.set(true)
                                 val values = scanner.scan()
                                 model.varps.clear()
-                                model.varps.putAll(values.associateBy { it.variableId.get() })
+                                model.varps.putAll(values.map { VariableModel(it.variableId.get(), "", it.value.get(), it.isVarp.get()) }.associateBy { it.variableId.get() })
                             }
                         }
                         textfield(scanner.scanValue) {

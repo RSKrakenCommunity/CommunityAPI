@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleListProperty
 import javafx.collections.FXCollections
 import kraken.plugin.api.Client
+import kraken.plugin.api.Debug
 import tornadofx.ViewModel
 
 class VariableScanModel : ViewModel() {
@@ -15,48 +16,49 @@ class VariableScanModel : ViewModel() {
 
     val results = bind { SimpleListProperty<VariableModel>(this, "results", FXCollections.observableArrayList()) }
 
-    fun scan(): List<VariableModel> {
-        val value = scanValue.get()
-        val currentResults = mutableListOf<VariableModel>()
+    fun scan() : List<VariableModel> {
+        return if(isValueUnknown.get()) {
+            scanForUnknown()
+        } else scanForInput()
+    }
+    fun scanForUnknown() : List<VariableModel> {
         if(results.isNotEmpty()) {
-            if(isValueUnknown.get()) {
-                for (result in results) {
-                    val newValue = Client.getConVarById(result.variableId.get())
-                    if(newValue == null) continue
-                    if(newValue.valueInt != result.value.get()) {
-                        currentResults.add(result)
-                    }
+            val newResults = mutableListOf<VariableModel>()
+            for (result in results) {
+                val value = result.value.get()
+                val convar = Client.getConVarById(result.variableId.get())
+                if(convar.valueInt != value) {
+                    newResults.add(result)
                 }
-                results.clear()
-                results.setAll(currentResults)
-            } else {
-                for (result in results) {
-                    val newValue = Client.getConVarById(result.variableId.get())
-                    if(newValue == null) continue
-                    if(newValue.valueInt == scanValue.get()) {
-                        currentResults.add(result)
-                    }
-                }
-                results.clear()
-                results.setAll(currentResults)
             }
-        } else if(isValueUnknown.get()) {
-            val rset = mutableListOf<VariableModel>()
-            repeat(65535) {
+            results.setAll(newResults)
+        } else {
+            val currentResults = mutableListOf<VariableModel>()
+            repeat(80000) {
                 val convar = Client.getConVarById(it)
                 if(convar != null) {
-                    rset.add(VariableModel(convar.id, "", convar.valueInt))
+                    currentResults.add(VariableModel(convar.id, "", convar.valueInt))
                 }
             }
-            results.setAll(rset)
-            return rset
-        } else {
-            val rset = CacheHelper.varbits { CacheHelper.getVarbitValue(it.id) == value || Client.getConVarById(it.index)?.valueInt == value }
-                .map { VariableModel(it.index, "", Client.getConVarById(it.index)?.valueInt ?: -1, false) }
-            results.setAll(rset)
-            return rset
+            results.addAll(currentResults)
         }
-        return currentResults
+        return results
+    }
+
+    fun scanForInput(): List<VariableModel> {
+        val value = scanValue.get()
+        val currentResults = mutableListOf<VariableModel>()
+        repeat(80000) {
+            val convar = Client.getConVarById(it)
+            if (convar != null) {
+                currentResults.add(VariableModel(convar.id, "", (0 + convar.valueInt)))
+            }
+        }
+        return currentResults.filter { Client.getConVarById(it.variableId.get()).valueInt == value } + currentResults.asSequence()
+            .map { CacheHelper.findVarbitsFor(it.variableId.get()) }.flatten()
+            .filter { CacheHelper.getVarbitValue(it.id) == value }
+            .map { Client.getConVarById(it.index) }
+            .map { VariableModel(it.id, "", it.valueInt) }.toList()
     }
 
 }

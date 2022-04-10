@@ -2,17 +2,19 @@ package com.rshub.api.widgets
 
 import com.rshub.api.containers.Container
 import com.rshub.api.entities.items.GameItem
+import com.rshub.api.variables.VariableHelper
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Item
 import kraken.plugin.api.WidgetItem
 import kraken.plugin.api.Widgets
+import kotlin.reflect.KProperty
 
 interface Widget {
     val widgetId: Int
     fun hasInventory(): Boolean
     fun addContainer(con: Container)
-    fun getContainer(id: Int) : Container?
+    fun getContainer(id: Int): Container?
 
     suspend fun containerChanged(container: Container, prev: WidgetItem, next: WidgetItem)
 
@@ -20,7 +22,7 @@ interface Widget {
 
     fun watchContainers(action: (Widget, Container, GameItem, GameItem) -> Unit)
 
-    fun asWidgetItem(slot: Int, item: Item) : WidgetItem {
+    fun asWidgetItem(slot: Int, item: Item): WidgetItem {
         return WidgetItem(item.id, item.amount, slot, widgetId)
     }
 

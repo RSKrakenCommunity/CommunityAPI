@@ -5,6 +5,8 @@ import com.rshub.api.actions.NpcAction
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.spirits.WorldSpirit
 import com.rshub.api.pathing.LocalPathing
+import com.rshub.api.state.SelfCorrectionState
+import com.rshub.api.state.events.NpcInteractError
 import com.rshub.definitions.NpcDefinition
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kraken.plugin.api.*
@@ -46,6 +48,7 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
             ActionHelper.menu(action, serverIndex, 0, 0)
             return true
         }
+        SelfCorrectionState.events.tryEmit(NpcInteractError(this))
         return false
     }
 
