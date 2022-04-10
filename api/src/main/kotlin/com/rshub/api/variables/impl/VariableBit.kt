@@ -12,8 +12,10 @@ class VariableBit(override val id: Int) : Variable {
     override val value: Int
         get() {
             val convar = Client.getConVarById(def.index) ?: return 0
-            val bits = (def.msb - def.lsb)
-            return convar.getValueMasked(def.lsb, if(bits <= 0) 1 else bits)
+            val lsb = def.lsb
+            val msb = def.msb
+            val mask = (1 shl msb - lsb + 1) - 1
+            return convar.valueInt shr lsb and mask
         }
 
 }
