@@ -1,6 +1,7 @@
 package com.rshub.filesystem.test
 
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.pathing.walking.TraversalContext
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
@@ -10,11 +11,12 @@ import java.util.*
 
 class WalkPathTest {
 
+    @Test
     fun `web walk test`() {
         WalkHelper.loadWeb()
         val graph = WalkHelper.getGraph()
-        val plrTile = WorldTile(3238, 3184, 0)
-        val destTile = WorldTile(3450, 3730, 0)
+        val plrTile = WorldTile(3235, 3220, 0)
+        val destTile = WorldTile(3297, 3184, 0)
         val start = graph.getAllVertices().minByOrNull { it.tile.distance(plrTile) }
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(destTile) }
 
@@ -23,10 +25,9 @@ class WalkPathTest {
                 println("Dest not mapped.")
                 return
             }
+            val ctx = TraversalContext(destTile)
 
-            val (path, dist) = graph.toWeb().findPath(start, end)
-
-            println("Distance needed: $dist")
+            val path = ctx.start(plrTile)
 
             val p = LinkedList(path)
 

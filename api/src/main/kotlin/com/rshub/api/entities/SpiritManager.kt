@@ -59,7 +59,7 @@ class SpiritManager {
         for (wo in spirits) {
             if(wo.globalPosition.z != start.z)
                 continue
-            val distance = LocalPathing.getLocalStepsTo(start, wo.def.size, EntityStrategy(wo), true)
+            val distance = LocalPathing.getLocalStepsTo(start, wo.def.size, EntityStrategy(wo), false)
             if (distance != -1) {
                 distanceMap[distance] = wo
             } else {

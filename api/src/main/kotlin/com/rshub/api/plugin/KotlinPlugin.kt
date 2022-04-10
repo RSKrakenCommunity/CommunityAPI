@@ -1,6 +1,7 @@
 package com.rshub.api.plugin
 
 import com.rshub.api.pathing.ResourceUpdater
+import com.rshub.api.pathing.WalkHelper
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Client
 import kraken.plugin.api.Plugin
@@ -18,6 +19,7 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
 
     open fun updateResources() {
         ResourceUpdater.update()
+        WalkHelper.loadWeb()
     }
 
     final override fun onLoaded(pluginContext: PluginContext): Boolean {

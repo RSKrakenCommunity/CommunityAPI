@@ -8,6 +8,7 @@ import com.rshub.api.input.InputHelper.pressKey
 import com.rshub.api.pathing.teleport.Teleport
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.tile
+import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Widgets
 
 enum class Lodestones(
@@ -16,7 +17,8 @@ enum class Lodestones(
     val param3: Int,
     val key: Char,
     val dest: WorldTile,
-    val varbit: Int
+    val varbit: Int,
+    val isMembers: Boolean
 ) : Teleport {
 
     LUMBRIDGE(
@@ -25,7 +27,8 @@ enum class Lodestones(
         71565330,
         'L',
         tile(3233, 3221),
-        35
+        35,
+        false
     ),
     KHARID(
         1,
@@ -33,7 +36,8 @@ enum class Lodestones(
         71565323,
         'A',
         tile(3297, 3184),
-        28
+        28,
+        false
     ),
     DRAYNOR(
         1,
@@ -41,7 +45,8 @@ enum class Lodestones(
         71565327,
         'D',
         tile(3105, 3289),
-        32
+        32,
+        false
     ),
     PORT_SARIM(
         1,
@@ -49,7 +54,8 @@ enum class Lodestones(
         71565331,
         'P',
         tile(3011, 3215),
-        36
+        36,
+        false
     ),
     VARROCK(
         1,
@@ -57,7 +63,8 @@ enum class Lodestones(
         71565334,
         'V',
         tile(3214, 3376),
-        39
+        39,
+        false
     ),
     FALADOR(
         1,
@@ -65,7 +72,8 @@ enum class Lodestones(
         71565329,
         'F',
         tile(2967, 3403),
-        34
+        34,
+        false
     ),
     EDGEVILLE(
         1,
@@ -73,7 +81,8 @@ enum class Lodestones(
         71565328,
         'E',
         tile(3067, 3505),
-        33
+        33,
+        false
     ),
     BURTHORPE(
         1,
@@ -81,7 +90,8 @@ enum class Lodestones(
         71565325,
         'B',
         tile(2899, 3544),
-        30
+        30,
+        false
     ),
     TAVERLY(
         1,
@@ -89,7 +99,8 @@ enum class Lodestones(
         71565333,
         'T',
         tile(2878, 3442),
-        38
+        38,
+        false
     ),
     CATHERBY(
         1,
@@ -97,7 +108,8 @@ enum class Lodestones(
         71565326,
         'C',
         tile(2811, 3449),
-        31
+        31,
+        true
     ),
     SEERS(
         1,
@@ -105,7 +117,8 @@ enum class Lodestones(
         71565332,
         'S',
         tile(2689, 3482),
-        37
+        37,
+        true
     ),
     CANIFIS(
         1,
@@ -113,7 +126,8 @@ enum class Lodestones(
         71565338,
         ' ',
         tile(3517, 3515, 0),
-        18523
+        18523,
+        true
     ),
     YANILLE(
         1,
@@ -121,7 +135,8 @@ enum class Lodestones(
         71565337,
         'Y',
         tile(2529, 3094, 0),
-        40
+        40,
+        true
     ),
     OOGLOG(
         1,
@@ -129,7 +144,8 @@ enum class Lodestones(
         71565342,
         'O',
         tile(2532, 2871, 0),
-        18527
+        18527,
+        true
     ),
     ARDOUGNE(
         1,
@@ -137,11 +153,101 @@ enum class Lodestones(
         71565324,
         ' ',
         tile(2634, 3348, 0),
-        29
+        29,
+        true
+    ),
+    WILDY(
+        1,
+        -1,
+        71565344,
+        'W',
+        tile(3143, 3635),
+        18529,
+        true
+    ),
+    FREMENNIK_PROVINCE(
+        1,
+        -1,
+        71565340,
+        ' ',
+        tile(2712, 3677),
+        18525,
+        true
+    ),
+    EAGLES_PEAK(
+        1,
+        -1,
+        71565339,
+        ' ',
+        tile(2366, 3479),
+        18524,
+        true
+    ),
+    KARAMAJA(
+        1,
+        -1,
+        71565341,
+        'K',
+        tile(2761, 3147),
+        18526,
+        true
+    ),
+    BANDIT_CAMP(
+        1,
+        -1,
+        71565321,
+        ' ',
+        tile(3214, 2954),
+        9482,
+        true
+    ) {
+        override suspend fun isAvailable(): Boolean {
+            return CacheHelper.getVarbitValue(varbit) >= 15
+        }
+    },
+    LUNAR_ISLE(
+        1,
+        -1,
+        71565322,
+        ' ',
+        tile(2085, 3914),
+        9482,
+        true
+    ) {
+        override suspend fun isAvailable(): Boolean {
+            return CacheHelper.getVarbitValue(varbit) >= 100
+        }
+    },
+    PRIFDDINAS(
+        1,
+        -1,
+        71565346,
+        ' ',
+        tile(2208, 3360, 1),
+        24967,
+        true
+    ),
+    ANACHRONIA(
+        1,
+        -1,
+        71565336,
+        ' ',
+        tile(5431, 2338),
+        44270,
+        true
+    ),
+    TIRANNWIN(
+        1,
+        -1,
+        71565343,
+        ' ',
+        tile(2254, 3149),
+        18528,
+        true
     );
 
-    override suspend fun isAvailable(): Boolean {
-        return isUnlocked()
+    open override suspend fun isAvailable(): Boolean {
+        return CacheHelper.getVarbitValue(varbit) == 1
     }
 
     override suspend fun teleport(): Boolean {
@@ -149,8 +255,8 @@ enum class Lodestones(
                 pressKey('T')
                 Widgets.isOpen(LODESTONE_ID)
             }) {
-            println("${this.name} - ${isUnlocked()}")
-            if (!isUnlocked()) {
+            println("${this.name} - ${isAvailable()}")
+            if (!isAvailable()) {
                 println("Not unlocked!")
                 return false
             }
@@ -168,7 +274,7 @@ enum class Lodestones(
                 return true
             }
         } else {
-            if (!isUnlocked()) {
+            if (!isAvailable()) {
                 println("Not unlocked! 1")
                 return false
             }
@@ -179,7 +285,7 @@ enum class Lodestones(
                 96010258
             )
             if (delayUntil { Widgets.isOpen(LODESTONE_ID) }) {
-                if (!isUnlocked()) {
+                if (!isAvailable()) {
                     println("Not unlocked! 2")
                     return false
                 }
@@ -199,7 +305,7 @@ enum class Lodestones(
         return false
     }
 
-    fun isUnlocked() = CacheHelper.getVarbitValue(varbit) == 1
+    fun isUnlocked() = runBlocking { isAvailable() }
 
     companion object {
         val LODESTONES = values()

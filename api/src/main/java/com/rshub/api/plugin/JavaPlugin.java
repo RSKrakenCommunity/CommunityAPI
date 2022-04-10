@@ -1,6 +1,7 @@
 package com.rshub.api.plugin;
 
 import com.rshub.api.pathing.ResourceUpdater;
+import com.rshub.api.pathing.WalkHelper;
 import com.rshub.api.services.GameStateHelper;
 import kraken.plugin.api.Client;
 import kraken.plugin.api.Plugin;
@@ -20,6 +21,7 @@ public abstract class JavaPlugin extends Plugin {
 
     protected void updateResources() {
         ResourceUpdater.INSTANCE.update();
+        WalkHelper.loadWeb();
     }
 
     @Override

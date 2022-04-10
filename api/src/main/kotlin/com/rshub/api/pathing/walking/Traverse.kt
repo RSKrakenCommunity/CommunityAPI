@@ -35,21 +35,25 @@ object Traverse {
 
 
     suspend fun walkTo(dest: WorldTile): Boolean {
+        val plr = Players.self() ?: return false
         val ctx = TraversalContext(dest)
-        if (!walkToDest(ctx, dest)) {
+        val path = ctx.start(plr.globalPosition.toTile())
+        if(walkToDest(ctx, dest)) {
+            return true
+        } else {
             var failure = false
-            if (ctx.path.isEmpty()) {
+            if (path.isEmpty()) {
                 Debug.log("No path found on walkTo")
                 return false
             }
-            while (ctx.path.isNotEmpty() && !failure) {
+            while (path.isNotEmpty() && !failure) {
                 val player = ctx.player
                 if (player == null) {
                     Debug.log("Player null on loop start.")
                     failure = true
                     continue
                 }
-                val node = ctx.path.poll() ?: continue
+                val node = path.poll() ?: continue
                 if (node.traverse()) {
                     val steps = LocalPathing.getLocalStepsTo(
                         player.globalPosition.toTile(),
@@ -71,12 +75,11 @@ object Traverse {
                 }
                 delay(600)
             }
-            if (!failure && ctx.path.isEmpty()) {
+            if (!failure && path.isEmpty()) {
                 return walkToDest(ctx, dest)
             }
             return !failure
         }
-        return false
     }
 
     private suspend fun walkToDest(ctx: TraversalContext, dest: WorldTile): Boolean {
