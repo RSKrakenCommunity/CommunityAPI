@@ -2,6 +2,8 @@ package com.rshub.filesystem.test
 
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
+import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
+import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.definitions.maps.WorldTile
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -11,10 +13,9 @@ class WalkPathTest {
     fun `web walk test`() {
         WalkHelper.loadWeb()
         val graph = WalkHelper.getGraph()
-        val plrTile = WorldTile(2967, 3402, 0)
-        val destTile = WorldTile(2957, 3296, 0)
-        val possibleStarts = graph.getAllVertices().filter { it.tile.distance(plrTile) < 63 }
-        val start = possibleStarts.minByOrNull { it.tile.distance(plrTile) }
+        val plrTile = WorldTile(3238, 3184, 0)
+        val destTile = WorldTile(3450, 3730, 0)
+        val start = graph.getAllVertices().minByOrNull { it.tile.distance(plrTile) }
         val end = graph.getAllVertices().minByOrNull { it.tile.distance(destTile) }
 
         if (start != null && end != null) {
@@ -31,7 +32,20 @@ class WalkPathTest {
 
             while(p.isNotEmpty()) {
                 val n = p.poll() ?: continue
-                println(n.edge.strategy::class.simpleName)
+                println("----------------------------------")
+                println(n.vertex.tile)
+                val strat = n.edge.strategy
+                when (strat) {
+                    is ObjectStrategy -> {
+                        println("Object(${strat.objectId}, ${strat.objectX}, ${strat.objectY})")
+                    }
+                    is NpcStrategy -> {
+                        println("Npc(${strat.npcId}, ${strat.action.name}) - ${strat.location}")
+                    }
+                    else -> {
+                        println(n.edge.strategy::class.simpleName)
+                    }
+                }
             }
         }
     }

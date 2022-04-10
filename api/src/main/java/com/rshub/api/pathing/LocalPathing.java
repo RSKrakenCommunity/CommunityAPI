@@ -16,15 +16,18 @@
 //
 package com.rshub.api.pathing;
 
+import com.rshub.api.entities.objects.WorldObject;
+import com.rshub.api.entities.spirits.npc.WorldNpc;
 import com.rshub.api.map.ClipFlag;
 import com.rshub.api.map.Region;
+import com.rshub.api.pathing.strategy.EntityStrategy;
 import com.rshub.api.pathing.strategy.FixedTileStrategy;
+import com.rshub.api.pathing.strategy.ObjectStrategy;
 import com.rshub.definitions.maps.WorldTile;
 import kraken.plugin.api.Player;
 import kraken.plugin.api.Players;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class LocalPathing {
@@ -52,13 +55,31 @@ public class LocalPathing {
         return steps == null ? -1 : steps.size();
     }
 
-    public static boolean isReachable(WorldTile dest) {
+    public static boolean isTileReachable(WorldTile dest) {
         Player player = Players.self();
-        if(player == null) {
+        if (player == null) {
             return false;
         }
         WorldTile tile = WorldTile.Companion.toTile(player.getGlobalPosition());
         return getLocalStepsTo(tile, 1, new FixedTileStrategy(dest), false) > -1;
+    }
+
+    public static boolean isNpcReachable(WorldNpc npc) {
+        Player player = Players.self();
+        if (player == null) {
+            return false;
+        }
+        WorldTile tile = WorldTile.Companion.toTile(player.getGlobalPosition());
+        return getLocalStepsTo(tile, npc.getDef().getSize(), new EntityStrategy(npc), true) > -1;
+    }
+
+    public static boolean isObjectReachable(WorldObject obj) {
+        Player player = Players.self();
+        if (player == null) {
+            return false;
+        }
+        WorldTile tile = WorldTile.Companion.toTile(player.getGlobalPosition());
+        return getLocalStepsTo(tile, 1, new ObjectStrategy(obj), true) > -1;
     }
 
     public static List<WorldTile> findLocalRoute(WorldTile start, int srcSize, RouteStrategy strategy, boolean findAlternative) {
@@ -85,7 +106,6 @@ public class LocalPathing {
         }
 
         if (!found && !findAlternative) {
-            System.out.println("Could not find route.");
             return null;
         }
 

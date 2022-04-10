@@ -11,10 +11,7 @@ import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.walking.Traverse
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile
-import kraken.plugin.api.Client
-import kraken.plugin.api.Debug
-import kraken.plugin.api.Kraken
-import kraken.plugin.api.Players
+import kraken.plugin.api.*
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.defaultImports
 import kotlin.script.experimental.jvm.dependenciesFromCurrentContext
@@ -22,7 +19,6 @@ import kotlin.script.experimental.jvm.jvm
 
 object DeveloperScriptConfiguration : ScriptCompilationConfiguration({
     jvm {
-
         defaultImports(
             Debug::class,
             Client::class,
@@ -39,7 +35,8 @@ object DeveloperScriptConfiguration : ScriptCompilationConfiguration({
             Traverse::class,
             LocalPathing::class,
             WorldTile::class,
-            WorldTile.Companion::class
+            WorldTile.Companion::class,
+            SceneObjects::class
         )
 
         dependenciesFromCurrentContext(wholeClasspath = true)

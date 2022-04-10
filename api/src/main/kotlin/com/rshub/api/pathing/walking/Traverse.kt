@@ -63,12 +63,6 @@ object Traverse {
                     } else waitFor
                     if(delayUntil(node.edge.strategy.modifyTimeout(timeout)) { node.edge.reached() }) {
                         ctx.pathWalked.offer(node)
-                        val toSkip = node.edge.strategy.skipThreshold()
-                        repeat(toSkip) {
-                            if(ctx.path.isNotEmpty()) {
-                                ctx.pathWalked.offer(ctx.path.poll())
-                            }
-                        }
                     }
                 } else {
                     Debug.log("Traverse failed: ${node.edge.strategy::class.java.simpleName}")

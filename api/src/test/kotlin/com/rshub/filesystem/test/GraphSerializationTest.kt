@@ -10,6 +10,9 @@ import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
 import com.rshub.api.skills.Skill
+import com.rshub.api.variables.Variable
+import com.rshub.api.variables.impl.VariableBit
+import com.rshub.api.variables.impl.VariablePlayer
 import com.rshub.definitions.maps.WorldTile
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -33,15 +36,19 @@ class GraphSerializationTest {
         graph.addVertex(v3)
 
         graph.addArc(v1 to v2, EdgeTileStrategy())
+
+        val cond = mutableListOf<Pair<Variable, Int>>(
+            VariableBit(35) to 1
+        )
+
         graph.addArc(v2 to v3, ObjectStrategy(
             1,
             2,
             3,
-            4,
             ObjectAction.OBJECT1,
             Skill.ATTACK,
             25
-        ))
+        ), condition = cond)
 
         val json = Json {
             prettyPrint = true
@@ -51,6 +58,10 @@ class GraphSerializationTest {
                     subclass(ObjectStrategy::class)
                     subclass(NpcStrategy::class)
                     subclass(DoorStrategy::class)
+                }
+                polymorphic(Variable::class) {
+                    subclass(VariablePlayer::class)
+                    subclass(VariableBit::class)
                 }
             }
         }
@@ -76,8 +87,7 @@ class GraphSerializationTest {
                 val id = strat.objectId
                 val x = strat.objectX
                 val y = strat.objectY
-                val z = strat.objectZ
-                println("Object($id, $x, $y, $z)")
+                println("Object($id, $x, $y)")
             }
         }
 
@@ -93,8 +103,7 @@ class GraphSerializationTest {
                 val id = strat.objectId
                 val x = strat.objectX
                 val y = strat.objectY
-                val z = strat.objectZ
-                println("Object($id, $x, $y, $z)")
+                println("Object($id, $x, $y)")
             }
         }
 

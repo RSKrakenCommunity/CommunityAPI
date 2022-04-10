@@ -32,18 +32,22 @@ class VertexEditorModel : ViewModel() {
                     osEditor.objectId.get(),
                     osEditor.objectX.get(),
                     osEditor.objectY.get(),
-                    osEditor.objectZ.get(),
                     osEditor.action.get(),
                     osEditor.skill.get(),
                     osEditor.level.get(),
                     timeoutMod = osEditor.timeout.get()
-                )
+                ).also {
+                    osEditor.clear()
+                }
             }
             EdgeStrategyType.NPC -> {
                 NpcStrategy(
                     npcEditor.npcId.get(),
+                    WorldTile(npcEditor.locX.get(), npcEditor.locY.get(), 0),
                     npcEditor.action.get()
-                )
+                ).also {
+                    npcEditor.clear()
+                }
             }
             EdgeStrategyType.DOOR -> {
                 DoorStrategy(
@@ -60,7 +64,9 @@ class VertexEditorModel : ViewModel() {
                         doorEditor.closedZ.get()
                     ),
                     doorEditor.action.get(),
-                )
+                ).also {
+                    doorEditor.clear()
+                }
             }
         }
     }

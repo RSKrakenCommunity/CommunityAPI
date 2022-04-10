@@ -34,9 +34,9 @@ class EdgeModel(from: VertexModel, to: VertexModel, var edge: Edge) :
     fun update() {
         val canUpdate = when (strategy.get()!!) {
             EdgeStrategyType.TILE -> true
-            EdgeStrategyType.OBJECT -> osEditor.objectId.get() != -1 && osEditor.objectX.get() != -1 && osEditor.objectY.get() != -1 && osEditor.objectZ.get() != -1
+            EdgeStrategyType.OBJECT -> osEditor.objectId.get() != -1 && osEditor.objectX.get() != -1 && osEditor.objectY.get() != -1
             EdgeStrategyType.DOOR -> doorEditor.openDoorId.get() != -1 && doorEditor.openX.get() != -1 && doorEditor.openY.get() != -1 && doorEditor.openZ.get() != -1 && doorEditor.closedDoorId.get() != -1 && doorEditor.closedX.get() != -1 && doorEditor.closedY.get() != -1 && doorEditor.closedZ.get() != -1
-            EdgeStrategyType.NPC -> npcEditor.npcId.get() != -1
+            EdgeStrategyType.NPC -> npcEditor.npcId.get() != -1 && npcEditor.locX.get() != -1 && npcEditor.locY.get() != -1 && npcEditor.locZ.get() != -1
         }
         if (canUpdate) {
             edge = toEdge()

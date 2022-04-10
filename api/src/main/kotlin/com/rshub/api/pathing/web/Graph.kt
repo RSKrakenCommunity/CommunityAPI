@@ -4,7 +4,9 @@ import com.rshub.api.pathing.web.edges.Edge
 import com.rshub.api.pathing.web.edges.EdgeStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.nodes.GraphVertex
+import com.rshub.api.variables.Variable
 import kotlinx.serialization.Serializable
+import java.util.concurrent.locks.Condition
 
 @Serializable
 class Graph {
@@ -16,13 +18,13 @@ class Graph {
         return this
     }
 
-    fun addArc(pair: Pair<GraphVertex, GraphVertex>, strategy: EdgeStrategy, directed: Boolean = false) : Graph {
+    fun addArc(pair: Pair<GraphVertex, GraphVertex>, strategy: EdgeStrategy, directed: Boolean = false, condition: List<Pair<Variable, Int>> = mutableListOf()) : Graph {
         val (from, to) = pair
         addVertex(from)
         addVertex(to)
-        edges.add(Edge(from, to, strategy))
+        edges.add(Edge(from, to, strategy, condition))
         if (!directed) {
-            edges.add(Edge(to, from, strategy))
+            edges.add(Edge(to, from, strategy, condition))
         }
         return this
     }

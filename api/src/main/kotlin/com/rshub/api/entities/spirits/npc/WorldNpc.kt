@@ -38,8 +38,11 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
     }
     val varbit: Int get() = CacheHelper.getVarbitValue(def.varbit)
 
-    fun interact(action: NpcAction) : Boolean {
-        if(LocalPathing.isReachable(globalPosition.toTile())) {
+    fun interact(action: NpcAction, clipCheck: Boolean = true) : Boolean {
+        if(clipCheck && LocalPathing.isNpcReachable(this)) {
+            ActionHelper.menu(action, serverIndex, 0, 0)
+            return true
+        } else if(!clipCheck) {
             ActionHelper.menu(action, serverIndex, 0, 0)
             return true
         }

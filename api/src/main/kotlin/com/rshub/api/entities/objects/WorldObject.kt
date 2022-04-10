@@ -17,7 +17,7 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
 
     val id get() = so.id
     val size: Vector2i get() = so.size
-    val interactId get() = getTransformedObject()
+    val interactId get() = so.interactId
 
     override val globalPosition: Vector3i get() = so.globalPosition
     override val scenePosition: Vector3 get() = so.scenePosition
@@ -46,7 +46,11 @@ class WorldObject(private val so: SceneObject) : WorldEntity {
         val valid = tile == validTile
         val x = (if (valid) pos.x else pos.x - ceil(def.sizeX.toDouble() / 2)).toInt()
         val y = (if (valid) pos.y else pos.y - ceil(def.sizeY.toDouble() / 2)).toInt()
-        if (!clipCheck || LocalPathing.isReachable(pos.toTile())) {
+        if(clipCheck && LocalPathing.isObjectReachable(this)) {
+            val objId = if(interactId == -1) id else interactId
+            ActionHelper.menu(option, objId, x, y)
+            return true
+        } else if(!clipCheck) {
             val objId = if(interactId == -1) id else interactId
             ActionHelper.menu(option, objId, x, y)
             return true

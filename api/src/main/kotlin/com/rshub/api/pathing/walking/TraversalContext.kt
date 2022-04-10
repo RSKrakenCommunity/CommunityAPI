@@ -2,6 +2,8 @@ package com.rshub.api.pathing.walking
 
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
+import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
+import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kraken.plugin.api.Debug
@@ -25,16 +27,17 @@ class TraversalContext(val dest: WorldTile) {
         val plr = player ?: return
         val graph = WalkHelper.getGraph()
         val pos = plr.globalPosition.toTile()
-        val start = graph.getAllVertices().minByOrNull { it.tile.distance(pos) } ?: return
-        val end = graph.getAllVertices().minByOrNull { it.tile.distance(dest) }!!
-        if (end.tile.distance(dest) >= 63) {
-            Debug.log("Dest to far from closest node.")
-            return
-        }
-        val web = graph.toWeb()
-        val (route, _) = web.findPath(start, end)
-        if(route.isNotEmpty()) {
-            path = LinkedList(route)
+        val start = graph.getAllVertices().minByOrNull { it.tile.distance(pos) }
+        val end = graph.getAllVertices().minByOrNull { it.tile.distance(dest) }
+        if (start != null && end != null) {
+            if (end.tile.distance(dest) >= 63) {
+                println("Dest not mapped.")
+                return
+            }
+            val (path, _) = graph.toWeb().findPath(start, end)
+            if(path.isNotEmpty()) {
+                this.path = LinkedList(path)
+            }
         }
     }
 

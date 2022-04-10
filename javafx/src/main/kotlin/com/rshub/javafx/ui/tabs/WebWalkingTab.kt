@@ -17,6 +17,7 @@ import javafx.geometry.Orientation
 import javafx.geometry.Pos
 import javafx.scene.layout.VBox
 import javafx.util.StringConverter
+import kraken.plugin.api.Debug
 import kraken.plugin.api.Players
 import kraken.plugin.api.Vector3i
 import tornadofx.*
@@ -231,7 +232,6 @@ class WebWalkingTab : Fragment("Web Walking") {
                                 osEditor.objectId.set(strat.objectId)
                                 osEditor.objectX.set(strat.objectX)
                                 osEditor.objectY.set(strat.objectY)
-                                osEditor.objectZ.set(strat.objectZ)
                                 osEditor.action.set(strat.option)
                                 osEditor.skill.set(strat.skill)
                                 osEditor.level.set(strat.level)
@@ -251,6 +251,9 @@ class WebWalkingTab : Fragment("Web Walking") {
                             EdgeStrategyType.NPC -> {
                                 val strat = it.edge.strategy as NpcStrategy
                                 npcEditor.npcId.set(strat.npcId)
+                                npcEditor.locX.set(strat.location.x)
+                                npcEditor.locY.set(strat.location.y)
+                                npcEditor.locZ.set(strat.location.z)
                                 npcEditor.action.set(strat.action)
                             }
                         }
@@ -285,7 +288,13 @@ class WebWalkingTab : Fragment("Web Walking") {
         if (strategy == null) return
         when (strategy) {
             EdgeStrategyType.TILE -> {
-                label("Tile strategy has no configuration.")
+                form {
+                    fieldset {
+                        field {
+                            label("Tile strategy has no configuration.")
+                        }
+                    }
+                }
             }
             EdgeStrategyType.OBJECT -> {
                 form {
@@ -302,11 +311,6 @@ class WebWalkingTab : Fragment("Web Walking") {
                         }
                         field("Object Y") {
                             textfield(osEditor.objectY) {
-                                stripNonInteger()
-                            }
-                        }
-                        field("Object Z") {
-                            textfield(osEditor.objectZ) {
                                 stripNonInteger()
                             }
                         }
@@ -375,8 +379,7 @@ class WebWalkingTab : Fragment("Web Walking") {
                             textfield(npcEditor.npcId)
                         }
                         field("Action") {
-                            choicebox<NpcAction> {
-                                valueProperty().bindBidirectional(npcEditor.action)
+                            choicebox<NpcAction>(npcEditor.action) {
                                 items.addAll(NpcAction.values())
                                 selectionModel.select(NpcAction.NPC1)
                                 converter = object : StringConverter<NpcAction>() {
@@ -389,6 +392,23 @@ class WebWalkingTab : Fragment("Web Walking") {
                                         return NpcAction.valueOf(string.uppercase().replace(' ', '_'))
                                     }
                                 }
+                            }
+                        }
+                    }
+                    fieldset("Destination Tile") {
+                        field("Location X") {
+                            textfield(npcEditor.locX) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Location Y") {
+                            textfield(npcEditor.locY) {
+                                stripNonInteger()
+                            }
+                        }
+                        field("Location Z") {
+                            textfield(npcEditor.locZ) {
+                                stripNonInteger()
                             }
                         }
                     }

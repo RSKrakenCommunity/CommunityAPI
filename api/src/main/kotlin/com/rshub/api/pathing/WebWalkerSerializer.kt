@@ -6,6 +6,9 @@ import com.rshub.api.pathing.web.edges.strategies.DoorStrategy
 import com.rshub.api.pathing.web.edges.strategies.EdgeTileStrategy
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
+import com.rshub.api.variables.Variable
+import com.rshub.api.variables.impl.VariableBit
+import com.rshub.api.variables.impl.VariablePlayer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -25,6 +28,10 @@ object WebWalkerSerializer {
             subclass(ObjectStrategy::class)
             subclass(NpcStrategy::class)
             subclass(DoorStrategy::class)
+        }
+        polymorphic(Variable::class) {
+            subclass(VariablePlayer::class)
+            subclass(VariableBit::class)
         }
     }
 

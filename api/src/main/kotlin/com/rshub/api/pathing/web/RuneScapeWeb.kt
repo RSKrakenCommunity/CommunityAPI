@@ -23,7 +23,7 @@ class RuneScapeWeb(val edges: List<Edge>) {
 
     private fun findRoute(from: GraphVertex, to: GraphVertex): Edge? {
         return edges.find {
-            (it.from == from && it.to == to) || (it.from == to && it.to == from)
+            (it.from == from && it.to == to)
         }
     }
 
@@ -76,8 +76,10 @@ class RuneScapeWeb(val edges: List<Edge>) {
 
             for (neighbour in (currentPos.neighbors - closedVertices)) {
                 val edge = findRouteOrDefault(from = currentPos, to = neighbour)
-                if (edge.blocked())
+                if (edge.blocked()) {
+                    println("Edge blocked: ${edge.strategy::class.simpleName}")
                     continue
+                }
                 val cost: Double = costFromStart.getValue(currentPos) + edge.cost
 
                 if (cost < costFromStart.getOrDefault(neighbour, Double.MAX_VALUE)) {

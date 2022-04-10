@@ -29,7 +29,7 @@ class WorldObjectManager {
         for (wo in objects) {
             if (wo.globalPosition.z != player.globalPosition.z)
                 continue
-            val distance = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, ObjectStrategy(wo), false)
+            val distance = LocalPathing.getLocalStepsTo(player.globalPosition.toTile(), 1, ObjectStrategy(wo), true)
             if (distance != -1) distanceMap[distance] = wo
         }
         if (distanceMap.isEmpty()) return null
