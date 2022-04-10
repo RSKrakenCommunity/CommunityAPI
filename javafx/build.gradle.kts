@@ -44,6 +44,16 @@ tasks.withType<ShadowJar> {
     finalizedBy("copy")
 }
 
+tasks.create("copyResources", Copy::class.java) {
+    val file = File(System.getProperty("user.home")).resolve("kraken-plugins")
+    if(file.exists()) {
+        from(file) {
+            include("*.json")
+        }
+        into("C:\\Users\\david\\IdeaProjects\\KrakenCommunityPages")
+    }
+}
+
 tasks.create("copy", Copy::class.java) {
     val file = File(System.getProperty("user.home")).resolve("kraken-plugins")
     if(file.exists()) {

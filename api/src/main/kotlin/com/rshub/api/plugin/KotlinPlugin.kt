@@ -1,5 +1,6 @@
 package com.rshub.api.plugin
 
+import com.rshub.api.pathing.ResourceUpdater
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Client
 import kraken.plugin.api.Plugin
@@ -18,6 +19,7 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
     final override fun onLoaded(pluginContext: PluginContext): Boolean {
         pluginContext.name = name
         context = pluginContext
+        ResourceUpdater.update()
         onLoad()
         return super.onLoaded(pluginContext)
     }

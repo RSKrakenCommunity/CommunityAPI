@@ -1,5 +1,6 @@
 package com.rshub.api.plugin;
 
+import com.rshub.api.pathing.ResourceUpdater;
 import com.rshub.api.services.GameStateHelper;
 import kraken.plugin.api.Client;
 import kraken.plugin.api.Plugin;
@@ -21,6 +22,7 @@ public abstract class JavaPlugin extends Plugin {
     public final boolean onLoaded(PluginContext pluginContext) {
         pluginContext.setName(this.name);
         this.context = pluginContext;
+        ResourceUpdater.INSTANCE.update();
         this.onLoad();
         return super.onLoaded(pluginContext);
     }
