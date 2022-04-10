@@ -16,10 +16,14 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
     abstract suspend fun paint()
     abstract suspend fun paintOverlay()
 
+    open fun updateResources() {
+        ResourceUpdater.update()
+    }
+
     final override fun onLoaded(pluginContext: PluginContext): Boolean {
         pluginContext.name = name
         context = pluginContext
-        ResourceUpdater.update()
+        updateResources()
         onLoad()
         return super.onLoaded(pluginContext)
     }

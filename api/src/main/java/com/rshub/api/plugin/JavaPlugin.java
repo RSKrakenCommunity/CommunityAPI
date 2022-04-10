@@ -18,11 +18,15 @@ public abstract class JavaPlugin extends Plugin {
     protected abstract void onLoad();
     protected abstract void painOverlay();
 
+    protected void updateResources() {
+        ResourceUpdater.INSTANCE.update();
+    }
+
     @Override
     public final boolean onLoaded(PluginContext pluginContext) {
         pluginContext.setName(this.name);
         this.context = pluginContext;
-        ResourceUpdater.INSTANCE.update();
+        this.updateResources();
         this.onLoad();
         return super.onLoaded(pluginContext);
     }
