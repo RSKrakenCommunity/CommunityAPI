@@ -140,26 +140,6 @@ public class RegionLoader {
         }
     }
 
-    private void decodeTiles(int x, int y, int plane, ByteBuffer stream, RegionDefinition def) {
-        int flags = stream.get() & 0xff;
-        if ((flags & 0x1) != 0) {
-            int shapeHash = stream.get() & 0xff;
-            def.overlayIds[plane][x][y] = ByteBufferKt.getUnsignedSmart(stream);
-            def.overlayPathShapes[plane][x][y] = (byte) (shapeHash >> 2);
-            def.overlayRotations[plane][x][y] = (byte) (shapeHash & 0x3);
-        }
-        if ((flags & 0x2) != 0) {
-            def.settings[plane][x][y] = (byte) ByteBufferKt.getUnsignedByte(stream);
-        }
-        if ((flags & 0x4) != 0) {
-            def.underlayIds[plane][x][y] = ByteBufferKt.getUnsignedSmart(stream);
-        }
-        if ((flags & 0x8) != 0) {
-            // tile heights (unsigned)
-            stream.get();
-        }
-    }
-
     @NotNull
     public RegionDefinition newDefinition(int id) {
         return new RegionDefinition(id);

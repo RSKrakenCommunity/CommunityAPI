@@ -15,6 +15,7 @@ import com.rshub.javafx.ui.model.walking.*
 import javafx.beans.binding.Bindings
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
+import javafx.scene.control.ButtonType
 import javafx.scene.layout.VBox
 import javafx.util.StringConverter
 import kraken.plugin.api.Debug
@@ -270,6 +271,12 @@ class WebWalkingTab : Fragment("Web Walking") {
 
     private fun linkEdges(it: VertexModel) {
         val sel = model.selectedVertex.get()
+        val dist = sel.tile.get().distance(it.tile.get())
+        if(dist >= 63) {
+            warning("Distance to far to link vertices", "Failed to link nodes because dist is over 63", ButtonType.OK, title = "Link Error")
+            return
+        }
+
         if (sel != null) {
             val strat = editor.strategy.get()
             val edge = Edge(sel.toVertex(), it.toVertex(), editor.createStrategy())

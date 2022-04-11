@@ -3,21 +3,23 @@ package com.rshub.javafx.test
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.web.Graph.Companion.toWeb
 import com.rshub.definitions.maps.WorldTile
+import com.rshub.javafx.DebugUI
 import com.rshub.javafx.DebugUI.Companion.fxModule
 import org.koin.core.context.startKoin
+import tornadofx.launch
 
 object ApplicationTest {
 
     @JvmStatic
     fun main(args: Array<String>) {
 
-        /*startKoin {
+        startKoin {
             modules(fxModule)
-        }*/
+        }
 
-        //launch<DebugUI>()
+        launch<DebugUI>()
 
-        WalkHelper.loadWeb()
+        /*WalkHelper.loadWeb()
 
         val pos = WorldTile(2942, 3354, 0)
         val dest = WorldTile(2957, 3296, 0)
@@ -45,7 +47,7 @@ object ApplicationTest {
             }
 
             println(web.edges.size)
-        }
+        }*/
 
     }
 

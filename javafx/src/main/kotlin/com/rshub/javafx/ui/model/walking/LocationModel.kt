@@ -2,6 +2,7 @@ package com.rshub.javafx.ui.model.walking
 
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.json.serialization.LocationModelSerializer
+import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import kotlinx.serialization.Serializable
@@ -19,17 +20,21 @@ import kotlin.io.path.exists
 import kotlin.io.path.readText
 
 @Serializable(with = LocationModelSerializer::class)
-class LocationModel(name: String, tile: WorldTile) : ViewModel() {
+class LocationModel(name: String, tile: WorldTile, isBank: Boolean) : ViewModel() {
 
     val name = bind { SimpleStringProperty(this, "name", name) }
+    val bank = bind { SimpleBooleanProperty(this, "bank", isBank) }
     val tile = bind { SimpleObjectProperty(this, "tile", tile) }
 
 
     companion object : KoinComponent {
+        private val json = Json { prettyPrint = true }
         fun save(path: Path) {
             val model: WalkingModel = get()
-            val data = Json.encodeToString(model.locations.toList())
+            val data = json.encodeToString(model.locations.toList())
+            val bankData = json.encodeToString(model.locations.filter { it.bank.get() })
             Files.write(path.resolve("locations.json"), data.toByteArray())
+            Files.write(path.resolve("banks.json"), bankData.toByteArray())
         }
         fun load(path: Path) {
             val locs = path.resolve("locations.json")
