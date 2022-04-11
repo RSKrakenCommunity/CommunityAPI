@@ -1,9 +1,6 @@
 package com.rshub.api.definitions;
 
-import com.rshub.definitions.InventoryDefinition;
-import com.rshub.definitions.ItemDefinition;
-import com.rshub.definitions.NpcDefinition;
-import com.rshub.definitions.VarbitDefinition;
+import com.rshub.definitions.*;
 import com.rshub.definitions.loaders.*;
 import com.rshub.definitions.maps.RegionDefinition;
 import com.rshub.definitions.objects.ObjectDefinition;
@@ -14,6 +11,7 @@ import kraken.plugin.api.Client;
 import kraken.plugin.api.ConVar;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class CacheHelper {
@@ -24,6 +22,8 @@ public final class CacheHelper {
     private static final Filesystem FS = new SqliteFilesystem(Paths.get(CACHE_PATH));
     private static final DefinitionManager<InventoryDefinition> invManager = new DefinitionManager<>(FS, 2, 5, 0, new InventoryLoader());
     private static final DefinitionManager<VarbitDefinition> varbitManager = new DefinitionManager<>(FS, 2, 69, 0, new VarbitLoader());
+    private static final DefinitionManager<ParamDefinition> paramManager = new DefinitionManager<>(FS, 2, 11, 0, new ParamLoader());
+    private static final DefinitionManager<StructDefinition> structManager = new DefinitionManager<>(FS, 22, -1, 5, new StructLoader());
     private static final DefinitionManager<ObjectDefinition> objectManager = new DefinitionManager<>(FS, 16, -1, 8, new ObjectLoader());
     private static final DefinitionManager<NpcDefinition> npcManager = new DefinitionManager<>(FS, 18, -1, 7, new NpcLoader());
     private static final DefinitionManager<ItemDefinition> itemManager = new DefinitionManager<>(FS, 19, -1, 8, new ItemLoader());
@@ -38,12 +38,12 @@ public final class CacheHelper {
     }
 
     public static int getVarbitValue(int varbitId) {
-        if(varbitId == -1) return 0;
+        if (varbitId == -1) return 0;
         VarbitDefinition def = getVarbit(varbitId);
         int bits = (def.getMsb() - def.getLsb());
         ConVar convar = Client.getConVarById(def.getIndex());
-        if(convar == null) return 0;
-        if(bits == 0) {
+        if (convar == null) return 0;
+        if (bits == 0) {
             return convar.getValueMasked(def.getLsb(), 1);
         }
         return convar.getValueMasked(def.getLsb(), bits);
@@ -57,6 +57,14 @@ public final class CacheHelper {
         return varbitManager.all(def -> def.getIndex() == convarId);
     }
 
+    public static List<StructDefinition> allStructs() {
+        List<StructDefinition> defs = new ArrayList<>();
+        for (int i = 0; i < structManager.getFileCount(); i++) {
+            defs.add(structManager.get(i, false));
+        }
+        return defs;
+    }
+
     public static ObjectDefinition getObject(int id) {
         return objectManager.get(id, false);
     }
@@ -67,6 +75,14 @@ public final class CacheHelper {
 
     public static ItemDefinition getItem(int id) {
         return itemManager.get(id, false);
+    }
+
+    public static ParamDefinition getParam(int id) {
+        return paramManager.get(id, false);
+    }
+
+    public static StructDefinition getStruct(int id) {
+        return structManager.get(id, false);
     }
 
     public static RegionDefinition getRegion(int regionId) {
