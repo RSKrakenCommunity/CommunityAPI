@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kraken.plugin.api.Vector3i
 
 @Serializable(with = WorldTileSerializer::class)
-class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
+open class WorldTile(x: Int, y: Int, z: Int) : Vector3i(x, y, z) {
     val regionX: Int get() = x shr 6
     val regionY: Int get() = y shr 6
     val regionId: Int get() = (regionX shl 8) + regionY

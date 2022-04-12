@@ -7,4 +7,5 @@ include(":stub")
 include(":stub:api")
 include(":api")
 include(":utilities")
+include(":resource-generator")
 

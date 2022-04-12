@@ -1,5 +1,6 @@
 package com.rshub.api.pathing
 
+import com.rshub.api.world.LocationManager
 import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Paths
