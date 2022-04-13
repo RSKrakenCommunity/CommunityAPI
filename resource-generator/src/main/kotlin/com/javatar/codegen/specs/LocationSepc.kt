@@ -1,10 +1,10 @@
 package com.javatar.codegen.specs
 
-import com.rshub.api.banking.BankLocation
-import com.squareup.kotlinpoet.CodeBlock
+import com.rshub.definitions.maps.WorldTile
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.net.URL
@@ -16,14 +16,7 @@ object LocationSepc {
     private val json = Json { ignoreUnknownKeys = true }
 
     fun buildBankLocationFile(path: Path) {
-
-        /**
-         * import com.rshub.api.banking.BankLocation
-        import com.rshub.definitions.maps.WorldTile
-         */
-
         val file = FileSpec.builder("com.rshub.api.world", "BankLocations")
-        file.addImport("com.rshub.api.banking", "BankLocation")
         file.addImport("com.rshub.definitions.maps", "WorldTile")
 
         val tsob = TypeSpec.objectBuilder("BankLocations")
@@ -34,18 +27,24 @@ object LocationSepc {
 
         for (bankLoc in bankLocs) {
             val tile = bankLoc.tile
-            tsob.addProperty(PropertySpec.builder(bankLoc.name
-                .uppercase()
-                .replace(' ', '_'),
-                BankLocation::class)
-                .initializer("BankLocation(\"${bankLoc.name}\", WorldTile(${tile.x}, ${tile.y}, ${tile.z}))")
-                .also { it.modifiers.clear() }
-                .build())
+            tsob.addProperty(
+                PropertySpec.builder(
+                    bankLoc.name
+                        .uppercase()
+                        .replace(' ', '_'),
+                    WorldTile::class
+                ).addAnnotation(JvmStatic::class)
+                    .initializer("WorldTile(${tile.x}, ${tile.y}, ${tile.z})")
+                    .build()
+            )
         }
 
         file.addType(tsob.build()).build().writeTo(path)
 
     }
+
+    @Serializable
+    data class BankLocation(val name: String, val tile: WorldTile)
 
     @JvmStatic
     fun main(args: Array<String>) {
