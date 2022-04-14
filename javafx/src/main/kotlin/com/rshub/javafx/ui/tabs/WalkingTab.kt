@@ -44,6 +44,8 @@ class WalkingTab : Fragment("Walking") {
                 model.locations.add(LocationModel(name, tile, isBank))
             }
             button("Save Locations").setOnAction { save() }
+            separator(Orientation.VERTICAL)
+            checkbox("Show Bank on Minimap", model.showBanksOnMinimap)
         }
         tableview<LocationModel> {
             items.bind(model.locations) { it }

@@ -14,6 +14,8 @@ class WalkingModel : ViewModel() {
     val locationName = bind { SimpleStringProperty(this, "location_name") }
     val isBank = bind { SimpleBooleanProperty(this, "is_bank", false) }
 
+    val showBanksOnMinimap = bind { SimpleBooleanProperty(this, "show_bank_on_minimap", false) }
+
     init {
         selectedLocation.onChange {
             if(it != null) {

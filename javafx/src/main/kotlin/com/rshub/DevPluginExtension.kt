@@ -4,16 +4,19 @@ import com.javatar.plugin.api.PluginExtension
 import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.map.ClipFlag
 import com.rshub.api.map.Region
-import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.WalkHelper
-import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY
 import com.rshub.definitions.maps.WorldTile.Companion.regionId
 import com.rshub.javafx.ui.model.VariableDebuggerModel
 import com.rshub.javafx.ui.model.VariableModel
+import com.rshub.javafx.ui.model.walking.WalkingModel
 import com.rshub.javafx.ui.model.walking.WebWalkingModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kraken.plugin.api.*
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -22,10 +25,12 @@ import org.pf4j.Extension
 import tornadofx.runLater
 import java.awt.Color
 
+
 @Extension
 class DevPluginExtension : PluginExtension, KoinComponent {
 
     private val web: WebWalkingModel by inject()
+    private val walking: WalkingModel by inject()
 
     override fun onLoad(): Boolean {
         return true
@@ -75,21 +80,35 @@ class DevPluginExtension : PluginExtension, KoinComponent {
     }
 
     override fun paintOverlay() {
-        if(Client.getState() == Client.IN_GAME && web.showOnMinimap.get()) {
-            val graph = WalkHelper.getGraph()
-            if(graph != null) {
-                for ((id, vertex) in graph.getAllVertices().withIndex()) {
-                    val pos = Client.worldToMinimap(vertex.tile.toScene()) ?: continue
-                    //val s = pos.expand(Vector2i(12, 12)).center()
-                    //drawRect(pos, 12, 12)
-                    ImGui.freeText("$id", pos, Color.WHITE.rgb)
-                    val abjs = graph.adjacentVertices(vertex)
-                    if (abjs.isNotEmpty()) {
-                        for (abj in abjs) {
-                            val end = Client.worldToMinimap(abj.tile.toScene())
-                            ImGui.freeLine(pos, end, Color.GREEN.rgb)
+        GlobalScope.launch {
+            isActive
+            delay(1)
+        }
+        if (Client.getState() == Client.IN_GAME) {
+            if (web.showOnMinimap.get()) {
+                val graph = WalkHelper.getGraph()
+                if (graph != null) {
+                    for ((id, vertex) in graph.getAllVertices().withIndex()) {
+                        val pos = Client.worldToMinimap(vertex.tile.toScene()) ?: continue
+                        //val s = pos.expand(Vector2i(12, 12)).center()
+                        //drawRect(pos, 12, 12)
+                        ImGui.freeText("$id", pos, Color.WHITE.rgb)
+                        val abjs = graph.adjacentVertices(vertex)
+                        if (abjs.isNotEmpty()) {
+                            for (abj in abjs) {
+                                val end = Client.worldToMinimap(abj.tile.toScene())
+                                ImGui.freeLine(pos, end, Color.GREEN.rgb)
+                            }
                         }
                     }
+                }
+            }
+            if (walking.showBanksOnMinimap.get()) {
+                val banks = walking.locations.filter { it.bank.get() }
+                for ((index, bank) in banks.withIndex()) {
+                    val pos = bank.tile.get().toScene()
+                    val mpos = Client.worldToMinimap(pos)
+                    ImGui.freeText("Bank $index", mpos, Color.GREEN.rgb)
                 }
             }
         }
@@ -106,13 +125,20 @@ class DevPluginExtension : PluginExtension, KoinComponent {
         }
     }
 
-    private fun drawRect(pos: Vector2i, width: Int, height: Int) {
+    private fun drawRect(pos: Vector2i, width: Int, height: Int, color: Int) {
         ImGui.freePoly4(
             Vector2i(pos.x, pos.y + height),
             Vector2i(pos.x + width, pos.y + height),
             Vector2i(pos.x + width, pos.y),
             Vector2i(pos.x, pos.y),
-            Color.BLACK.rgb
+            color
         )
+    }
+
+    fun color(red: Int, green: Int, blue: Int): Int {
+        var rgb: Int = red
+        rgb = (rgb shl 8) + green
+        rgb = (rgb shl 8) + blue
+        return rgb
     }
 }
