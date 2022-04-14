@@ -7,6 +7,7 @@ import com.rshub.api.actions.ObjectAction
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.objects.WorldObject
 import com.rshub.api.entities.spirits.npc.WorldNpc
+import com.rshub.api.input.InputHelper
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.walking.Traverse
 import com.rshub.api.world.WorldHelper
@@ -36,7 +37,9 @@ object DeveloperScriptConfiguration : ScriptCompilationConfiguration({
             LocalPathing::class,
             WorldTile::class,
             WorldTile.Companion::class,
-            SceneObjects::class
+            SceneObjects::class,
+            InputHelper::class,
+            Input::class
         )
 
         dependenciesFromCurrentContext(wholeClasspath = true)

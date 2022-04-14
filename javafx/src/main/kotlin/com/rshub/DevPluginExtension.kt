@@ -9,6 +9,7 @@ import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY
 import com.rshub.definitions.maps.WorldTile.Companion.regionId
+import com.rshub.definitions.maps.WorldTile.Companion.tile
 import com.rshub.javafx.ui.model.VariableDebuggerModel
 import com.rshub.javafx.ui.model.VariableModel
 import com.rshub.javafx.ui.model.walking.WalkingModel
@@ -80,10 +81,6 @@ class DevPluginExtension : PluginExtension, KoinComponent {
     }
 
     override fun paintOverlay() {
-        GlobalScope.launch {
-            isActive
-            delay(1)
-        }
         if (Client.getState() == Client.IN_GAME) {
             if (web.showOnMinimap.get()) {
                 val graph = WalkHelper.getGraph()
