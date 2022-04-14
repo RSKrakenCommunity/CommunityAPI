@@ -21,6 +21,12 @@ object InputHelper {
     const val F12 = 123
 
     @JvmStatic
+    fun clickMouse(x: Int, y: Int, button: Int) {
+        Input.moveMouse(x, y)
+        Input.clickMouse(button)
+    }
+
+    @JvmStatic
     fun pressKey(c: Char) {
         Input.key(c.code)
     }
