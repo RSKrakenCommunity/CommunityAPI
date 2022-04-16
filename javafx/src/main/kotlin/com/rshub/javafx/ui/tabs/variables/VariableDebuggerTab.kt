@@ -1,4 +1,4 @@
-package com.rshub.javafx.ui.tabs
+package com.rshub.javafx.ui.tabs.variables
 
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.javafx.ui.model.VariableDebuggerModel

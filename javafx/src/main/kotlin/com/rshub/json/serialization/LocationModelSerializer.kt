@@ -30,7 +30,6 @@ object LocationModelSerializer : KSerializer<LocationModel> {
                     CompositeDecoder.DECODE_DONE -> break
                 }
             }
-            Client.getInterfaceMode().name
             return LocationModel(name, tile, isBank)
         }
     }
