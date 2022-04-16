@@ -2,6 +2,7 @@
 package com.rshub.api.variables
 
 import com.rshub.api.variables.impl.VariableBit
+import com.rshub.api.variables.impl.VariablePlayer
 import kotlin.Any
 import kotlin.Int
 import kotlin.reflect.KProperty
@@ -26,6 +27,12 @@ public enum class Variables(
   HEALTH_AMOUNT(VariableBit(1668)),
   MAX_HEALTH_AMOUNT(VariableBit(24595)),
   SUMMONING_POINTS(VariableBit(41524)),
+  GRAND_EXCHANGE_SLOT(VariablePlayer(138)),
+  GRAND_EXCHANGE_ACTION(VariablePlayer(139)),
+  GRAND_EXCHANGE_TAB(VariableBit(19000)),
+  GRAND_EXCHANGE_BUY_ITEM(VariablePlayer(135)),
+  GRAND_EXCHANGE_BUY_AMOUNT(VariablePlayer(136)),
+  GRAND_EXCHANGE_BUY_PRICE(VariablePlayer(137)),
   ;
 
   public operator fun getValue(ref: Any?, prop: KProperty<*>): Int = value
