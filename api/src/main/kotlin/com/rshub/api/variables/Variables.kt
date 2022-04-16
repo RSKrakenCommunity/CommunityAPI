@@ -19,6 +19,13 @@ public enum class Variables(
   TRANSFER_X(VariableBit(2567)),
   TRANSFER_AMOUNT(VariableBit(45189)),
   PLACEHOLDERS_ENABLED(VariableBit(45190)),
+  ACTION_BAR_NUMBER(VariableBit(1893)),
+  ACTION_BAR_LOCKED(VariableBit(1892)),
+  PRAYER_AMOUNT(VariableBit(16736)),
+  ADRENALINE_AMOUNT(VariableBit(1902)),
+  HEALTH_AMOUNT(VariableBit(1668)),
+  MAX_HEALTH_AMOUNT(VariableBit(24595)),
+  SUMMONING_POINTS(VariableBit(41524)),
   ;
 
   public operator fun getValue(ref: Any?, prop: KProperty<*>): Int = value
