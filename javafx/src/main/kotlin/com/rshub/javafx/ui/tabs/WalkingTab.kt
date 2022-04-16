@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox
 import kotlinx.coroutines.*
 import kraken.plugin.api.Kraken
 import kraken.plugin.api.Players
+import org.koin.core.context.GlobalContext
 import tornadofx.*
 import java.nio.file.Paths
 import kotlin.io.path.exists
@@ -70,9 +71,11 @@ class WalkingTab : Fragment("Walking") {
                         spacing = 10.0
                         alignment = Pos.CENTER
                         button("Walk").setOnAction {
-                            runBlocking(Dispatchers.Default) {
+                            GlobalScope.launch(Dispatchers.Default) {
                                 if(!Traverse.walkTo(rowItem.tile.get())) {
-                                    warning("Walk to ${rowItem.name.get()}", "Unable to walk here.")
+                                    runLater {
+                                        warning("Walk to ${rowItem.name.get()}", "Unable to walk here.")
+                                    }
                                 }
                             }
                         }

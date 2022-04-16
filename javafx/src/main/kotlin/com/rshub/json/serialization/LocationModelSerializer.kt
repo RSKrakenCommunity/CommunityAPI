@@ -7,6 +7,8 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
+import kraken.plugin.api.Client
+import kraken.plugin.api.Widgets
 
 object LocationModelSerializer : KSerializer<LocationModel> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("location") {
@@ -28,6 +30,7 @@ object LocationModelSerializer : KSerializer<LocationModel> {
                     CompositeDecoder.DECODE_DONE -> break
                 }
             }
+            Client.getInterfaceMode().name
             return LocationModel(name, tile, isBank)
         }
     }

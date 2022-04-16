@@ -35,9 +35,8 @@ object Traverse {
 
 
     suspend fun walkTo(dest: WorldTile): Boolean {
-        val plr = Players.self() ?: return false
         val ctx = TraversalContext(dest)
-        val path = ctx.start(plr.globalPosition.toTile())
+        val path = ctx.traverse()
         if(walkToDest(ctx, dest)) {
             return true
         } else {

@@ -8,7 +8,8 @@ import com.rshub.api.coroutines.delayRandom
 import com.rshub.api.coroutines.delayUntil
 import com.rshub.api.entities.items.ContainerItem.Companion.toContainerItem
 import com.rshub.api.entities.items.GameItem
-import com.rshub.api.input.InputHelper
+import com.rshub.api.input.KrakenInputHelper
+import com.rshub.api.input.RobotInputHelper
 import com.rshub.api.services.GameStateServiceManager.GAME_STATE
 import com.rshub.api.variables.Variable
 import com.rshub.api.variables.VariableHelper
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Bank
 import kraken.plugin.api.WidgetItem
+import java.awt.event.KeyEvent
 
 class Bank : Widget {
     override val widgetId: Int = 517
@@ -97,7 +99,7 @@ class Bank : Widget {
 
     fun depositInventory(useKey: Boolean = true) {
         if (useKey) {
-            InputHelper.pressKey('3')
+            KrakenInputHelper.typeCharLiteral('3')
         } else {
             Bank.depositAll()
         }
@@ -105,7 +107,7 @@ class Bank : Widget {
 
     fun depositEquipment(useKey: Boolean = true) {
         if (useKey) {
-            InputHelper.pressKey('4')
+            KrakenInputHelper.typeCharLiteral('4')
         } else {
             Bank.depositEquipment()
         }
@@ -113,7 +115,7 @@ class Bank : Widget {
 
     fun depositBurden(useKey: Boolean = true) {
         if (useKey) {
-            InputHelper.pressKey('5')
+            KrakenInputHelper.typeCharLiteral('5')
         } else {
             ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, depositBurdenButton))
         }
@@ -154,13 +156,13 @@ class Bank : Widget {
     }
 
     override fun exit() {
-        InputHelper.pressKey(InputHelper.ESC)
+        KrakenInputHelper.typeKey(KeyEvent.VK_ESCAPE)
     }
 
     fun closeBank() = runBlocking { close() }
 
     override suspend fun close() {
-        exit()
+        RobotInputHelper.keyTyped(KeyEvent.VK_ESCAPE, 0)
         if (!delayUntil { isClosed() }) {
             ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, closeButton))
         }

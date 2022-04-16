@@ -1,10 +1,8 @@
 package com.rshub.javafx.ui.tabs.widgets
 
-import com.rshub.definitions.maps.WorldTile.Companion.tile
 import com.rshub.javafx.ui.model.WidgetChildModel
 import com.rshub.javafx.ui.model.WidgetModel
 import javafx.scene.control.TreeItem
-import kraken.plugin.api.Client
 import kraken.plugin.api.Widget
 import kraken.plugin.api.Widgets
 import tornadofx.*
@@ -17,21 +15,15 @@ class WidgetViewTab : Fragment("Widgets") {
         treeview<WidgetChildModel> {
             rootProperty().bind(model.root)
             cellFormat {
-                text = if(item.widget.get() == null) {
+                text = if (item.widget.get() == null) {
                     "Root"
                 } else {
-                    val typeName = when(item.widget.get().type) {
+                    val typeName = when (item.widget.get().type) {
                         4 -> "Text"
                         else -> "${item.widget.get().type}"
                     }
                     "${item.id.get()} - $typeName - ${item.widget.get().text}"
                 }
-                Widgets.getGroupById(1466)
-                    .getWidget(0)
-                    .getChild(0)
-                    .getChild(2, 14).position
-
-
                 val text = item.widget.get()?.position?.toString()
                 if (text != null) {
                     tooltip = tooltip(text)
@@ -44,6 +36,9 @@ class WidgetViewTab : Fragment("Widgets") {
                     textfield(model.groupId) {
                         stripNonInteger()
                     }
+                }
+                field("Filter Text") {
+                    checkbox(property = model.filterText)
                 }
                 field {
                     button("View Widget") {

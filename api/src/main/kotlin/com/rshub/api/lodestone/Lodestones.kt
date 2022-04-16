@@ -4,7 +4,7 @@ import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.coroutines.delayUntil
 import com.rshub.api.definitions.CacheHelper
-import com.rshub.api.input.InputHelper.pressKey
+import com.rshub.api.input.KrakenInputHelper
 import com.rshub.api.pathing.teleport.Teleport
 import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.tile
@@ -252,7 +252,7 @@ enum class Lodestones(
 
     override suspend fun teleport(): Boolean {
         if (delayUntil(3000, 1000) {
-                pressKey('T')
+                KrakenInputHelper.typeCharLiteral('T')
                 Widgets.isOpen(LODESTONE_ID)
             }) {
             println("${this.name} - ${isAvailable()}")
@@ -261,7 +261,7 @@ enum class Lodestones(
                 return false
             }
             if (key != ' ') {
-                pressKey(key)
+                KrakenInputHelper.typeCharLiteral(key)
             }
             if (delayUntil { !Widgets.isOpen(LODESTONE_ID) }) {
                 return true
@@ -274,10 +274,6 @@ enum class Lodestones(
                 return true
             }
         } else {
-            if (!isAvailable()) {
-                println("Not unlocked! 1")
-                return false
-            }
             ActionHelper.menu(
                 MenuAction.WIDGET,
                 1,
@@ -289,7 +285,9 @@ enum class Lodestones(
                     println("Not unlocked! 2")
                     return false
                 }
-                pressKey(key)
+                if (key != ' ') {
+                    KrakenInputHelper.typeCharLiteral(key)
+                }
                 if (delayUntil { !Widgets.isOpen(LODESTONE_ID) }) {
                     return true
                 }

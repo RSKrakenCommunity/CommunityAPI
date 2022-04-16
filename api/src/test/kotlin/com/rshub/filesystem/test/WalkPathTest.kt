@@ -2,7 +2,6 @@ package com.rshub.filesystem.test
 
 import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.pathing.walking.TraversalContext
-import com.rshub.api.pathing.web.Graph.Companion.toWeb
 import com.rshub.api.pathing.web.edges.strategies.NpcStrategy
 import com.rshub.api.pathing.web.edges.strategies.ObjectStrategy
 import com.rshub.definitions.maps.WorldTile
