@@ -2,13 +2,11 @@ package com.rshub.api.widgets
 
 import com.rshub.api.containers.Container
 import com.rshub.api.entities.items.GameItem
-import com.rshub.api.variables.VariableHelper
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Item
 import kraken.plugin.api.WidgetItem
 import kraken.plugin.api.Widgets
-import kotlin.reflect.KProperty
 
 interface Widget {
     val widgetId: Int

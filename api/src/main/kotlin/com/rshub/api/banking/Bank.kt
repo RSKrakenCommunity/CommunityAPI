@@ -9,10 +9,9 @@ import com.rshub.api.coroutines.delayUntil
 import com.rshub.api.entities.items.ContainerItem.Companion.toContainerItem
 import com.rshub.api.entities.items.GameItem
 import com.rshub.api.input.KrakenInputHelper
-import com.rshub.api.input.RobotInputHelper
 import com.rshub.api.services.GameStateServiceManager.GAME_STATE
 import com.rshub.api.variables.Variable
-import com.rshub.api.variables.VariableHelper
+import com.rshub.api.variables.Variables
 import com.rshub.api.variables.impl.VariableBit
 import com.rshub.api.widgets.Widget
 import com.rshub.api.widgets.WidgetEvent
@@ -34,25 +33,17 @@ class Bank : Widget {
     private val closeButton = 302
     private val depositBurdenButton = 45
     private val placeHolderButton = 35
+    val invTab by Variables.BANK_INVENTORY_TAB
+    val bankTab by Variables.BANK_TAB
+    val selectedPreset by Variables.SELECTED_PRESET
+    val transferX by Variables.TRANSFER_X
+    val transferAmount by Variables.TRANSFER_AMOUNT
 
-    val invTab by Variable
-    val bankTab by Variable
-    val selectedPreset by Variable
-    val transferX by Variable
-    val transferAmount by Variable
-
-    private val presetsOpen by Variable
-    val isPresetsOpen get() = presetsOpen == 1
-    private val presetSumInv by Variable
-    val isSumInv get() = presetSumInv == 1
-    private val presetInv by Variable
-    val isPresetInv get() = presetInv == 1
-    private val presetEquip by Variable
-    val isPresetEquipment get() = presetEquip == 1
-    private val isPresets by Variable
-    val isPresetTab get() = isPresets == 1
-    private val usePlaceholders by Variable
-    val isPlaceholdersEnabled get() = usePlaceholders == 1
+    val isPresetsOpen by Variables.PRESETS_OPEN
+    val isSumInv by Variables.PRESET_SUM_SELECTED
+    val isPresetInv by Variables.PRESET_INVENTORY_SELECTED
+    val isPresetEquipment by Variables.PRESET_EQUIPMENT_SELECTED
+    val isPlaceholdersEnabled by Variables.PLACEHOLDERS_ENABLED
 
     private val containers = mutableMapOf<Int, Container>(
         95 to Inventory(95)
@@ -162,7 +153,7 @@ class Bank : Widget {
     fun closeBank() = runBlocking { close() }
 
     override suspend fun close() {
-        RobotInputHelper.keyTyped(KeyEvent.VK_ESCAPE, 0)
+        exit()
         if (!delayUntil { isClosed() }) {
             ActionHelper.menu(MenuAction.WIDGET, 1, -1, WidgetHelper.hash(widgetId, closeButton))
         }
@@ -182,19 +173,5 @@ class Bank : Widget {
         const val DEPOSIT_ALL = 7
 
         const val WEAR_ITEM = 9
-
-        init {
-            VariableHelper.registerVariable("bank", "invTab", VariableBit(45319))
-            VariableHelper.registerVariable("bank", "bankTab", VariableBit(45141))
-            VariableHelper.registerVariable("bank", "presetsOpen", VariableBit(39433))
-            VariableHelper.registerVariable("bank", "selectedPreset", VariableBit(22179))
-            VariableHelper.registerVariable("bank", "presetSumInv", VariableBit(26177))
-            VariableHelper.registerVariable("bank", "presetInv", VariableBit(22158))
-            VariableHelper.registerVariable("bank", "presetEquip", VariableBit(22159))
-            VariableHelper.registerVariable("bank", "isPresets", VariableBit(45191))
-            VariableHelper.registerVariable("bank", "transferX", VariableBit(2567))
-            VariableHelper.registerVariable("bank", "transferAmount", VariableBit(45189))
-            VariableHelper.registerVariable("bank", "usePlaceholders", VariableBit(45190))
-        }
     }
 }
