@@ -26,6 +26,12 @@ class PlayerUpdateService : GameStateService, KoinComponent {
                     model.tile.set(player.globalPosition.toTile().toString())
                     model.localTile.set(player.globalPosition.toLocal().toString())
                 }
+                if(model.animationId.get() != player.animationId) {
+                    model.animationId.set(player.animationId)
+                }
+                if(model.isMoving.get() != player.isMoving) {
+                    model.isMoving.set(player.isMoving)
+                }
                 if (model.serverIndex.get() != player.serverIndex) {
                     model.serverIndex.set(player.serverIndex)
                 }

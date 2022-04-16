@@ -8,6 +8,7 @@ import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.expand
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import kraken.plugin.api.Debug
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players

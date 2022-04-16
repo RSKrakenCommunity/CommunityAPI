@@ -1,21 +1,15 @@
 package com.rshub.javafx.ui.tabs
 
 import com.rshub.api.pathing.walking.Traverse
-import com.rshub.definitions.maps.WorldTile
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.walking.LocationModel
 import com.rshub.javafx.ui.model.walking.WalkingModel
-import javafx.collections.FXCollections
-import javafx.embed.swt.FXCanvas
+import javafx.beans.property.SimpleObjectProperty
 import javafx.geometry.Orientation
 import javafx.geometry.Pos
-import javafx.scene.Node
 import javafx.scene.control.ButtonType
-import javafx.scene.control.CheckBox
 import kotlinx.coroutines.*
-import kraken.plugin.api.Kraken
 import kraken.plugin.api.Players
-import org.koin.core.context.GlobalContext
 import tornadofx.*
 import java.nio.file.Paths
 import kotlin.io.path.exists
@@ -23,6 +17,7 @@ import kotlin.io.path.exists
 class WalkingTab : Fragment("Walking") {
 
     private val model: WalkingModel by di()
+    private val walkingJob = SimpleObjectProperty<Job>()
 
     override val root = vbox {
         spacing = 2.5
@@ -47,6 +42,13 @@ class WalkingTab : Fragment("Walking") {
             button("Save Locations").setOnAction { save() }
             separator(Orientation.VERTICAL)
             checkbox("Show Bank on Minimap", model.showBanksOnMinimap)
+            button("Cancel Walk") {
+                disableWhen(walkingJob.isNull)
+                setOnAction {
+                    walkingJob.get()?.cancel()
+                    walkingJob.set(null)
+                }
+            }
         }
         tableview<LocationModel> {
             items.bind(model.locations) { it }
@@ -71,13 +73,15 @@ class WalkingTab : Fragment("Walking") {
                         spacing = 10.0
                         alignment = Pos.CENTER
                         button("Walk").setOnAction {
-                            GlobalScope.launch(Dispatchers.Default) {
+                            walkingJob.set(GlobalScope.launch(Dispatchers.Default) {
                                 if(!Traverse.walkTo(rowItem.tile.get())) {
                                     runLater {
                                         warning("Walk to ${rowItem.name.get()}", "Unable to walk here.")
                                     }
+                                } else {
+                                    walkingJob.set(null)
                                 }
-                            }
+                            })
                         }
                         button("Delete").setOnAction {
                             confirm("Delete Location ${rowItem.name.get()}", "Are you sure?", ButtonType.YES, ButtonType.NO, title = "Delete Location") {

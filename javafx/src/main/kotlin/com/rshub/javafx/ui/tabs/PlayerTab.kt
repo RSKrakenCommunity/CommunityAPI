@@ -19,6 +19,12 @@ class PlayerTab : Fragment("Local Player") {
             field {
                 label(playerModel.localTile)
             }
+            field("Is Moving") {
+                label(playerModel.isMoving)
+            }
+            field("Animation ID") {
+                label(playerModel.animationId)
+            }
             field("Server Index") {
                 label(playerModel.serverIndex)
             }
