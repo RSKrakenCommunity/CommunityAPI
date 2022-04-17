@@ -13,6 +13,7 @@ class VariableDebuggerModel : ViewModel() {
     val varbits = bind { SimpleListProperty<VariableModel>(this, "varbits", FXCollections.observableArrayList()) }
 
     val selectedVarp = bind { SimpleObjectProperty<VariableModel>(this, "selected_varp") }
+    val selectedVarbit = bind { SimpleObjectProperty<VariableModel>(this, "selected_varbit") }
 
     val isScanMode = bind { SimpleBooleanProperty(this, "scan_mode", false) }
 

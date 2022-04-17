@@ -1,15 +1,15 @@
 package com.rshub.javafx.ui.tabs.variables
 
 import com.rshub.api.definitions.CacheHelper
-import com.rshub.javafx.ui.model.VariableDebuggerModel
-import com.rshub.javafx.ui.model.VariableModel
-import com.rshub.javafx.ui.model.VariableScanModel
+import com.rshub.javafx.ui.model.*
+import javafx.util.StringConverter
 import kraken.plugin.api.Client
 import tornadofx.*
 
 class VariableDebuggerTab : Fragment("Variable Debugger") {
 
     private val model: VariableDebuggerModel by di()
+    private val veditor: VariableEditorModel by di()
     private val scanner: VariableScanModel by di()
 
     override val root = borderpane {
@@ -70,6 +70,50 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
                         checkbox(property = scanner.isValueUnknown)
                     }
                 }
+                fieldset("Variable Labeler") {
+                    field("Name") {
+                        textfield(veditor.varName)
+                    }
+                    field("Variable Type") {
+                        choicebox(veditor.type) {
+                            items.addAll(VariableEditModel.Type.values())
+                            selectionModel.select(VariableEditModel.Type.VARP)
+                            converter = object : StringConverter<VariableEditModel.Type>() {
+                                override fun toString(type: VariableEditModel.Type): String {
+                                    return type.name.lowercase()
+                                        .capitalize()
+                                        .replace('_', ' ')
+                                        .trim()
+                                }
+
+                                override fun fromString(string: String): VariableEditModel.Type {
+                                    return VariableEditModel.Type.valueOf(
+                                        string.uppercase().replace(' ', '_')
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    field {
+                        button("Add Variable") {
+                            disableWhen(veditor.varName.isEmpty)
+                            setOnAction {
+                                val name = veditor.varName.get()
+                                val model = when(veditor.type.get()) {
+                                    VariableEditModel.Type.VARBIT -> {
+                                        val sel = model.selectedVarbit.get()
+                                        VariableEditModel(name, sel.variableId.get(), veditor.type.get())
+                                    }
+                                    VariableEditModel.Type.VARP -> {
+                                        val sel = model.selectedVarp.get()
+                                        VariableEditModel(name, sel.variableId.get(), veditor.type.get())
+                                    }
+                                }
+                                veditor.variables.add(model)
+                            }
+                        }
+                    }
+                }
             }
         }
         left {
@@ -89,6 +133,7 @@ class VariableDebuggerTab : Fragment("Variable Debugger") {
             tableview<VariableModel> {
                 smartResize()
                 items.bind(model.varbits) { v -> v }
+                bindSelected(model.selectedVarbit)
                 column<VariableModel, Number>("Varbit") {
                     it.value.variableId
                 }

@@ -15,7 +15,7 @@ import kotlin.io.path.exists
 
 class VariableEditorTab : Fragment("Variable Editor") {
 
-    private val model: VariableEditorModel by inject()
+    private val model: VariableEditorModel by di()
 
     override val root = vbox {
         loadVariables()
