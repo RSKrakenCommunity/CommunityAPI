@@ -17,6 +17,9 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
     val health get() = npc.health
     val transformedId get() = npc.transformedId
 
+    val def: NpcDefinition by lazy { CacheHelper.getNpc(id) }
+
+    override val name: String get() = def.name
     override val serverIndex get() = npc.serverIndex
     override val isMoving get() = npc.isMoving
     override val activeStatusBars: Map<Int, Boolean> get() = npc.activeStatusBars
@@ -29,9 +32,6 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
     override val scenePosition: Vector3 get() = npc.scenePosition
     override val globalPosition: Vector3i get() = npc.globalPosition
 
-    val def: NpcDefinition by lazy { CacheHelper.getNpc(id) }
-
-    val name: String get() = def.name
     val options: Array<String?> get() = def.options
     val combatLevel: Int get() = def.combatLevel
 

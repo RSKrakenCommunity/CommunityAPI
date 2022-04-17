@@ -1,9 +1,7 @@
 package com.rshub.javafx.ui.model
 
-import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleFloatProperty
-import javafx.beans.property.SimpleIntegerProperty
-import javafx.beans.property.SimpleStringProperty
+import javafx.beans.property.*
+import kraken.plugin.api.Spirit
 import tornadofx.ViewModel
 
 class PlayerModel : ViewModel() {
@@ -17,5 +15,7 @@ class PlayerModel : ViewModel() {
     val combatLevel = SimpleIntegerProperty(this, "combat_level", 3)
     val health = SimpleFloatProperty(this, "health", 0.0f)
     val adrenaline = SimpleFloatProperty(this, "adrenaline", 0.0f)
+    val interactingIndex = SimpleIntegerProperty(this, "interacting_index", -1)
+    val interacting = SimpleObjectProperty<Spirit>(this, "interacting")
 
 }

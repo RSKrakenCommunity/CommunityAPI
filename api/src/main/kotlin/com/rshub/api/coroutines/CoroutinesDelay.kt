@@ -18,5 +18,17 @@ suspend fun delayUntil(
     return false
 }
 
+/**
+ * for this to continue the predicate must be met, or the coroutine canceled.
+ */
+
+suspend fun delayIndefinitely(delay: Long = 600, predicate: suspend () -> Boolean) : Boolean {
+    if(predicate()) return true
+    while (!predicate()) {
+        kotlinx.coroutines.delay(delay)
+    }
+    return true
+}
+
 suspend fun delay(value: Int) = kotlinx.coroutines.delay(value.toLong())
 suspend fun delayRandom(min: Int, max: Int) = delay(Rng.i32(min, max))

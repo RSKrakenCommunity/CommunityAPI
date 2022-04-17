@@ -8,6 +8,8 @@ import kraken.plugin.api.Vector3i
 
 class WorldPlayer(val player: Player) : WorldSpirit {
 
+    override val name: String
+        get() = player.name
     override val globalPosition: Vector3i
         get() = player.globalPosition
     override val activeStatusBars: Map<Int, Boolean>

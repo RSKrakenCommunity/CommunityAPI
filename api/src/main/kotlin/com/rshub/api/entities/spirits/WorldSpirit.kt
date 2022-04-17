@@ -5,6 +5,7 @@ import kraken.plugin.api.Vector2
 
 interface WorldSpirit : WorldEntity {
 
+    val name: String
     val serverIndex: Int
     val isMoving: Boolean
     val activeStatusBars: Map<Int, Boolean>

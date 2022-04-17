@@ -47,6 +47,12 @@ class PlayerUpdateService : GameStateService, KoinComponent {
                 if (model.totalLevel.get() != player.totalLevel) {
                     model.totalLevel.set(player.totalLevel)
                 }
+                if(model.interactingIndex.get() != player.interactingIndex) {
+                    model.interactingIndex.set(player.interactingIndex)
+                }
+                if(model.interacting.get() != player.interacting) {
+                    model.interacting.set(player.interacting)
+                }
             }
         }
     }

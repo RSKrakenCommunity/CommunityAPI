@@ -5,6 +5,7 @@ import com.rshub.api.entities.SpiritManager;
 import com.rshub.api.entities.WorldObjectManager;
 import com.rshub.api.entities.items.WorldItem;
 import com.rshub.api.entities.objects.WorldObject;
+import com.rshub.api.entities.spirits.WorldSpirit;
 import com.rshub.api.entities.spirits.npc.WorldNpc;
 import com.rshub.api.entities.spirits.player.WorldPlayer;
 
@@ -36,5 +37,14 @@ public final class WorldHelper {
 
     public static WorldPlayer closestPlayer(Predicate<WorldPlayer> predicate) {
         return SPIRIT_MANAGER.closestPlayer(predicate::test);
+    }
+
+    /**
+     * Finds the attacking entity for the local player
+     * @return The Attacking entity, if multiple attacking entities the first player is returned
+     */
+
+    public static WorldSpirit getAttackingSpirit() {
+        return SPIRIT_MANAGER.findAttackingSpirit();
     }
 }
