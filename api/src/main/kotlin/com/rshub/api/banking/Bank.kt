@@ -27,23 +27,24 @@ import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Bank
 import kraken.plugin.api.WidgetItem
 import java.awt.event.KeyEvent
+import kotlin.reflect.KProperty
 
 class Bank : Widget {
     override val widgetId: Int = 517
     private val closeButton = 302
     private val depositBurdenButton = 45
     private val placeHolderButton = 35
-    val invTab by Variables.BANK_INVENTORY_TAB
-    val bankTab by Variables.BANK_TAB
-    val selectedPreset by Variables.SELECTED_PRESET
-    val transferX by Variables.TRANSFER_X
-    val transferAmount by Variables.TRANSFER_AMOUNT
+    val invTab: Int by Variables.BANK_INVENTORY_TAB
+    val bankTab: Int by Variables.BANK_TAB
+    val selectedPreset: Int by Variables.SELECTED_PRESET
+    val transferX: Int by Variables.TRANSFER_X
+    val transferAmount: Int by Variables.TRANSFER_AMOUNT
 
-    val isPresetsOpen by Variables.PRESETS_OPEN
-    val isSumInv by Variables.PRESET_SUM_SELECTED
-    val isPresetInv by Variables.PRESET_INVENTORY_SELECTED
-    val isPresetEquipment by Variables.PRESET_EQUIPMENT_SELECTED
-    val isPlaceholdersEnabled by Variables.PLACEHOLDERS_ENABLED
+    val isPresetsOpen : Boolean by Variables.PRESETS_OPEN
+    val isSumInv : Boolean by Variables.PRESET_SUM_SELECTED
+    val isPresetInv : Boolean by Variables.PRESET_INVENTORY_SELECTED
+    val isPresetEquipment : Boolean by Variables.PRESET_EQUIPMENT_SELECTED
+    val isPlaceholdersEnabled : Boolean by Variables.PLACEHOLDERS_ENABLED
 
     private val containers = mutableMapOf<Int, Container>(
         95 to Inventory(95)
@@ -174,4 +175,8 @@ class Bank : Widget {
 
         const val WEAR_ITEM = 9
     }
+}
+
+private operator fun Variables.getValue(bank: com.rshub.api.banking.Bank, property: KProperty<*>): Int {
+    TODO("Not yet implemented")
 }

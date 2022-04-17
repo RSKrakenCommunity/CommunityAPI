@@ -13,8 +13,8 @@ object ActionBar {
     const val PREV_BAR_BUTTON_ID = 258
     const val LOCK_BAR_BUTTON_ID = 262
 
-    val barNumber by Variables.ACTION_BAR_NUMBER
-    private val isLocked by Variables.ACTION_BAR_LOCKED
+    val barNumber = 0
+    private val isLocked = 0
 
     @JvmStatic
     fun isLocked() = isLocked == 1

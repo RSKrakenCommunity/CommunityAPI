@@ -37,15 +37,15 @@ public final class BankHelper {
     }
 
     public static boolean isPresetInventory() {
-        return BANK.isPresetInv() == 1;
+        return BANK.isPresetInv();
     }
 
     public static boolean isPresetEquipment() {
-        return BANK.isPresetEquipment() == 1;
+        return BANK.isPresetEquipment();
     }
 
     public static boolean isPresetBeast() {
-        return BANK.isSumInv() == 1;
+        return BANK.isSumInv();
     }
 
     public static void withdrawItem(int itemId, int amount) {
