@@ -12,8 +12,8 @@ class ContainerStateService : GameStateService {
                 val ic = ItemContainers.byId(con.containerId)
                 val items = con.items
                 for ((slot, item) in ic.items.withIndex()) {
-                    if(items[slot] != item) {
-                        val prev = items[slot]
+                    if(con[slot] != item) {
+                        val prev = con[slot]!!
                         con.fireChangeEvent(ContainerChangeEvent(slot, prev, item))
                         items[slot] = item
                     }

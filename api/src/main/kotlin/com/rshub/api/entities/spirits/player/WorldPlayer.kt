@@ -1,5 +1,9 @@
 package com.rshub.api.entities.spirits.player
 
+import com.rshub.api.actions.ActionHelper
+import com.rshub.api.actions.ActionType
+import com.rshub.api.actions.NpcAction
+import com.rshub.api.actions.PlayerAction
 import com.rshub.api.entities.spirits.WorldSpirit
 import kraken.plugin.api.Player
 import kraken.plugin.api.Vector2
@@ -30,5 +34,4 @@ class WorldPlayer(val player: Player) : WorldSpirit {
         get() = player.serverIndex
     override val statusBarFill: Map<Int, Float>
         get() = player.statusBarFill
-
 }

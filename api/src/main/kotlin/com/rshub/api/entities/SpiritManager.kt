@@ -94,7 +94,10 @@ class SpiritManager {
     fun findAttackingSpirit() : WorldSpirit? {
         val player = Players.self() ?: return null
         val attacking = all { interactingIndex == player.serverIndex }
-        return attacking.firstOrNull { it is WorldPlayer }
+        if(attacking.any { it is WorldPlayer }) {
+            return attacking.firstOrNull { it is WorldPlayer }
+        }
+        return attacking.firstOrNull()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.rshub.api.entities.spirits.npc
 
 import com.rshub.api.actions.ActionHelper
+import com.rshub.api.actions.ActionType
 import com.rshub.api.actions.NpcAction
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.spirits.WorldSpirit
@@ -28,7 +29,6 @@ class WorldNpc(private val npc: Npc) : WorldSpirit {
     override val isAnimationPlaying get() = npc.isAnimationPlaying
     override val interactingIndex get() = npc.interactingIndex
     override val directionOffset: Vector2 get() = npc.directionOffset
-
     override val scenePosition: Vector3 get() = npc.scenePosition
     override val globalPosition: Vector3i get() = npc.globalPosition
 

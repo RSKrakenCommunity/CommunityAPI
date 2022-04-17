@@ -18,4 +18,6 @@ class PlayerModel : ViewModel() {
     val interactingIndex = SimpleIntegerProperty(this, "interacting_index", -1)
     val interacting = SimpleObjectProperty<Spirit>(this, "interacting")
 
+    val attackingSpirit = bind { SimpleIntegerProperty(this, "attacking_spirit", -1) }
+
 }

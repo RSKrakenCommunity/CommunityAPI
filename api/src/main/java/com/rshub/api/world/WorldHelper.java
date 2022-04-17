@@ -8,6 +8,8 @@ import com.rshub.api.entities.objects.WorldObject;
 import com.rshub.api.entities.spirits.WorldSpirit;
 import com.rshub.api.entities.spirits.npc.WorldNpc;
 import com.rshub.api.entities.spirits.player.WorldPlayer;
+import kraken.plugin.api.Npc;
+import kraken.plugin.api.Npcs;
 
 import java.util.function.Predicate;
 
@@ -33,6 +35,14 @@ public final class WorldHelper {
 
     public static WorldNpc closestNpc(Predicate<WorldNpc> predicate) {
         return SPIRIT_MANAGER.closestNpc(predicate::test);
+    }
+
+    public static WorldNpc byServerIndex(int index) {
+        Npc npc = Npcs.byServerIndex(index);
+        if(npc != null) {
+            return new WorldNpc(npc);
+        }
+        return null;
     }
 
     public static WorldPlayer closestPlayer(Predicate<WorldPlayer> predicate) {

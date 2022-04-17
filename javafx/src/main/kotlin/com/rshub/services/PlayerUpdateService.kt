@@ -1,13 +1,11 @@
 package com.rshub.services
 
 import com.rshub.api.services.GameStateService
-import com.rshub.definitions.maps.WorldTile.Companion.localX
+import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.toLocal
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import com.rshub.javafx.ui.model.GlobalModel
 import com.rshub.javafx.ui.model.PlayerModel
-import kraken.plugin.api.Debug
-import kraken.plugin.api.Kraken
 import kraken.plugin.api.Players
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -53,6 +51,8 @@ class PlayerUpdateService : GameStateService, KoinComponent {
                 if(model.interacting.get() != player.interacting) {
                     model.interacting.set(player.interacting)
                 }
+                model.attackingSpirit.set(-1)
+                model.attackingSpirit.set(WorldHelper.getAttackingSpirit()?.serverIndex ?: -1)
             }
         }
     }

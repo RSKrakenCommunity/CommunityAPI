@@ -29,7 +29,10 @@ object Traverse {
         if (isReachable) {
             Move.to(tile)
             val timeout = steps * 800L
-            return delayUntil(timeout) { tile.expand(8).contains(Players.self()) }
+            return delayUntil(if(timeout < 5000) 5000 else timeout) {
+                val pos = Players.self()?.globalPosition ?: return@delayUntil true
+                pos.x == tile.x && pos.y == tile.y
+            }
         }
         return false
     }

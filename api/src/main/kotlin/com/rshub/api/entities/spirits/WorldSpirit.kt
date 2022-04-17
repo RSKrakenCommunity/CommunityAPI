@@ -4,7 +4,6 @@ import com.rshub.api.entities.WorldEntity
 import kraken.plugin.api.Vector2
 
 interface WorldSpirit : WorldEntity {
-
     val name: String
     val serverIndex: Int
     val isMoving: Boolean
@@ -14,5 +13,4 @@ interface WorldSpirit : WorldEntity {
     val isAnimationPlaying: Boolean
     val interactingIndex: Int
     val directionOffset: Vector2
-
 }
