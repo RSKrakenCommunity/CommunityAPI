@@ -18,12 +18,6 @@ public final class GameStateHelper {
 
     public static final Set<Container> ITEM_CONTAINERS = new HashSet<>();
 
-    static {
-        registerService(new ContainerStateService());
-        GameStateServiceManager.INSTANCE.start();
-        SelfCorrectionState.INSTANCE.start();
-    }
-
     public static Job reactToError(Class<?> clazz, BiConsumer<ErrorEvent<?>, EventStatus> func) {
         return SelfCorrectionState.INSTANCE.reactToError(clazz, (ee, es) -> {
             func.accept(ee, es);
