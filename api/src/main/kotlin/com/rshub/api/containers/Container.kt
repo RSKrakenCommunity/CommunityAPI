@@ -14,5 +14,5 @@ interface Container : Iterable<Item> {
     fun addListener(listener: (Int, Item, Item) -> Unit): Job
     fun slotOf(item: Item): Int
     fun fireChangeEvent(event: ContainerChangeEvent)
-    operator fun get(slot: Int): Item?
+    operator fun get(slot: Int): Item
 }

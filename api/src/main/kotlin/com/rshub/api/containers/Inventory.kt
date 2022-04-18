@@ -2,6 +2,7 @@ package com.rshub.api.containers
 
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.widgets.Widget
+import com.rshub.api.widgets.WidgetHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kraken.plugin.api.Filter
 import kraken.plugin.api.Item
+import kraken.plugin.api.ItemContainers
 import kraken.plugin.api.WidgetItem
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -21,9 +23,11 @@ class Inventory(override val containerId: Int) : Container {
 
     override fun getItems(filter: Filter<in Item>): List<Item> {
         val items = mutableListOf<Item>()
-        for (item in this.items) {
-            if (filter.accept(item)) {
-                items.add(item)
+        if (ItemContainers.isAvailable(containerId)) {
+            for (item in ItemContainers.byId(containerId).items) {
+                if (filter.accept(item)) {
+                    items.add(item)
+                }
             }
         }
         return items
@@ -33,7 +37,7 @@ class Inventory(override val containerId: Int) : Container {
         val items = getItems()
         val list = mutableListOf<WidgetItem>()
         for ((slot, item) in items.withIndex()) {
-            val widgetItem = WidgetItem(item.id, item.amount, slot, widget.widgetId)
+            val widgetItem = WidgetItem(item.id, item.amount, slot, WidgetHelper.hash(widget.widgetId, widget.containerChild))
             if (filter.accept(widgetItem)) {
                 list.add(widgetItem)
             }
@@ -46,9 +50,9 @@ class Inventory(override val containerId: Int) : Container {
             .launchIn(CoroutineScope(Dispatchers.Default))
     }
 
-    override fun slotOf(item: Item) : Int {
+    override fun slotOf(item: Item): Int {
         for ((slot, i) in items.withIndex()) {
-            if(i == item){
+            if (i == item) {
                 return slot
             }
         }
@@ -59,13 +63,13 @@ class Inventory(override val containerId: Int) : Container {
         changeFlow.tryEmit(event)
     }
 
-    override fun get(slot: Int): Item? {
+    override fun get(slot: Int): Item {
         for ((index, item) in items.withIndex()) {
-            if(index == slot) {
+            if (index == slot) {
                 return item
             }
         }
-        return null
+        return Item(-1)
     }
 
     override fun iterator(): Iterator<Item> {

@@ -21,8 +21,6 @@ class GroundItemManager {
         val distanceMap: MutableMap<Int, WorldItem> = TreeMap()
         val groundItems = all(filter)
         for (wo in groundItems) {
-            if(wo.globalPosition.z != player.globalPosition.z)
-                continue
             val tile = player.globalPosition.toTile()
             val distance = LocalPathing.getLocalStepsTo(tile, 1, EntityStrategy(wo), false)
             if (distance != -1) distanceMap[distance] = wo

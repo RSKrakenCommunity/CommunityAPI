@@ -9,13 +9,9 @@ class ContainerItem(val container: Container, widgetItem: WidgetItem) : GameItem
     val slot: Int by lazy { widgetItem.slot }
     val widgetId: Int by lazy { widgetItem.widgetId }
 
-    fun interact(option: Int) : Boolean {
-        val item = container[slot]
-        if(item != null && item.id == id && item.amount == amount) {
-            ActionHelper.menu(MenuAction.WIDGET, option, slot, widgetId)
-            return true
-        }
-        return false
+    fun interact(option: Int): Boolean {
+        ActionHelper.menu(MenuAction.WIDGET, option, slot, widgetId)
+        return true
     }
 
     companion object {

@@ -91,13 +91,14 @@ class SpiritManager {
         return distanceMap[sortedKeys[0]]
     }
 
-    fun findAttackingSpirit() : WorldSpirit? {
-        val player = Players.self() ?: return null
-        val attacking = all { interactingIndex == player.serverIndex }
-        if(attacking.any { it is WorldPlayer }) {
-            return attacking.firstOrNull { it is WorldPlayer }
-        }
-        return attacking.firstOrNull()
+    fun findAttackingNpcs(): List<WorldNpc> {
+        val player = Players.self() ?: return emptyList()
+        return npcs { interactingIndex == player.serverIndex }
+    }
+
+    fun findAttackingPlayers(): List<WorldPlayer> {
+        val player = Players.self() ?: return emptyList()
+        return players { interactingIndex == player.serverIndex }
     }
 
 }

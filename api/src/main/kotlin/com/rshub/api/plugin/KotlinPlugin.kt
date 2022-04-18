@@ -2,6 +2,9 @@ package com.rshub.api.plugin
 
 import com.rshub.api.pathing.ResourceUpdater
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.services.GameStateServiceManager
+import com.rshub.api.services.impl.ContainerStateService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Client
 import kraken.plugin.api.Plugin
@@ -27,6 +30,8 @@ abstract class KotlinPlugin(val name: String) : Plugin() {
         context = pluginContext
         updateResources()
         onLoad()
+        GameStateServiceManager.registerService(ContainerStateService())
+        GameStateServiceManager.start()
         return super.onLoaded(pluginContext)
     }
 

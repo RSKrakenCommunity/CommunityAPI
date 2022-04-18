@@ -10,6 +10,7 @@ import kraken.plugin.api.Widgets
 
 interface Widget {
     val widgetId: Int
+    val containerChild: Int get() = 0
     fun hasInventory(): Boolean
     fun addContainer(con: Container)
     fun getContainer(id: Int): Container?
@@ -21,7 +22,7 @@ interface Widget {
     fun watchContainers(action: (Widget, Container, GameItem, GameItem) -> Unit)
 
     fun asWidgetItem(slot: Int, item: Item): WidgetItem {
-        return WidgetItem(item.id, item.amount, slot, widgetId)
+        return WidgetItem(item.id, item.amount, slot, WidgetHelper.hash(widgetId, containerChild))
     }
 
     fun isOpen() = Widgets.isOpen(widgetId)
