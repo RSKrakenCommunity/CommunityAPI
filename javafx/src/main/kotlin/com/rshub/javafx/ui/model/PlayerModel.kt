@@ -20,4 +20,6 @@ class PlayerModel : ViewModel() {
 
     val attackingSpirit = bind { SimpleIntegerProperty(this, "attacking_spirit", -1) }
 
+    val inCombat = bind { SimpleBooleanProperty(this, "in_combat", false) }
+
 }

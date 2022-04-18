@@ -5,6 +5,7 @@ import com.rshub.api.definitions.DefinitionManager.Companion.def
 import com.rshub.api.map.ClipFlag
 import com.rshub.api.map.Region
 import com.rshub.api.pathing.WalkHelper
+import com.rshub.api.services.GameStateServiceManager
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.localX
 import com.rshub.definitions.maps.WorldTile.Companion.localY
@@ -34,6 +35,7 @@ class DevPluginExtension : PluginExtension, KoinComponent {
     private val walking: WalkingModel by inject()
 
     override fun onLoad(): Boolean {
+        GameStateServiceManager.start()
         return true
     }
 

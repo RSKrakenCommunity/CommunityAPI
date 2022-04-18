@@ -4,12 +4,15 @@ import com.rshub.api.actions.ActionHelper
 import com.rshub.api.actions.MenuAction
 import com.rshub.api.actions.NpcAction
 import com.rshub.api.actions.ObjectAction
+import com.rshub.api.containers.InventoryHelper
 import com.rshub.api.definitions.CacheHelper
 import com.rshub.api.entities.objects.WorldObject
 import com.rshub.api.entities.spirits.npc.WorldNpc
+import com.rshub.api.input.KrakenInputHelper
 import com.rshub.api.input.RobotInputHelper
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.walking.Traverse
+import com.rshub.api.player.PlayerInventory
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile
 import kraken.plugin.api.*
@@ -39,6 +42,10 @@ object DeveloperScriptConfiguration : ScriptCompilationConfiguration({
             WorldTile.Companion::class,
             SceneObjects::class,
             RobotInputHelper::class,
+            KrakenInputHelper::class,
+            Widgets::class,
+            InventoryHelper::class,
+            PlayerInventory::class,
             Input::class
         )
 

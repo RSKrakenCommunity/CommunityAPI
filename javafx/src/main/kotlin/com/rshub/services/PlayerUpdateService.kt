@@ -1,6 +1,8 @@
 package com.rshub.services
 
 import com.rshub.api.services.GameStateService
+import com.rshub.api.variables.Variables
+import com.rshub.api.world.PlayerHelper
 import com.rshub.api.world.WorldHelper
 import com.rshub.definitions.maps.WorldTile.Companion.toLocal
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
@@ -51,8 +53,12 @@ class PlayerUpdateService : GameStateService, KoinComponent {
                 if(model.interacting.get() != player.interacting) {
                     model.interacting.set(player.interacting)
                 }
+                val inCombat: Boolean by Variables.IN_COMBAT
+                if(model.inCombat.get() != inCombat) {
+                    model.inCombat.set(inCombat)
+                }
                 model.attackingSpirit.set(-1)
-                model.attackingSpirit.set(WorldHelper.getAttackingSpirit()?.serverIndex ?: -1)
+                model.attackingSpirit.set(PlayerHelper.getAttackingNpc()?.firstOrNull()?.serverIndex ?: -1)
             }
         }
     }

@@ -29,6 +29,11 @@ class PlayerTab : Fragment("Local Player") {
                 field("Server Index") {
                     label(playerModel.serverIndex)
                 }
+
+                field("In Combat") {
+                    label(playerModel.inCombat)
+                }
+
                 field("Health") {
                     label(playerModel.health)
                 }

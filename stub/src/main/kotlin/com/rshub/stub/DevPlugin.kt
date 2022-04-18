@@ -28,7 +28,7 @@ class DevPlugin : Plugin() {
     }
 
     override fun onLoop(): Int {
-        manager.getExtensions(PluginExtension::class.java)?.forEach { it.onLoad() }
+        manager.getExtensions(PluginExtension::class.java)?.forEach { it.loop() }
         return 600
     }
 
