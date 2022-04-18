@@ -63,6 +63,7 @@ public enum class Variables(
   SMITE(VariableBit(16750)),
   RAPID_RENEWAL(VariableBit(16758)),
   QUICK_PRAYER_ACTIVE(VariableBit(5941)),
+  IN_COMBAT(VariableBit(1899)),
   ;
 
   public inline operator fun <reified T> getValue(ref: Any?, prop: KProperty<*>): T = when(T::class)
