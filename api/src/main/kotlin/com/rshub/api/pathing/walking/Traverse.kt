@@ -5,10 +5,8 @@ import com.rshub.api.coroutines.delayUntil
 import com.rshub.api.pathing.LocalPathing
 import com.rshub.api.pathing.strategy.FixedTileStrategy
 import com.rshub.definitions.maps.WorldTile
-import com.rshub.definitions.maps.WorldTile.Companion.expand
 import com.rshub.definitions.maps.WorldTile.Companion.toTile
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.yield
 import kraken.plugin.api.Debug
 import kraken.plugin.api.Move
 import kraken.plugin.api.Players
@@ -38,10 +36,10 @@ object Traverse {
     }
 
 
-    suspend fun walkTo(dest: WorldTile): Boolean {
+    suspend fun walkTo(dest: WorldTile, useLodestone: Boolean = true): Boolean {
         val ctx = TraversalContext(dest)
-        val path = ctx.traverse()
-        if(walkToDest(ctx, dest)) {
+        val path = ctx.traverse(useLodestone)
+        if(walkToDest(dest)) {
             return true
         } else {
             var failure = false
@@ -79,14 +77,14 @@ object Traverse {
                 delay(600)
             }
             if (!failure && path.isEmpty()) {
-                return walkToDest(ctx, dest)
+                return walkToDest(dest)
             }
             return !failure
         }
     }
 
-    private suspend fun walkToDest(ctx: TraversalContext, dest: WorldTile): Boolean {
-        val player = ctx.player
+    private suspend fun walkToDest(dest: WorldTile): Boolean {
+        val player = Players.self()
         if (player == null) {
             Debug.log("Player is null on dest walk.")
             return false

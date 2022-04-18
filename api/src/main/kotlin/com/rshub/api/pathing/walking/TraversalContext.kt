@@ -37,8 +37,9 @@ class TraversalContext(val dest: WorldTile) {
         return LinkedList()
     }
 
-    suspend fun traverse() : LinkedList<TraversalNode> {
-        val player = Players.self()
+    suspend fun traverse(useLodestone: Boolean = true) : LinkedList<TraversalNode> {
+        val player = Players.self() ?: return LinkedList()
+        if(!useLodestone) return start(player.globalPosition.toTile())
         val plrDist = player.globalPosition.distance(dest)
         val lodestone = Lodestones.LODESTONES.filter { it.isAvailable() }.minByOrNull { it.dest.distance(dest) }
         if(lodestone != null) {

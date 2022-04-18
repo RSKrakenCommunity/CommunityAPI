@@ -15,7 +15,8 @@ class EdgeTileStrategy : EdgeStrategy {
     }
 
     override fun reached(edge: Edge): Boolean {
-        return edge.from.tile.expand(4).contains(Players.self())
+        val player = Players.self() ?: return true
+        return edge.from.tile.expand(4).contains(player)
     }
 
     override fun modifyCost(cost: Int): Int {
