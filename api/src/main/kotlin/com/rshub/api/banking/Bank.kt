@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import kraken.plugin.api.Bank
+import kraken.plugin.api.Input
 import kraken.plugin.api.WidgetItem
 import java.awt.event.KeyEvent
 import kotlin.reflect.KProperty
@@ -75,6 +76,7 @@ class Bank : Widget {
             -1 -> WITHDRAW_ALL
             else -> WITHDRAW_X
         }
+        Input.key(KeyEvent.VK_T)
         Bank.withdraw({ it.id == id }, option)
     }
 

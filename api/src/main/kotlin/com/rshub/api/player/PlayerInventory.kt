@@ -15,9 +15,8 @@ import kraken.plugin.api.WidgetItem
 
 object PlayerInventory : Widget {
     override val widgetId: Int = 1473
-    override val containerChild: Int = 7
+    override val containerChild: Int = 5
     private val container = InventoryHelper.getInventory(93)
-    private val containerChildID = 7
 
     @JvmStatic
     fun count(filter: (ContainerItem) -> Boolean) : Int {
