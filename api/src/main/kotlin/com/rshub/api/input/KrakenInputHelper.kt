@@ -1,8 +1,12 @@
 package com.rshub.api.input
 
+import com.rshub.api.coroutines.delayRandom
 import kotlinx.coroutines.delay
 import kraken.plugin.api.Input
+import kraken.plugin.api.Rng
+import kraken.plugin.api.Time
 import java.util.function.Consumer
+import kotlin.math.max
 
 object KrakenInputHelper {
 
@@ -14,6 +18,13 @@ object KrakenInputHelper {
 
     suspend fun typeKey(literal: Char, delay: Long) {
         typeKey(literal.code, delay)
+    }
+
+    suspend fun typeCharacters(value: String, minDelay: Long = 10, maxDelay: Long = 30) {
+        for (c in value.toCharArray()) {
+            typeKey(c.code)
+            delayRandom(minDelay.toInt(), maxDelay.toInt())
+        }
     }
 
     @JvmStatic
@@ -53,5 +64,16 @@ object KrakenInputHelper {
     fun clickMouse(button: Int) {
         Input.clickMouse(button)
     }
+
+    @JvmStatic
+    fun enter(value: String, delayMin: Long = 10, delayMax: Long = 30) {
+        val var5: CharArray = value.toCharArray()
+        for (c in var5) {
+            Time.waitFor(Rng.i64(delayMin, delayMax))
+            Input.key(c.code)
+        }
+    }
+
+
 
 }
