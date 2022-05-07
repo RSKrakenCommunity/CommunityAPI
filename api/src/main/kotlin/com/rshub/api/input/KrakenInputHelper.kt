@@ -6,7 +6,7 @@ import java.util.function.Consumer
 
 object KrakenInputHelper {
 
-    suspend fun typeKey(key: Int, delay: Long) {
+    suspend fun typeKey(key: Int, delay: Long = 1L) {
         pressKey(key)
         delay(delay)
         releaseKey(key)
@@ -35,7 +35,8 @@ object KrakenInputHelper {
 
     @JvmStatic
     fun typeKey(code: Int) {
-        Input.key(code)
+        pressKey(code)
+        releaseKey(code)
     }
 
     @JvmStatic

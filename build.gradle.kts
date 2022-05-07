@@ -20,7 +20,6 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven("https://jitpack.io")
         maven("https://maven.tmatesoft.com/content/repositories/releases")
     }
 

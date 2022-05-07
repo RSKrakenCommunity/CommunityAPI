@@ -1,5 +1,5 @@
 dependencies {
-    implementation("com.github.RSKraken:KrakenAPI:master-SNAPSHOT")
+    implementation(project(":kraken-api"))
 }
 
 publishing {

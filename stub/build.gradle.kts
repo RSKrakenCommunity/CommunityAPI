@@ -16,7 +16,7 @@ tasks.withType<ShadowJar> {
     archiveBaseName.set("PluginManager")
     dependencies {
         include(dependency("org.pf4j:pf4j:3.6.0"))
-        include(dependency("com.github.RSKraken:KrakenAPI:master-SNAPSHOT"))
+        include(project(":kraken-api"))
         include(dependency("org.slf4j:slf4j-api:1.7.25"))
         include(project(":stub:api"))
     }

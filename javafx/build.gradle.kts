@@ -37,7 +37,7 @@ tasks.withType<ShadowJar> {
     }
     dependencies {
         exclude(project(":stub:api"))
-        exclude(dependency("com.github.RSKraken:KrakenAPI:master-SNAPSHOT"))
+        exclude(project(":kraken-api"))
         exclude(dependency("org.pf4j:pf4j:3.6.0"))
         exclude(dependency("org.slf4j:slf4j-api:1.7.25"))
     }

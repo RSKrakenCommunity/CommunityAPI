@@ -1,4 +1,5 @@
 dependencies {
+    implementation(project(":kraken-api"))
     implementation(project(":filesystem"))
     implementation(project(":utilities"))
 }
