@@ -12,6 +12,10 @@ public final class Input {
     private Input() {
     }
 
+    public static native void press(int vk);
+
+    public static native void release(int vk);
+
     /**
      * Presses a key on the keyboard.
      *
