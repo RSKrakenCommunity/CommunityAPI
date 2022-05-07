@@ -14,11 +14,7 @@ public class Widget {
     public static final int CONTAINER = 0;
     public static final int TEXT = 4;
     public static final int MEDIA = 5;
-
-    // internal values, attempting to use these will break the client
-
     private long internal1;
-
     private int type = -1;
     private Widget[] children;
     private boolean visible = false;
@@ -28,162 +24,117 @@ public class Widget {
     private Vector2i size;
     private int textureIdDisabled = -1;
     private int textureIdEnabled = -1;
+    private int parentId = -1;
+    private int childId = -1;
 
-    /**
-     * Do not make instances of this.
-     */
     private Widget() {
     }
 
-    /**
-     * Retrieves the type of this widget.
-     *
-     * @return The type of this widget.
-     */
+    public int getInteractId() {
+        return (this.parentId & '\uffff') << 16 | this.childId & '\uffff';
+    }
+
     public int getType() {
-        return type;
+        return this.type;
     }
 
-    /**
-     * Retrieves the children in this widget.
-     *
-     * @return The children in this widget.
-     */
     public Widget[] getChildren() {
-        return children;
+        return this.children;
     }
 
-    /**
-     * Determines if this widget has been rendered onto the screen recently.
-     *
-     * @return If this widget has been rendered onto the screen recently.
-     */
     public boolean isVisible() {
-        return visible;
+        return this.visible;
     }
 
-    /**
-     * Retrieves a child by index. Will return NULL if index is out of bounds.
-     */
     public Widget getChild(int index) {
-        if (type != Widget.CONTAINER) {
+        if (this.type != 0) {
             return null;
+        } else {
+            return index >= 0 && index < this.children.length ? this.children[index] : null;
         }
-
-        if (index < 0 || index >= children.length) {
-            return null;
-        }
-
-        return children[index];
     }
 
-    /**
-     * Retrieves a child by index. Will return NULL if index is out of bounds.
-     */
     public Widget getChild(Filter<Widget> filter, int... indices) {
         Widget w = this;
-        for (int i = 0; i < indices.length && w != null && filter.accept(w); i++) {
-            w = getChild(indices[i]);
+
+        for(int i = 0; i < indices.length && w != null && filter.accept(w); ++i) {
+            w = this.getChild(indices[i]);
         }
+
         return w;
     }
 
-    /**
-     * Retrieves a child by index. Will return NULL if index is out of bounds.
-     */
     public Widget getChild(int... indices) {
         Widget w = this;
-        for (int i = 0; i < indices.length && w != null; i++) {
-            w = getChild(indices[i]);
+
+        for(int i = 0; i < indices.length && w != null; ++i) {
+            w = this.getChild(indices[i]);
         }
+
         return w;
     }
 
-    /**
-     * Retrieves the text being stored in this widget.
-     *
-     * @return The text being stored in this widget, or NULL if the widget has no text.
-     */
     public byte[] getTextBinary() {
-        return textBinary;
+        return this.textBinary;
     }
 
-    /**
-     * Retrieves the text being stored in this widget.
-     *
-     * @return The text being stored in this widget, or NULL if the widget has no text.
-     */
     public String getText() {
-        byte[] bin = getTextBinary();
-        if (bin == null) {
-            return null;
-        }
-
-        return new String(filterSpecialChars(bin), StandardCharsets.US_ASCII);
+        byte[] bin = this.getTextBinary();
+        return bin == null ? null : new String(Text.filterSpecialChars(bin), StandardCharsets.US_ASCII);
     }
 
-    /**
-     * Retrieves the item being stored in this widget.
-     *
-     * @return The item being stored in this widget, or NULL if the widget has no item.
-     */
     public Item getItem() {
-        return item;
+        return this.item;
     }
 
-    /**
-     * Retrieves the position of this widget on the screen. May not be valid for all widgets.
-     *
-     * @return The position of this widget.
-     */
     public Vector2i getPosition() {
-        return position;
+        return this.position;
     }
 
-    /**
-     * Retrieves the size of this widget on the screen. May not be valid for all widgets.
-     *
-     * @return The size of this widget.
-     */
     public Vector2i getSize() {
-        return size;
+        return this.size;
     }
 
-    /**
-     * Retrieves the texture id this widget displays when the widget is in a disabled state.
-     *
-     * @return The texture id this widget displays when the widget is in a disabled state.
-     */
     public int getTextureIdDisabled() {
-        return textureIdDisabled;
+        return this.textureIdDisabled;
     }
 
-    /**
-     * Retrieves the texture id this widget displays when the widget is in an enabled state.
-     *
-     * @return The texture id this widget displays when the widget is in an enabled state.
-     */
     public int getTextureIdEnabled() {
-        return textureIdEnabled;
+        return this.textureIdEnabled;
     }
 
-    @Override
+    public int getParentId() {
+        return this.parentId;
+    }
+
+    public int getChildId() {
+        return this.childId;
+    }
+
+    public void interact(int option) {
+        Actions.menu(14, 1, option, this.getInteractId(), 0);
+    }
+
+    public void interact() {
+        this.interact(-1);
+    }
+
     public String toString() {
-        return "Widget{" +
-                "type= " + getType() +
-                '}';
+        return "Widget{type= " + this.getType() + '}';
     }
 
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Widget widget = (Widget) o;
-        return internal1 == widget.internal1;
+        if (this == o) {
+            return true;
+        } else if (o != null && this.getClass() == o.getClass()) {
+            Widget widget = (Widget)o;
+            return this.internal1 == widget.internal1;
+        } else {
+            return false;
+        }
     }
 
-    @Override
     public int hashCode() {
-        return Objects.hash(internal1);
+        return Objects.hash(new Object[]{this.internal1});
     }
 }
