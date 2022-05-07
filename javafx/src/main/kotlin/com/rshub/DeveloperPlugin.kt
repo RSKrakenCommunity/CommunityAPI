@@ -4,6 +4,7 @@ import com.rshub.api.pathing.WalkHelper
 import com.rshub.api.services.GameStateHelper
 import com.rshub.javafx.DebugUI
 import com.rshub.javafx.ui.model.walking.LocationModel
+import com.rshub.services.ContainerUpdateService
 import com.rshub.services.PlayerUpdateService
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ class DeveloperPlugin(wrapper: PluginWrapper?) : Plugin(wrapper) {
             modules(DebugUI.fxModule)
         }
         GameStateHelper.registerService(PlayerUpdateService())
+        GameStateHelper.registerService(ContainerUpdateService())
         WalkHelper.loadWeb()
         LocationModel.load(Paths.get(System.getProperty("user.home")).resolve("kraken-plugins"))
         GlobalScope.launch {

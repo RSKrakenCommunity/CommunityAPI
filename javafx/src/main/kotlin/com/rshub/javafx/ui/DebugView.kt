@@ -2,7 +2,9 @@ package com.rshub.javafx.ui
 
 import com.rshub.api.kraken.BreakHelper
 import com.rshub.javafx.ui.model.GlobalModel
+import com.rshub.javafx.ui.model.containers.ContainerFilterModel
 import com.rshub.javafx.ui.tabs.*
+import com.rshub.javafx.ui.tabs.containers.ContainerFilterFragment
 import com.rshub.javafx.ui.tabs.variables.VariableDebuggerTab
 import com.rshub.javafx.ui.tabs.widgets.WidgetViewTab
 import tornadofx.*
@@ -52,6 +54,9 @@ class DebugView : View() {
                 closableProperty().bind(false.toProperty())
             }
             tab<WidgetViewTab> {
+                closableProperty().bind(false.toProperty())
+            }
+            tab<ContainerFilterFragment> {
                 closableProperty().bind(false.toProperty())
             }
             tab<ScriptingTab> {

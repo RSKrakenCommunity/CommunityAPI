@@ -1,11 +1,10 @@
 package com.rshub.javafx
 
-import com.rshub.api.pathing.WebWalkerSerializer
 import com.rshub.javafx.ui.DebugView
 import com.rshub.javafx.ui.model.*
+import com.rshub.javafx.ui.model.containers.ContainerFilterModel
 import com.rshub.javafx.ui.model.walking.*
 import javafx.stage.Stage
-import kraken.plugin.api.Kraken
 import org.koin.core.component.KoinComponent
 import org.koin.core.context.GlobalContext
 import org.koin.dsl.module
@@ -46,6 +45,7 @@ class DebugUI : App(DebugView::class), KoinComponent {
             single { DoorEditorModel() }
             single { WidgetModel() }
             single { VariableEditorModel() }
+            single { ContainerFilterModel() }
         }
     }
 }

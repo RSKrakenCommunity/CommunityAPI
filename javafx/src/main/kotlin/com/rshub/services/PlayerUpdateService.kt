@@ -16,7 +16,6 @@ import tornadofx.runLater
 class PlayerUpdateService : GameStateService, KoinComponent {
 
     private val model: PlayerModel by inject()
-    private val global: GlobalModel by inject()
 
     override suspend fun stateChanged() {
         val player = Players.self()
