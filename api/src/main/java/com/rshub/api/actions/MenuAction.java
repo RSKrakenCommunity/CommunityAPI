@@ -34,6 +34,7 @@ public enum MenuAction implements ActionType {
 
     WIDGET_ITEM(11),
     WIDGET(14),
+    WIDGET_DIALOGUE(16),
     SELECTABLE_WIDGET(17),
     SELECT_WIDGET_ITEM(18),
     SELECT_GROUND_ITEM(23),
