@@ -168,4 +168,6 @@ public final class Kraken {
      */
     public static native void setStatus(String status);
 
+
+    public static native int getIntroConfiguration();
 }
